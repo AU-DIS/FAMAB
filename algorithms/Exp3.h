@@ -15,10 +15,10 @@ public:
     int draw();
     void give_reward(int choice, double reward);
 private:
-    double* weights;
-    std::vector<double> P;
-    int K{};
-    double gamma{};
+    double* weights_;
+    std::vector<double> P_;
+    int K_;
+    double gamma_;
     int sample();
 };
 

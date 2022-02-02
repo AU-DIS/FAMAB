@@ -7,50 +7,54 @@
 #include "random"
 #include "chrono"
 
-double* weights;
-std::vector<double> P;
-double gamma;
-int K;
+double* weights_;
+std::vector<double> P_;
+double gamma_;
+int K_;
+std::random_device rd_;
+std::mt19937 gen_;
+
+
 
 Exp3::Exp3(double gamma, int K) {
-    K = K;
+    K_ = K;
     auto P = std::vector<double>();
+    P_ = P;
     for (int i = 0; i < K; i++) {
-        P.push_back(i);
+        P_.push_back(i);
     }
-    gamma = gamma;
-    weights = new double[K];
+    gamma_ = gamma;
+    weights_ = new double[K];
     // Init all to 0
-    for (int i = 0; i < K; i++) {
-        weights[i] = 1;
+    for (int i = 0; i < K_; i++) {
+        weights_[i] = 1;
     }
+    std::mt19937 gen(rd_());
 }
 
 
 int Exp3::draw() {
     double sum_wj = 0;
-    for (int i = 0; i < K; i++) {
-        sum_wj += weights[i];
+    for (int i = 0; i < K_; i++) {
+        sum_wj += weights_[i];
     }
 
-    for (int i = 0; i < K; i++) {
-        std::cout << "din mor"; 
-        P[i] = (1 - gamma) * (weights[i] / sum_wj) + gamma / K;}
+    for (int i = 0; i < K_; i++) {
+        P_[i] = (1 - gamma_) * (weights_[i] / sum_wj) + gamma_ / K_;}
 
     int choice = sample();
     return choice;
 }
 
 void Exp3::give_reward(int choice, double reward) {
-    double estimated_reward = reward/P[choice];
-    weights[choice] = weights[choice] * exp((gamma * reward)/K);
+    double estimated_reward = reward/P_[choice];
+    weights_[choice] = weights_[choice] * exp((gamma_ * estimated_reward)/K_);
 }
 
 int Exp3::sample() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::discrete_distribution<> d(P.begin(), P.end());
-    int k =  d(gen);
+
+    std::discrete_distribution<> d(P_.begin(), P_.end());
+    int k =  d(gen_);
 
     return k;
 }
