@@ -3,4 +3,4 @@ project(efficient_multi_armed_bandits)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(efficient_multi_armed_bandits main.cpp)
+add_executable(efficient_multi_armed_bandits main.cpp algorithms/Exp3.cpp algorithms/Exp3.h)
