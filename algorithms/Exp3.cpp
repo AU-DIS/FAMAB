@@ -6,18 +6,18 @@
 #include "Exp3.h"
 #include "random"
 #include "chrono"
-
 double* weights_;
 std::vector<double> P_;
-double gamma_;
 int K_;
+double gamma_;
+int sample();
 std::random_device rd_;
 std::mt19937 gen_;
 
-
-
 Exp3::Exp3(double gamma, int K) {
     K_ = K;
+
+
     auto P = std::vector<double>();
     P_ = P;
     for (int i = 0; i < K; i++) {
@@ -29,9 +29,7 @@ Exp3::Exp3(double gamma, int K) {
     for (int i = 0; i < K_; i++) {
         weights_[i] = 1;
     }
-    std::mt19937 gen(rd_());
 }
-
 
 int Exp3::draw() {
     double sum_wj = 0;
@@ -52,7 +50,6 @@ void Exp3::give_reward(int choice, double reward) {
 }
 
 int Exp3::sample() {
-
     std::discrete_distribution<> d(P_.begin(), P_.end());
     int k =  d(gen_);
 

@@ -7,6 +7,7 @@
 
 
 #include <vector>
+#include <random>
 
 class Exp3 {
 
@@ -20,6 +21,8 @@ private:
     int K_;
     double gamma_;
     int sample();
+    std::random_device rd_;
+    std::mt19937 gen_;
 };
 
 

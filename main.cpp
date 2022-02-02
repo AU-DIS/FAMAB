@@ -2,11 +2,11 @@
 #include "algorithms/Exp3.h"
 
 int main() {
-    Exp3 bandit = Exp3(0.01, 100);
+    Exp3 bandit = Exp3(0.01, 1000);
     srand(time(NULL));
     int no_correct = 0;
     int no_wrong = 0;
-    int iterations = 90000;
+    int iterations = 100000;
     for (int i = 0; i < iterations; i++) {
         int c = bandit.draw();
         if (c % 2 == 0) {
