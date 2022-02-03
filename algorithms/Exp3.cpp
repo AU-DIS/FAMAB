@@ -16,8 +16,6 @@ std::mt19937 gen_;
 
 Exp3::Exp3(double gamma, int K) {
     K_ = K;
-
-
     auto P = std::vector<double>();
     P_ = P;
     for (int i = 0; i < K; i++) {
