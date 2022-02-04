@@ -1,0 +1,48 @@
+{
+  "context": {
+    "date": "2022-02-03T11:29:54+01:00",
+    "host_name": "materecclesia.eduroam.net.au.dk",
+    "executable": "/Users/mrt/Documents/scripts/efficient-multi-armed-bandits/cmake-build-debug/efficient_multi_armed_bandits",
+    "num_cpus": 8,
+    "mhz_per_cpu": 24,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 65536,
+        "num_sharing": 1
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 131072,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 4194304,
+        "num_sharing": 4
+      }
+    ],
+    "load_avg": [1.59375,1.80811,1.81152],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_Exp3/iterations:20",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_Exp3/iterations:20",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 0,
+      "real_time": 0.0000000000000000e+00,
+      "cpu_time": 0.0000000000000000e+00,
+      "time_unit": "ns"
+    }
+  ]
+}
