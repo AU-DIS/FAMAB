@@ -1,4 +1,6 @@
 .DS_Store
 .idea/
 benchmark/
-cmake_build-debug/
+cmake*
+efficient_multi_armed_bandits
+benchmark_results/

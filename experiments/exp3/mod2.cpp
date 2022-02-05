@@ -35,5 +35,5 @@ void run_mod2_bandit() {
 static void BM_Exp3(benchmark::State& state) {
     run_mod2_bandit();
 }
-BENCHMARK(BM_Exp3);
-BENCHMARK_MAIN();
+
+
