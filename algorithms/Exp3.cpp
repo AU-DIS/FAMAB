@@ -6,13 +6,7 @@
 #include "Exp3.h"
 #include "random"
 #include "chrono"
-double* weights_;
-std::vector<double> P_;
-int K_;
-double gamma_;
-int sample();
-std::random_device rd_;
-std::mt19937 gen_;
+
 
 Exp3::Exp3(double gamma, int K) {
     K_ = K;
