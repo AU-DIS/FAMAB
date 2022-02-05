@@ -4,6 +4,10 @@
 
 #include <iostream>
 #include "../../algorithms/FPL.h"
+#include "benchmark/benchmark.h"
+#include "../../benchmark_variables.h"
+
+
 
 static void run_fpl_mod2_bandit(double eta, int K, int iterations) {
     FPL bandit = FPL(eta, K);
@@ -21,11 +25,9 @@ static void run_fpl_mod2_bandit(double eta, int K, int iterations) {
             bandit.give_reward(c, 0);
         }
     }
-    //TODO: learn how to use format strings in C++
-    std::cout << "Number correct: ";
-    std::cout << int(100*no_correct/iterations);
-    std::cout << "%";
-    std::cout << "\t Number wrong: ";
-    std::cout << int(100*no_wrong/iterations);
-    std::cout << "%";
 }
+
+static void BM_FPL(benchmark::State& state) {
+    run_fpl_mod2_bandit(BENCHMARK_ETA, BENCHMARK_K, BENCHMARK_ITERATIONS);
+}
+

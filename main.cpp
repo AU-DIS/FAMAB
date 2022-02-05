@@ -5,10 +5,8 @@
 #include <benchmark/benchmark.h>
 
 
-int main() {
-    int K = 1000;
-    int iterations = 90000;
-    run_fpl_mod2_bandit(1, K, iterations);
-    std::cout << "\n";
-    run_exp3_mod2_bandit(0.1, K, iterations);
-}
+
+   BENCHMARK(BM_FPL)->Iterations(5);
+   BENCHMARK(BM_Exp3)->Iterations(5);
+    BENCHMARK_MAIN();
+
