@@ -18,7 +18,7 @@ private:
     std::vector<double> weights_;
     int K_;
     double eta_;
-    std::random_device rd_;
+    std::exponential_distribution<double>  d_;
     std::mt19937 gen_;
 };
 

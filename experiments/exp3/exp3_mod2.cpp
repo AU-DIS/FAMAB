@@ -8,7 +8,6 @@
 
 static void run_exp3_mod2_bandit(double gamma, int K, int iterations) {
     Exp3 bandit = Exp3(gamma, K);
-    srand(time(NULL));
     int no_correct = 0;
     int no_wrong = 0;
     for (int i = 0; i < iterations; i++) {

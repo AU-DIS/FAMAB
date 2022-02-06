@@ -13,14 +13,14 @@ FPL::FPL(double eta, int K) {
     for (int i = 0; i < K_; i++) {
         weights_.push_back(0);
     }
+    std::exponential_distribution<double>  d(eta_);
+    d_ = d;
+
 }
 
 void FPL::perturb_weights() {
-    std::mt19937 gen(rd_());
-    std::exponential_distribution<double>  d(eta_);
-    d(gen);
     for (int i = 0; i < K_; i++) {
-        weights_[i] += d(gen);
+        weights_[i] += d_(gen_);
     }
 }
 
