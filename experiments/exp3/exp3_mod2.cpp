@@ -24,6 +24,9 @@ static void run_exp3_mod2_bandit(double gamma, int K, int iterations) {
     }
 }
 static void BM_Exp3(benchmark::State& state) {
-    run_exp3_mod2_bandit(BENCHMARK_GAMMA, BENCHMARK_K, BENCHMARK_ITERATIONS);
+    for (auto _ : state) {
+        // This code gets timed
+        run_exp3_mod2_bandit(BENCHMARK_GAMMA, BENCHMARK_K, BENCHMARK_ITERATIONS);
+    }
 }
 

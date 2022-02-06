@@ -8,13 +8,14 @@
 
 #include <vector>
 #include <random>
+#include "IBandit.h"
 
-class Exp3 {
+class Exp3 : public IBandit {
 
 public:
     Exp3(double gamma, int k);
-    int draw();
-    void give_reward(int choice, double reward);
+    int draw() override;
+    void give_reward(int choice, double reward) override;
 private:
     double* weights_;
     std::vector<double> P_;

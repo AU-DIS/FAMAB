@@ -28,6 +28,10 @@ static void run_fpl_mod2_bandit(double eta, int K, int iterations) {
 }
 
 static void BM_FPL(benchmark::State& state) {
-    run_fpl_mod2_bandit(BENCHMARK_ETA, BENCHMARK_K, BENCHMARK_ITERATIONS);
+    for (auto _ : state) {
+        // This code gets timed
+        run_fpl_mod2_bandit(BENCHMARK_ETA, BENCHMARK_K, BENCHMARK_ITERATIONS);
+    }
+
 }
 

@@ -6,7 +6,13 @@
 
 
 
-   BENCHMARK(BM_FPL)->Iterations(5);
-   BENCHMARK(BM_Exp3)->Iterations(5);
-    BENCHMARK_MAIN();
+   BENCHMARK(BM_FPL);
+   BENCHMARK(BM_Exp3);
+   BENCHMARK_MAIN();
 
+/*
+int main() {
+    run_fpl_mod2_bandit(1, 1000, 50);
+
+}
+ */
