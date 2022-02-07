@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 
 add_subdirectory(benchmark)
+add_subdirectory(csv-parser)
 
-add_executable(efficient_multi_armed_bandits main.cpp algorithms/Exp3.cpp algorithms/Exp3.h experiments/exp3/exp3_mod2.cpp algorithms/FPL.cpp algorithms/FPL.h experiments/fpl/fpl_mod2.cpp benchmark_variables.h algorithms/IBandit.h)
+add_executable(efficient_multi_armed_bandits main.cpp algorithms/Exp3.cpp algorithms/Exp3.h experiments/exp3/exp3_mod2.cpp algorithms/FPL.cpp algorithms/FPL.h experiments/fpl/fpl_mod2.cpp benchmark_variables.h algorithms/IBandit.h algorithms/utilities/weight_exporter.cpp)
 target_link_libraries(efficient_multi_armed_bandits benchmark::benchmark)
+target_link_libraries(efficient_multi_armed_bandits csv)

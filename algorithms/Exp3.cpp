@@ -6,6 +6,7 @@
 #include "Exp3.h"
 #include "random"
 #include "chrono"
+#include "utilities/weight_exporter.cpp"
 
 
 Exp3::Exp3(double gamma, int K) {
@@ -16,10 +17,10 @@ Exp3::Exp3(double gamma, int K) {
         P_.push_back(i);
     }
     gamma_ = gamma;
-    weights_ = new double[K];
+    weights_ = std::vector<double>();
     // Init all to 0
     for (int i = 0; i < K_; i++) {
-        weights_[i] = 1;
+        weights_.push_back(1);
     }
 }
 
@@ -46,4 +47,8 @@ int Exp3::sample() {
     int k =  d(gen_);
 
     return k;
+}
+
+void Exp3::export_weights(std::string path) {
+    write_weights(weights_, path);
 }

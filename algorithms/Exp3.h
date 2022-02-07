@@ -16,8 +16,9 @@ public:
     Exp3(double gamma, int k);
     int draw() override;
     void give_reward(int choice, double reward) override;
+    void export_weights(std::string path) override;
 private:
-    double* weights_;
+    std::vector<double> weights_;
     std::vector<double> P_;
     int K_;
     double gamma_;
