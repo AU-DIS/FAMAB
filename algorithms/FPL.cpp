@@ -2,10 +2,9 @@
 // Created by Mathias Tversted on 05/02/2022.
 //
 
-#include <vector>
 #include <random>
 #include "FPL.h"
-#include "utilities/weight_exporter.cpp"
+#include "../utilities/weight_exporter.cpp"
 
 FPL::FPL(double eta, int K) {
     K_ = K;

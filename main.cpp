@@ -1,6 +1,7 @@
 #include <iostream>
 #include "experiments/fpl/fpl_mod2.cpp"
 #include "experiments/exp3/exp3_mod2.cpp"
+#include "datasets/Dataset_movielens.h"
 #include <benchmark/benchmark.h>
 
 
@@ -11,6 +12,8 @@
 */
 
 int main() {
-    run_fpl_mod2_bandit(10, 100, 1000);
+    //Example of loading dataset
+    //Dataset_movielens d = Dataset_movielens("/Users/mrt/repos/efficient-multi-armed-bandits/datasets/data_directory/movielens.csv");
+
 }
 
