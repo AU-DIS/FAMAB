@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <random>
-#include "IBandit.h"
+#include "Exp3Bandit.cpp"
 
 class Exp3 : public IBandit {
 
