@@ -6,7 +6,7 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
 #include <vector>
 #include <random>
-#include "IBandit.h"
+#include "Exp3Bandit.cpp"
 
 class FPL : public IBandit {
 public:
