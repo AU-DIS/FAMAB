@@ -8,7 +8,6 @@
 #include "../../benchmark_variables.h"
 
 
-
 static void run_fpl_mod2_bandit(double eta, int K, int iterations) {
     FPL bandit = FPL(eta, K);
     srand(time(NULL));

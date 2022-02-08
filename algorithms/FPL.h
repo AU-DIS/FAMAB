@@ -13,6 +13,7 @@ public:
     FPL(double eta, int K);
     int draw() override;
     void give_reward(int choice, double reward) override;
+    void export_weights(std::string path) override;
 private:
     void perturb_weights();
     std::vector<double> weights_;
