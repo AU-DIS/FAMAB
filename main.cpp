@@ -1,5 +1,4 @@
 #include <iostream>
-#include "algorithms/Exp3.h"
 #include "experiments/fpl/fpl_mod2.cpp"
 #include "experiments/exp3/exp3_mod2.cpp"
 #include <benchmark/benchmark.h>
