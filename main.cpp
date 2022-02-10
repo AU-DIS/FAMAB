@@ -16,23 +16,23 @@ int main() {
     //Example of loading dataset
     Dataset_movielens d = Dataset_movielens("../datasets/data_directory/movielens.csv");
 
+    // These {} are for scoping and garbage collection
     {
-        double gamma = 0.3;
+        double gamma = 0.5;
         VectorWeightStrategy vws(d.k, gamma);
         Exp3RewardStrategy exp3rs(&vws);
         Exp3Bandit b(vws, exp3rs);
 
 
-        int rounds = 1000;
+        int rounds = 10;
         std::vector<double> regrets = std::vector<double>();
         regrets.reserve(rounds);
 
         for (int i = 0; i < rounds; i++) {
             int choice = b.choose();
-            double regret = d.feedback(choice);
-            regrets[i] = regret;
-            std::cout << 1 - regret << std::endl;
-            b.give_reward(choice, regret);
+            double feedback = d.feedback(choice);
+            regrets[i] = 1 - feedback;
+            b.give_reward(choice, feedback);
         }
     }
 }

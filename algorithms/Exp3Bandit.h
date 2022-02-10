@@ -21,8 +21,6 @@ public:
         auto reward = _rewardStrategy.reward(index, feedback);
         _weightStrategy.update_weight(index, reward);
     }
-
-
 private:
     WeightStrategy &_weightStrategy;
     RewardStrategy &_rewardStrategy;
