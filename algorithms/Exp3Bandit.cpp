@@ -21,3 +21,8 @@ Exp3Bandit::Exp3Bandit(IWeightStrategy *ws, IRewardStrategy *rs) {
         _weightStrategy->update_weight(index, reward);
     }
 
+Exp3Bandit::~Exp3Bandit() {
+    free(_weightStrategy);
+    free(_rewardStrategy);
+}
+
