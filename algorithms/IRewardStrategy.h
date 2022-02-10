@@ -1,13 +1,13 @@
 //
-// Created by hhhha on 08-02-2022.
+// Created by Kristoffer Strube on 08-02-2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_CPP
+#define EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_CPP
 
 class IRewardStrategy {
 public:
-    virtual double reward(int index);
+    virtual double reward(int index, double feedback) = 0;
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_IREWARDSTRATEGY_CPP

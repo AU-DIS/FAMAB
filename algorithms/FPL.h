@@ -6,13 +6,13 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
 #include <vector>
 #include <random>
-#include "Exp3Bandit.cpp"
 
 class FPL {
 public:
     FPL(double eta, int K);
     int draw();
     void give_reward(int choice, double reward);
+    void export_weights(std::string path);
 private:
     void perturb_weights();
     std::vector<double> weights_;

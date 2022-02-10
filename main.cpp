@@ -11,7 +11,6 @@
 
 int main() {
     //Example of loading dataset
-    //Dataset_movielens d = Dataset_movielens("/Users/mrt/repos/efficient-multi-armed-bandits/datasets/data_directory/movielens.csv");
-
+    Dataset_movielens d = Dataset_movielens("../datasets/data_directory/movielens.csv");
 }
 
