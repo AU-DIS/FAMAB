@@ -6,21 +6,26 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3BANDIT_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3BANDIT_H
 
-#include "IWeightStrategy.h"
-#include "IRewardStrategy.h"
 
+template<typename WeightStrategy, typename RewardStrategy>
 class Exp3Bandit {
 public:
-    Exp3Bandit(IWeightStrategy *ws, IRewardStrategy *rs);
-    int choose();
-    void give_reward(int index, double feedback);
-
-    virtual ~Exp3Bandit();
+    Exp3Bandit(WeightStrategy &ws, RewardStrategy &rs)
+    :_weightStrategy(ws), _rewardStrategy(rs)
+    {
+    }
+    int choose() {
+        return _weightStrategy.choose();
+    };
+    void give_reward(int index, double feedback) {
+        auto reward = _rewardStrategy.reward(index, feedback);
+        _weightStrategy.update_weight(index, reward);
+    }
 
 
 private:
-    IWeightStrategy *_weightStrategy;
-    IRewardStrategy *_rewardStrategy;
+    WeightStrategy &_weightStrategy;
+    RewardStrategy &_rewardStrategy;
 
 };
 

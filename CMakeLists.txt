@@ -10,8 +10,8 @@ add_subdirectory(csv-parser)
 add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/FPL.cpp
         algorithms/FPL.h
-        benchmark_variables.h algorithms/Exp3Bandit.cpp algorithms/IWeightStrategy.h
-        algorithms/IRewardStrategy.h algorithms/VectorWeightStrategy.cpp  utilities/weight_exporter.cpp
-        datasets/IDataset.h datasets/dataloaders.cpp datasets/Dataset_movielens.h datasets/Dataset_movielens.cpp algorithms/Exp3Bandit.h algorithms/Exp3RewardStrategy.cpp algorithms/Exp3RewardStrategy.h algorithms/Exp3RewardStrategy.h algorithms/VectorWeightStrategy.h algorithms/BanditConfigurator.cpp algorithms/BanditConfigurator.cpp)
+        benchmark_variables.h
+        algorithms/VectorWeightStrategy.cpp  utilities/weight_exporter.cpp
+        datasets/IDataset.h datasets/dataloaders.cpp datasets/Dataset_movielens.h datasets/Dataset_movielens.cpp algorithms/Exp3Bandit.h algorithms/Exp3RewardStrategy.cpp algorithms/BanditConfigurator.cpp algorithms/BanditConfigurator.cpp)
 target_link_libraries(efficient_multi_armed_bandits benchmark::benchmark)
 target_link_libraries(efficient_multi_armed_bandits csv)
