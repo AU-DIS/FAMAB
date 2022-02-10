@@ -5,7 +5,7 @@
 #include <vector>
 #include <random>
 #include "FPL.h"
-#include "utilities/weight_exporter.cpp"
+
 
 FPL::FPL(double eta, int K) {
     K_ = K;
@@ -45,7 +45,4 @@ int FPL::draw() {
 
 void FPL::give_reward(int choice, double reward) {
     weights_[choice] += reward;
-}
-void FPL::export_weights(std::string path) {
-    write_weights(weights_, path);
 }
