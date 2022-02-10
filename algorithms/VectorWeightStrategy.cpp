@@ -43,6 +43,7 @@ int VectorWeightStrategy::choose() {
     int choice = sample();
     last_drawn_probability = _probabilities[choice];
     last_drawn_weight = _weights[choice];
+
     return choice;
 }
 
