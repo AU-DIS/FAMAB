@@ -18,13 +18,14 @@ int main() {
 
     // These {} are for scoping and garbage collection
     {
-        double gamma = 0.5;
+        double gamma = 0.1;
         VectorWeightStrategy vws(d.k, gamma);
         Exp3RewardStrategy exp3rs(&vws);
         Exp3Bandit b(vws, exp3rs);
 
+        int round_factor = 100;
 
-        int rounds = 10000;
+        int rounds = round_factor * d.k;
         std::vector<double> regrets = std::vector<double>();
         regrets.reserve(rounds);
 
