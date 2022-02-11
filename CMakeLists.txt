@@ -12,6 +12,6 @@ add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/FPL.h
         benchmark_variables.h
         algorithms/VectorWeightStrategy.cpp  utilities/weight_exporter.cpp
-        datasets/IDataset.h datasets/dataloaders.cpp datasets/Dataset_movielens.h datasets/Dataset_movielens.cpp algorithms/Exp3Bandit.h algorithms/Exp3RewardStrategy.h algorithms/VectorWeightStrategy.h)
+        datasets/dataloaders.cpp datasets/Dataset_movielens.h datasets/Dataset_movielens.cpp algorithms/Exp3Bandit.h algorithms/Exp3RewardStrategy.h algorithms/VectorWeightStrategy.h datasets/debug_simple_stochastic.cpp datasets/debug_simple_stochastic.h datasets/debug_simple_adversarial.cpp datasets/debug_simple_adversarial.h)
 target_link_libraries(efficient_multi_armed_bandits benchmark::benchmark)
 target_link_libraries(efficient_multi_armed_bandits csv)

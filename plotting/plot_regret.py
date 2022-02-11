@@ -11,7 +11,7 @@ lines = np.array([float(x) for x in lines])
 lines = np.cumsum(lines)
 N = len(lines)
 lines = np.array([x/(i+1) for i, x in enumerate(lines[1::])])
-
+lines = lines[5:]
 plt.plot(range(len(lines)), lines)
 plt.ylim(0, 1)
 plt.savefig(sys.argv[2])

@@ -2,28 +2,33 @@
 // Created by Mathias Ravn Tversted on 11/02/2022.
 //
 
-#include "debug_simple_stochastic.h"
+#include "debug_simple_adversarial.h"
 #include "random"
+#include "vector"
 
-/// This debug data set is stochastic and contains distributes a single reward across
-/// all the choices. Each choice is given a single static reward from a gaussian distribution
-/// with mean 10 and stddev 40. The values are range normalized to [0, 1].
-debug_simple_stochastic::debug_simple_stochastic(int K) {
+
+debug_simple_adversarial::debug_simple_adversarial(int K, int rounds) {
     k = K;
-
+    _rounds = rounds;
     // Modify as needed
     constexpr int MIN = 0;
     constexpr int MAX = 1;
     std::srand(69420);
     std::random_device rd{};
     std::mt19937 gen{rd()};
+
     std::normal_distribution<double> d{10,40};
+    _gen = gen;
+    _d = d;
 
     _data_matrix.reserve(k);
+}
+
+void debug_simple_adversarial::randomize_weights() {
     double min_element = 1000000;
     double max_element = 0;
     for (int i = 0; i < k; i++) {
-        double v = d(gen);
+        double v = _d(_gen);
         _data_matrix.push_back(v);
         if (v < min_element) min_element = v;
         if (v > max_element) max_element = v;
@@ -34,6 +39,12 @@ debug_simple_stochastic::debug_simple_stochastic(int K) {
     }
 }
 
-double debug_simple_stochastic::feedback(int choice) {
+double debug_simple_adversarial::feedback(int choice) {
+    if ((_current_round % (_rounds/10) == 0)) {
+        randomize_weights();
+    }
+    _current_round += 1;
     return _data_matrix[choice];
 }
+
+

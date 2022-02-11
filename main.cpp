@@ -5,6 +5,8 @@
 #include "algorithms/VectorWeightStrategy.h"
 #include "algorithms/Exp3RewardStrategy.h"
 #include "utilities/weight_exporter.cpp"
+#include "datasets/debug_simple_stochastic.h"
+# include "datasets/debug_simple_adversarial.h"
 
 /*
 BENCHMARK(BM_FPL);
@@ -14,7 +16,10 @@ BENCHMARK_MAIN();
 
 int main() {
     //Example of loading dataset
-    Dataset_movielens d = Dataset_movielens("../datasets/data_directory/movielens.csv");
+    //Dataset_movielens d = Dataset_movielens("../datasets/data_directory/movielens.csv");
+    int k = 100;
+    int round_factor = 100000;
+    debug_simple_adversarial d = debug_simple_adversarial(k, k * round_factor);
 
     // These {} are for scoping and garbage collection
     {
@@ -23,7 +28,6 @@ int main() {
         Exp3RewardStrategy exp3rs(&vws);
         Exp3Bandit b(vws, exp3rs);
 
-        int round_factor = 100;
 
         int rounds = round_factor * d.k;
         std::vector<double> regrets = std::vector<double>();
