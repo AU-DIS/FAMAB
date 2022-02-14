@@ -16,9 +16,9 @@ private:
     std::mt19937 _random_gen;
 
 public:
-    VectorWeightStrategy(int k, double gamma);
+    VectorWeightStrategy(size_t k, double gamma);
     int choose();
-    void update_weight(int index, double weight);
+    void update_weight(size_t index, double weight);
     std::vector<double> get_weights();
     int _k;
     double _gamma;

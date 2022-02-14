@@ -16,7 +16,7 @@ public:
     {
 
     }
-    double reward(int index, double feedback) {
+    double reward(size_t index, double feedback) {
         double estimated_reward = feedback/_weightStrategy->last_drawn_probability;
         double v =  _weightStrategy->last_drawn_weight * exp((_weightStrategy->_gamma * estimated_reward)/_weightStrategy->_k);
         return v;

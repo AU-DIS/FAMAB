@@ -8,18 +8,17 @@
 #include "random"
 
 class DExp3 {
-public:
-    DExp3(int K, double gamma, double eta);
-    std::tuple<double, double> choose();
-    void give_reward(int x, int y, int winner, int round);
-    std::vector<double> _weights;
 private:
-    std::mt19937 _random_gen;
-    int _k;
-
-    std::vector<std::vector<double>> s_tilde_t;
+    size_t _k;
     double _gamma;
     double _eta;
+    std::mt19937 _random_gen;
+    std::vector<std::vector<double>> _s_tilde_t;
+public:
+    DExp3(size_t k, double gamma, double eta);
+    std::tuple<size_t, size_t> choose();
+    void give_reward(size_t x, size_t y, size_t winner, int round);
+    std::vector<double> _weights;
 };
 
 
