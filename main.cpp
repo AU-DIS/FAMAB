@@ -8,6 +8,7 @@
 #include "datasets/debug_simple_stochastic.h"
 # include "datasets/debug_simple_adversarial.h"
 #include "algorithms/DExp3.h"
+#include "algorithms/Exp3m.h"
 #include <tuple>
 
 /*
@@ -17,9 +18,47 @@ BENCHMARK_MAIN();
 */
 
 int main() {
+    int K = 100;
+    int k = 10;
+    int round_factor = 1000;
+    auto d = debug_simple_stochastic(K);
+
+    int rounds = round_factor * K;
+    double log_factor = log(K/k)*K;
+
+    double denom = (exp(1.0) - 1.0)*(double)rounds * (double)k;
+    double gamma = sqrt(log_factor / denom);
+    gamma = std::min(1.0, gamma);
+
+    Exp3m b(K, k, gamma);
+
+    std::vector<double> regrets = std::vector<double>();
+    regrets.reserve(rounds);
+
+    for (int i = 0; i < rounds; i++) {
+        std::cout << "round: " << i << std::endl;
+        auto choices = b.choose();
+
+        double acc_reward = 0;
+        std::vector<double> rewards;
+        for (auto choice : choices) {
+            double feedback = d.feedback(choice);
+            rewards.push_back(feedback);
+            acc_reward += feedback;
+        }
+
+        b.give_reward(choices, rewards);
+        regrets.push_back(k - acc_reward);
+    }
+    write_regret(regrets, "/tmp/regret.csv");
+    //write_weights(b._weights, "../benchmark_results/weights.csv");
+}
+
+
+void run_dexp3() {
     int k = 100;
     int round_factor = 20;
-    debug_simple_stochastic d = debug_simple_stochastic(k);
+    auto d = debug_simple_stochastic(k);
     double gamma = 0.1;
     int rounds = round_factor * d.k;
     DExp3 b(k, gamma, 0.8);
@@ -41,7 +80,6 @@ int main() {
     }
     write_regret(regrets, "../benchmark_results/regret.csv");
     write_weights(b._weights, "../benchmark_results/weights.csv");
-
 }
 
 
