@@ -18,10 +18,10 @@ BENCHMARK_MAIN();
 */
 
 int main() {
-    int K = 100;
+    int K = 1000;
     int k = 10;
-    int round_factor = 1000;
-    auto d = debug_simple_stochastic(K);
+    int round_factor = 100;
+    auto d = debug_simple_stochastic(K, k);
 
     int rounds = round_factor * K;
     double log_factor = log(K/k)*K;
@@ -34,27 +34,37 @@ int main() {
 
     std::vector<double> regrets = std::vector<double>();
     regrets.reserve(rounds);
-
     for (int i = 0; i < rounds; i++) {
-        std::cout << "round: " << i << std::endl;
+        std::cout << "round: " << i << "\t";
         auto choices = b.choose();
 
         double acc_reward = 0;
+        double acc_regret = 0;
         std::vector<double> rewards;
         for (auto choice : choices) {
-            double feedback = d.feedback(choice);
+            double regret = 0;
+            double feedback = d.feedback(choice, regret);
+            std::cout << regret << "\t";
             rewards.push_back(feedback);
             acc_reward += feedback;
+            acc_regret += regret;
         }
+        std::cout << std::endl;
 
         b.give_reward(choices, rewards);
-        regrets.push_back(k - acc_reward);
+        regrets.push_back(acc_regret);
     }
-    write_regret(regrets, "/tmp/regret.csv");
+    /*
+    for (int i = 0; i < rounds; i++) {
+        regrets[i]
+    }
+    */
+
+    write_regret(regrets, "/tmp/regret.csv", d.reward_max - d.reward_min);
     //write_weights(b._weights, "../benchmark_results/weights.csv");
 }
 
-
+/*
 void run_dexp3() {
     int k = 100;
     int round_factor = 20;
@@ -113,4 +123,6 @@ void run_exp3() {
         write_regret(regrets, "../benchmark_results/regret.csv");
         write_weights(b._weightStrategy.get_weights(), "../benchmark_results/weights.csv");
     }
+
 }
+ */

@@ -8,11 +8,15 @@
 
 class debug_simple_stochastic {
 public:
-        explicit debug_simple_stochastic(int K);
-        double feedback(int choice);
-    int k = 0;
-        int reward_max = 1;
-        int reward_min = 0;
+        explicit debug_simple_stochastic(int K, int number_to_sample);
+        double feedback(int choice, double &regret);
+
+        int k = 0;
+        double reward_max = 1;
+        double reward_min = 0;
+        double min_regret = 0;
+        double max_regret = 0;
+        double max_possible_reward = 0;
 
     private:
         std::vector<double> _data_matrix;

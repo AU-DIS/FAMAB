@@ -23,13 +23,13 @@ std::vector<int> Exp3m::choose() {
 
     double sum_weights = 0;
     for (double v: _weights) sum_weights += v;
-    
+
     double threshold =  (1.0/_k-_gamma/_K)*sum_weights/(1-_gamma);
     std::vector<double> weights_prime;
 
-    std::cout << _weights[sorted_weight_indices.back()] << " >= " << threshold << std::endl;
+    //std::cout << _weights[sorted_weight_indices.back()] << " >= " << threshold << std::endl;
     if (_weights[sorted_weight_indices.back()] >= threshold) {
-        std::cout << "din mor" << std::endl;
+      //  std::cout << "din mor" << std::endl;
         double rhs =  (1.0/_k-_gamma/_K)/(1-_gamma);
         double alpha_t = get_alpha(rhs, sorted_weight_indices);
         for (size_t i = 0; i < _K; i++) {
@@ -113,7 +113,7 @@ double Exp3m::get_alpha(double rhs, std::vector<size_t> &argsorted) {
         double alpha_candidate = (rhs * weight_sum) / (1 - i * rhs);
         double current_value = _weights[argsorted[i]];
         if (alpha_candidate > current_value) {
-            std::cout << alpha_candidate << std::endl;
+            //std::cout << alpha_candidate << std::endl;
             return alpha_candidate;}
         weight_sum -= current_value;
     }
