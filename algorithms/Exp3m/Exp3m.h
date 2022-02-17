@@ -83,7 +83,7 @@ public:
             _weights[k] *= exp(_k*_gamma*(r/_last_probabilities[k])/_K);
         }
     };
-}
+};
 
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3M_H

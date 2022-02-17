@@ -1,5 +1,5 @@
 //
-// Created by hhhha on 17-02-2022.
+// Created by Kristoffer Strube on 17-02-2022.
 //
 
 #include "DepRoundALIASStrategy.h"
@@ -46,4 +46,4 @@ std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<d
     }
 
     return return_indices;
-}
+};

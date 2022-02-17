@@ -1,5 +1,5 @@
 //
-// Created by hhhha on 17-02-2022.
+// Created by Kristoffer Strube on 17-02-2022.
 //
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_DEPROUNDALIASSTRATEGY_H
@@ -10,7 +10,7 @@
 class DepRoundALIASStrategy {
 public:
     std::vector<int> dependent_weighted_choices(std::vector<double> probabilities, int k);
-}
+};
 
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_DEPROUNDALIASSTRATEGY_H
