@@ -8,7 +8,7 @@
 #include "datasets/debug_simple_stochastic.h"
 # include "datasets/debug_simple_adversarial.h"
 #include "algorithms/DExp3.h"
-#include "algorithms/Exp3m.h"
+#include "algorithms/Exp3m/Exp3m.h"
 #include "algorithms/Exp31.h"
 #include <tuple>
 
@@ -44,6 +44,8 @@ int main() {
 
     write_regret(regrets, "/tmp/regret.csv", d.reward_max - d.reward_min);
     write_weights(vws.get_weights(), "/tmp/weights.csv");
+
+
 }
 
 

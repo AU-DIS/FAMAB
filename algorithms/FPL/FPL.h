@@ -13,7 +13,7 @@ private:
     WeightStrategy &_weightStrategy;
     RandomGenStrategy &_randomGenStrategy;
 public:
-    FPL(WeightStrategy ws, RandomGenStrategy rgs)
+    FPL(WeightStrategy &ws, RandomGenStrategy &rgs)
     :_weightStrategy(ws), _randomGenStrategy(rgs)
     {
     }
