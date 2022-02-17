@@ -9,6 +9,7 @@
 # include "datasets/debug_simple_adversarial.h"
 #include "algorithms/DExp3.h"
 #include "algorithms/Exp3m.h"
+#include "algorithms/Exp31.h"
 #include <tuple>
 
 /*
@@ -21,6 +22,39 @@ int main() {
     int K = 10;
     int k = 1;
     int round_factor = 1000;
+    auto d = debug_simple_stochastic(K, k);
+
+    int rounds = round_factor * K;
+
+    double gamma = 0.7;
+    VectorWeightStrategy vws(d.k, gamma);
+    Exp3RewardStrategy exp3rs(&vws);
+    Exp3Bandit b(vws, exp3rs);
+
+    std::vector<double> regrets = std::vector<double>();
+    regrets.reserve(rounds);
+
+    for (int i = 0; i < rounds; i++) {
+        int choice = b.choose();
+        double regret;
+        double feedback = d.feedback(choice, regret);
+        regrets.push_back(regret);
+        b.give_reward(choice, feedback);
+    }
+
+    write_regret(regrets, "/tmp/regret.csv", d.reward_max - d.reward_min);
+    write_weights(vws.get_weights(), "/tmp/weights.csv");
+}
+
+
+
+
+/*
+void run_exp3m() {
+
+    int K = 1000;
+    int k = 10;
+    int round_factor = 100;
     auto d = debug_simple_stochastic(K, k);
 
     int rounds = round_factor * k;
@@ -54,16 +88,16 @@ int main() {
         b.give_reward(choices, rewards);
         regrets.push_back(acc_regret);
     }
-    /*
+
     for (int i = 0; i < rounds; i++) {
         regrets[i]
     }
-    */
+
 
     write_regret(regrets, "/tmp/regret.csv", d.reward_max - d.reward_min);
     //write_weights(b._weights, "../benchmark_results/weights.csv");
 }
-
+ */
 /*
 void run_dexp3() {
     int k = 100;

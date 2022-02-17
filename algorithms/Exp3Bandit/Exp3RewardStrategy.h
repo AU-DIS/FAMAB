@@ -16,9 +16,15 @@ public:
     {
 
     }
-    double reward(size_t index, double feedback) {
-        double estimated_reward = feedback/_weightStrategy->last_drawn_probability;
-        double v =  _weightStrategy->last_drawn_weight * exp((_weightStrategy->_gamma * estimated_reward)/_weightStrategy->_k);
+    double estimated_reward(int index, double feedback) {
+        auto est =  feedback/_weightStrategy->last_drawn_probability;
+        //std::cout << "Estimated reward is : " << est << "with feedback: " << feedback << std::endl;
+        return est;
+    }
+
+    double reward(int index, double feedback) {
+        double est_reward = estimated_reward(index, feedback);
+        double v =  _weightStrategy->last_drawn_weight * exp((_weightStrategy->_gamma * est_reward)/_weightStrategy->_k);
         return v;
     }
 private:
