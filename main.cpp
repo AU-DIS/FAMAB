@@ -1,9 +1,9 @@
 #include <iostream>
 #include "datasets/Dataset_movielens.h"
 #include <benchmark/benchmark.h>
-#include "algorithms/Exp3Bandit.h"
-#include "algorithms/VectorWeightStrategy.h"
-#include "algorithms/Exp3RewardStrategy.h"
+#include "algorithms/Exp3Bandit/Exp3Bandit.h"
+#include "algorithms/Exp3Bandit/VectorWeightStrategy.h"
+#include "algorithms/Exp3Bandit/Exp3RewardStrategy.h"
 #include "utilities/weight_exporter.cpp"
 #include "datasets/debug_simple_stochastic.h"
 # include "datasets/debug_simple_adversarial.h"
@@ -18,12 +18,12 @@ BENCHMARK_MAIN();
 */
 
 int main() {
-    int K = 1000;
-    int k = 10;
-    int round_factor = 100;
+    int K = 10;
+    int k = 1;
+    int round_factor = 1000;
     auto d = debug_simple_stochastic(K, k);
 
-    int rounds = round_factor * K;
+    int rounds = round_factor * k;
     double log_factor = log(K/k)*K;
 
     double denom = (exp(1.0) - 1.0)*(double)rounds * (double)k;
@@ -121,7 +121,7 @@ void run_exp3() {
         }
 
         write_regret(regrets, "../benchmark_results/regret.csv");
-        write_weights(b._weightStrategy.get_weights(), "../benchmark_results/weights.csv");
+        write_weights(vws.get_weights(), "../benchmark_results/weights.csv");
     }
 
 }

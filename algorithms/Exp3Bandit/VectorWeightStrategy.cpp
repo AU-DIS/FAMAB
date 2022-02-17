@@ -9,10 +9,7 @@
 #include <iostream>
 
 
-VectorWeightStrategy::VectorWeightStrategy(int k, double gamma) {
-    _k = k;
-    _gamma = gamma;
-
+VectorWeightStrategy::VectorWeightStrategy(size_t k, double gamma) : _k(k), _gamma(gamma) {
     _probabilities = std::vector<double>();
     for (int i = 0; i < k; i++) {
         _probabilities.push_back(0);
@@ -47,7 +44,7 @@ int VectorWeightStrategy::choose() {
     return choice;
 }
 
-void VectorWeightStrategy::update_weight(int index, double weight) {
+void VectorWeightStrategy::update_weight(size_t index, double weight) {
     _weights[index] = weight;
 }
 
