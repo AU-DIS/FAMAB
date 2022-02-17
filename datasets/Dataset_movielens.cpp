@@ -18,9 +18,16 @@ Dataset_movielens::Dataset_movielens(const std::string& path) {
     }
 }
 
-double Dataset_movielens::feedback(int choice) {
+double Dataset_movielens::feedback(int choice, double &regret) {
     double r = _data_matrix[choice][_iterators[choice]];
+    double max_reward = 0;
+    for (int i = 0; i < k; i++) {
+        if (_data_matrix[i][_iterators[i]] >= max_reward) {
+            max_reward = _data_matrix[i][_iterators[i]];
+        }
+    }
     _iterators[choice] = (_iterators[choice] + 1) % _data_matrix[choice].size();
+    regret = (max_reward - r)/reward_max;
     return r/reward_max;
 }
 

@@ -15,7 +15,7 @@
 class Dataset_movielens {
 public:
     explicit Dataset_movielens(const std::string& path);
-    double feedback(int choice);
+    double feedback(int choice, double &regret);
     int k = 0;
     int reward_max = 0;
     int reward_min = 0;
