@@ -19,7 +19,7 @@ m = np.min(lines)
 lines = [x - m for x in lines]
 
 plt.plot(range(len(lines)), lines)
-#plt.ylim(min(lines), max_regret)
+plt.ylim(min(lines), max_regret * len(lines))
 plt.show()
 #plt.savefig(sys.argv[2])
 
