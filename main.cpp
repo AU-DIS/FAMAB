@@ -21,49 +21,52 @@ BENCHMARK_MAIN();
 */
 
 int main() {
-    int K = 50;
-    int k = 10;
-    int round_factor = 800;
+    int K = 10;
+    int k = 2;
+    int no_runs = 5;
+    int round_factor = 1000;
     auto d = debug_simple_stochastic(K, k);
 
     int rounds = round_factor * k;
     double log_factor = log(K/k)*K;
 
     auto depround = DepRoundALIASStrategy();
-    auto exp3mbandit = Exp3m(K, k, 0.1, depround);
+    auto b = Exp3m(K, k, 0.1, depround);
 
-    Exp31m b(K, k, exp3mbandit);
+    //Exp31m b(K, k, exp3mbandit);
 
     std::vector<double> regrets = std::vector<double>();
     regrets.reserve(rounds);
+    for (int i = 0; i < rounds; i++) regrets.push_back(0);
 
-    for (int i = 0; i < rounds; i++) {
-        auto choices = b.choose();
+    for (int i = 0; i < no_runs; i++) b.choose();
+    {
+        for (int i = 0; i < rounds; i++) {
+            auto choices = b.choose();
 
-        double acc_reward = 0;
-        double acc_regret = 0;
-        std::vector<double> rewards;
-        for (auto choice : choices) {
+            double acc_reward = 0;
+            double acc_regret = 0;
+            std::vector<double> rewards;
+            for (auto choice: choices) {
 
-            double regret = 0;
-            double feedback = d.feedback(choice, regret);
+                double regret = 0;
+                double feedback = d.feedback(choice, regret);
 
-            rewards.push_back(feedback);
+                rewards.push_back(feedback);
 
-            acc_reward += feedback;
-            acc_regret += regret;
+                acc_reward += feedback;
+                acc_regret += regret;
+            }
+
+            b.give_reward(choices, rewards);
+            regrets[i] += (acc_regret);
         }
 
-        b.give_reward(choices, rewards);
-        regrets.push_back(acc_regret);
     }
-
-    for (int i = 0; i < rounds; i++) {
-        regrets[i];
-    }
+    for (auto &r : regrets) r /= no_runs;
 
     write_regret(regrets, "/tmp/regret.csv", d.max_regret);
-    write_weights(exp3mbandit._weights, "/tmp/weights.csv");
+    write_weights(b._weights, "/tmp/weights.csv");
 }
 
 /*
