@@ -3,7 +3,8 @@
 // Shamelessly stolen from https://gist.github.com/HViktorTsoi/58eabb4f7c5a303ced400bcfa816f6f5
 //
 
-
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_ARGSORT_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_ARGSORT_H
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -26,3 +27,5 @@ std::vector<size_t> argsort(const std::vector<T> array) {
 
     return indices;
 }
+
+#endif

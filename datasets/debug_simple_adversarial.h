@@ -13,8 +13,7 @@ public:
     debug_simple_adversarial(int K, int rounds);
     double feedback(int choice);
     int k = 0;
-    int reward_max = 1;
-    int reward_min = 0;
+    double max_regret = 0;
 private:
     std::vector<double> _data_matrix;
     void randomize_weights();

@@ -36,14 +36,9 @@ debug_simple_stochastic::debug_simple_stochastic(int K, int number_to_sample) {
     std::sort(sorted.begin(), sorted.end());
 
     max_possible_reward = *std::max_element(_data_matrix.begin(), _data_matrix.end());
+    min_possible_reward = *std::min_element(_data_matrix.begin(), _data_matrix.end());
     //reward_min = *std::min_element(_data_matrix.begin(), _data_matrix.end());
-
-    for (int i = 0; i < number_to_sample; i++) {
-        reward_min += _data_matrix[i];
-        reward_max += _data_matrix[K - 1 - i];
-    }
-    max_regret = reward_max - reward_min;
-    min_regret = 0;
+    max_regret = number_to_sample * (max_possible_reward - min_possible_reward);
 }
 
 double debug_simple_stochastic::feedback(int choice, double &regret) {
