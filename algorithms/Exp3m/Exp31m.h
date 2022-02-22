@@ -14,7 +14,7 @@ template<typename Exp3m>
 class Exp31m {
 
 public:
-    Exp31m(int K, int k, Exp3m b) : _K(K), _k(k), b(b) {
+    Exp31m(int K, int k, Exp3m &b) : _K(K), _k(k), b(b) {
         g_r = (_K * log(_K))/(exp(1)-1)*pow(4, _r);
         gamma = std::min(1.0, sqrt(_K * log(_K))/(exp(1) - 1)*g_r);
         _r += 1;
@@ -47,7 +47,7 @@ private:
     int _K;
     int _k;
     int _r = 0;
-    Exp3m b;
+    Exp3m &b;
     int g_r = 0;
     std::vector<double> accumulated_rewards;
     double gamma;
