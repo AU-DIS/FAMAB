@@ -12,6 +12,7 @@
 #include "algorithms/Exp31.h"
 #include "algorithms/Exp3m/Exp31m.h"
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
+#include "algorithms/Tsallis-INF/TsallisINF.h"
 #include <tuple>
 
 /*
@@ -21,51 +22,22 @@ BENCHMARK_MAIN();
 */
 
 int main() {
-    int K = 10;
-    int k = 2;
-    int no_runs = 5;
-    int round_factor = 1000;
-    auto d = debug_simple_stochastic(K, k);
-
-    int rounds = round_factor * k;
-    double log_factor = log(K/k)*K;
-
-    auto depround = DepRoundALIASStrategy();
-    auto b = Exp3m(K, k, 0.1, depround);
-
-    //Exp31m b(K, k, exp3mbandit);
-
-    std::vector<double> regrets = std::vector<double>();
-    regrets.reserve(rounds);
-    for (int i = 0; i < rounds; i++) regrets.push_back(0);
-
-    for (int i = 0; i < no_runs; i++) b.choose();
-    {
-        for (int i = 0; i < rounds; i++) {
-            auto choices = b.choose();
-
-            double acc_reward = 0;
-            double acc_regret = 0;
-            std::vector<double> rewards;
-            for (auto choice: choices) {
-
-                double regret = 0;
-                double feedback = d.feedback(choice, regret);
-
-                rewards.push_back(feedback);
-
-                acc_reward += feedback;
-                acc_regret += regret;
-            }
-
-            b.give_reward(choices, rewards);
-            regrets[i] += (acc_regret);
-        }
-
+    auto d = Dataset_movielens("/Users/mrt/repos/efficient-multi-armed-bandits/datasets/data_directory/movielens.csv");
+    std::cout << "Loaded movielens dataset" << std::endl;
+    int K = d.k;
+    int round_factor = 2;
+    int rounds = K * round_factor;
+    TsallisINF b(K);
+    std::vector<double> regrets;
+    for (int r = 0; r < rounds; r++) {
+        auto choice = b.choose();
+        double regret;
+        auto feedback = d.feedback(choice, regret);
+        regrets.push_back(regret);
+        b.give_reward(choice, feedback);
     }
-    for (auto &r : regrets) r /= no_runs;
-
-    write_regret(regrets, "/tmp/regret.csv", d.max_regret);
+    auto max_element = *std::max_element(regrets.begin(), regrets.end());
+    write_regret(regrets, "/tmp/regret.csv", max_element);
     write_weights(b._weights, "/tmp/weights.csv");
 }
 
