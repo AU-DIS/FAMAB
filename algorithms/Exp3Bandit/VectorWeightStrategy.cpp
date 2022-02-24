@@ -17,9 +17,11 @@ VectorWeightStrategy::VectorWeightStrategy(size_t k, double gamma) : _k(k), _gam
     _weights = std::vector<double>();
     // Init all to 0
     for (int i = 0; i < k; i++) {
-        _weights.push_back(1);
+        _weights.push_back(1.0);
     }
 };
+
+
 
 int VectorWeightStrategy::sample() {
     std::discrete_distribution<> d(_probabilities.begin(), _probabilities.end());

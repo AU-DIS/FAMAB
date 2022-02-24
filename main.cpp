@@ -7,12 +7,13 @@
 #include "utilities/weight_exporter.cpp"
 #include "datasets/debug_simple_stochastic.h"
 # include "datasets/debug_simple_adversarial.h"
-#include "algorithms/DExp3.h"
+#include "algorithms/DEXP/DExp3.h"
 #include "algorithms/Exp3m/Exp3m.h"
-#include "algorithms/Exp31.h"
+#include "algorithms/DEXP/Exp31.h"
 #include "algorithms/Exp3m/Exp31m.h"
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
+#include "algorithms/UCB/UCB1.h"
 #include <tuple>
 
 /*
@@ -23,11 +24,15 @@ BENCHMARK_MAIN();
 
 int main() {
     auto d = Dataset_movielens("/Users/mrt/repos/efficient-multi-armed-bandits/datasets/data_directory/movielens.csv");
-    std::cout << "Loaded movielens dataset" << std::endl;
     int K = d.k;
-    int round_factor = 2;
+    int round_factor = 1;
     int rounds = K * round_factor;
-    TsallisINF b(K);
+    VectorWeightStrategy vws(d.k, 0.01);
+    Exp3RewardStrategy exp3rs(vws);
+    Exp3Bandit exp3bandit(vws, exp3rs);
+
+    UCB1 b(3, exp3bandit);
+
     std::vector<double> regrets;
     for (int r = 0; r < rounds; r++) {
         auto choice = b.choose();
@@ -38,7 +43,7 @@ int main() {
     }
     auto max_element = *std::max_element(regrets.begin(), regrets.end());
     write_regret(regrets, "/tmp/regret.csv", max_element);
-    write_weights(b._weights, "/tmp/weights.csv");
+    //write_weights(b._weightStrategy.get_weights(), "/tmp/weights.csv");
 }
 
 /*
@@ -61,7 +66,6 @@ void run_exp3m() {
     std::vector<double> regrets = std::vector<double>();
     regrets.reserve(rounds);
     for (int i = 0; i < rounds; i++) {
-        std::cout << "round: " << i << "\t";
         auto choices = b.choose();
 
         double acc_reward = 0;
@@ -70,12 +74,11 @@ void run_exp3m() {
         for (auto choice : choices) {
             double regret = 0;
             double feedback = d.feedback(choice, regret);
-            std::cout << regret << "\t";
             rewards.push_back(feedback);
             acc_reward += feedback;
             acc_regret += regret;
         }
-        std::cout << std::endl;
+
 
         b.give_reward(choices, rewards);
         regrets.push_back(acc_regret);

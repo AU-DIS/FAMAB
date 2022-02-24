@@ -31,7 +31,6 @@ public:
             _weightStrategy._gamma = gamma;
             _r += 1;
         }
-        std::cout << std::endl;
 
         return _weightStrategy.choose();
     };

@@ -27,8 +27,8 @@ double Dataset_movielens::feedback(int choice, double &regret) {
         }
     }
     _iterators[choice] = (_iterators[choice] + 1) % _data_matrix[choice].size();
-    regret = (max_reward - r)/reward_max;
-    return r/reward_max;
+    regret = (1 - (r/max_reward));
+    return r/max_reward;
 }
 
 // Not sure if this is stricly needed, but not taking any chances
