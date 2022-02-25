@@ -15,7 +15,8 @@ TsallisINF::TsallisINF(int K) {
 }
 
 double TsallisINF::compute_eta(int t) {
-    return 1 / sqrt(std::max(1, t));
+    _eta = 1 / sqrt(std::max(1, t));
+    return _eta;
 }
 
 /// This assumes alpha = 1/2
@@ -35,7 +36,6 @@ std::vector<double> TsallisINF::newtons_method_weights(std::vector<double> &loss
             w_sum += w;
         }
         x_estimated = x_previous - (w_sum - 1) / (eta * w_sum_powered);
-        //std::cout << std::min(x_previous, x_estimated)/std::max(x_previous, x_estimated) << std::endl;
     }
     while (std::min(x_previous, x_estimated)/std::max(x_previous, x_estimated) >= 1.1);
     _x = x_estimated;
@@ -57,11 +57,28 @@ int TsallisINF::choose() {
     return s;
 }
 
+
+double TsallisINF::IW(size_t index, double feedback) {
+    return feedback/_weights[index];
+}
+std::vector<double> TsallisINF::RV(size_t index, double feedback) {
+    std::vector<double> estimators;
+    estimators.reserve(_weights.size());
+    for (size_t i = 0; i < _weights.size(); i++) {
+        double indicator = i == index? 1 : 0;
+        double B = _weights[i] >= (_eta * _eta) ? 1.0/2.0 : 0;
+        double estimator = (indicator * (feedback - B))/_weights[i] + B;
+        estimators.push_back(estimator);
+    }
+    return estimators;
+}
+
+
 void TsallisINF::give_reward(size_t index, double feedback) {
     // We can either use IW or RV to construct the estimated reward
 
     // This is RW, we should also try RV, which is a reduced variance estimator
-    double estimated_reward = feedback/_weights[index];
+    double estimated_reward = IW(index, feedback);
     cumulative_losses[index] += estimated_reward;
 }
 

@@ -18,6 +18,10 @@ private:
     std::vector<double> cumulative_losses;
     int _t = 1;
     double _x = 1;
+    double _eta;
+    double IW(size_t index, double feedback);
+
+    std::vector<double> RV(size_t index, double feedback);
 };
 
 
