@@ -10,16 +10,16 @@
 template<typename WeightStrategy, typename RandomGenStrategy>
 class FPL {
 private:
-    WeightStrategy &_weightStrategy;
     RandomGenStrategy &_randomGenStrategy;
 public:
+    WeightStrategy &_weightStrategy;
     FPL(WeightStrategy &ws, RandomGenStrategy &rgs)
     :_weightStrategy(ws), _randomGenStrategy(rgs)
     {
+
     }
     int choose() {
         std::vector<double> random_weights = _randomGenStrategy.random_weights();
-
         _weightStrategy.add_to_weights(random_weights);
 
         return _weightStrategy.max_weight();
@@ -28,6 +28,5 @@ public:
         _weightStrategy.add_to_weight(choice, feedback);
     }
 };
-
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_FPL_H

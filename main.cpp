@@ -2,7 +2,7 @@
 #include "datasets/Dataset_movielens.h"
 #include <benchmark/benchmark.h>
 #include "algorithms/Exp3Bandit/Exp3Bandit.h"
-#include "algorithms/Exp3Bandit/VectorWeightStrategy.h"
+#include "algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "algorithms/Exp3Bandit/Exp3RewardStrategy.h"
 #include "utilities/weight_exporter.cpp"
 #include "datasets/debug_simple_stochastic.h"
@@ -14,6 +14,8 @@
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
 #include "algorithms/UCB/UCB1.h"
+#include "algorithms/FPL/FPL.h"
+#include "algorithms/FPL/NaiveRandomGenStrategy.h"
 #include <tuple>
 
 /*
@@ -27,11 +29,9 @@ int main() {
     int K = d.k;
     int round_factor = 1;
     int rounds = K * round_factor;
-    VectorWeightStrategy vws(d.k, 0.01);
-    Exp3RewardStrategy exp3rs(vws);
-    Exp3Bandit exp3bandit(vws, exp3rs);
-
-    UCB1 b(3, exp3bandit);
+    FPLVectorWeightStrategy ws(K);
+    NaiveRandomGenStrategy gs(K, 0.9);
+    FPL b(ws, gs);
 
     std::vector<double> regrets;
     for (int r = 0; r < rounds; r++) {
@@ -43,7 +43,7 @@ int main() {
     }
     auto max_element = *std::max_element(regrets.begin(), regrets.end());
     write_regret(regrets, "/tmp/regret.csv", max_element);
-    //write_weights(b._weightStrategy.get_weights(), "/tmp/weights.csv");
+    write_weights(b._weightStrategy._weights, "/tmp/weights.csv");
 }
 
 /*

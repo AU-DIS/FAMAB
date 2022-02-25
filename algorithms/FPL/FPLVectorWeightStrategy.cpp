@@ -2,26 +2,27 @@
 // Created by Kristoffer Strube on 14-02-2022.
 //
 
-#include "VectorWeightStrategy.h"
+#include "FPLVectorWeightStrategy.h"
+#include "iostream"
 
-VectorWeightStrategy::VectorWeightStrategy(size_t k) : _k(k) {
+FPLVectorWeightStrategy::FPLVectorWeightStrategy(size_t k) : _k(k) {
     // Init all weights to 0
     for (int i = 0; i < k; i++) {
         _weights.push_back(0);
     }
 }
 
-void VectorWeightStrategy::add_to_weight(size_t i, double weight) {
+void FPLVectorWeightStrategy::add_to_weight(size_t i, double weight) {
     _weights[i] += weight;
 }
 
-void VectorWeightStrategy::add_to_weights(std::vector<double> vector) {
-    for (int i = 0; i < _k; i++) {
-        _weights[i] += vector[i];
+void FPLVectorWeightStrategy::add_to_weights(std::vector<double> vector) {
+    for (int i = 0; i < vector.size(); i++) {
+        _weights[i] = _weights[i] + vector[i];
     }
 }
 
-int VectorWeightStrategy::max_weight() {
+int FPLVectorWeightStrategy::max_weight() {
     /*
     * Draw is simply an arg-max, but std::vector does not support argmax
     * All code examples use chaining of algorithms that will only add useless computations,
@@ -37,4 +38,7 @@ int VectorWeightStrategy::max_weight() {
         }
     }
     return max_index;
+}
+std::vector<double> FPLVectorWeightStrategy::get_weights() {
+    return _weights;
 }

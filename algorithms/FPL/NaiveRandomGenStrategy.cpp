@@ -3,6 +3,7 @@
 //
 
 #include "NaiveRandomGenStrategy.h"
+#include "iostream"
 
 
 NaiveRandomGenStrategy::NaiveRandomGenStrategy(size_t k, double eta) : _k(k), _eta(eta) {
@@ -10,7 +11,7 @@ NaiveRandomGenStrategy::NaiveRandomGenStrategy(size_t k, double eta) : _k(k), _e
 }
 
 std::vector<double> NaiveRandomGenStrategy::random_weights() {
-    std::vector<double> randomDoubles(_k);
+    std::vector<double> randomDoubles;
     for (size_t i = 0; i < _k; i++) {
         randomDoubles.push_back(_exponential_distribution(_gen));
     }
