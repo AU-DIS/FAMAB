@@ -39,11 +39,12 @@ void debug_simple_adversarial::randomize_weights() {
     }
 }
 
-double debug_simple_adversarial::feedback(int choice) {
+double debug_simple_adversarial::feedback(int choice, double &regret) {
     if ((_current_round % (_rounds/10) == 0)) {
         randomize_weights();
     }
     _current_round += 1;
+    regret = 1 - _data_matrix[choice];
     return _data_matrix[choice];
 }
 

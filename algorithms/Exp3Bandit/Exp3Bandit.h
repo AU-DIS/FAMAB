@@ -14,7 +14,7 @@ private:
 public:
     WeightStrategy _weightStrategy;
 
-    Exp3Bandit(WeightStrategy ws, RewardStrategy rs)
+    Exp3Bandit(WeightStrategy &ws, RewardStrategy &rs)
     :_weightStrategy(ws), _rewardStrategy(rs){}
 
     Exp3Bandit(const Exp3Bandit &b)

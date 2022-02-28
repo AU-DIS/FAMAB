@@ -11,7 +11,7 @@
 class debug_simple_adversarial {
 public:
     debug_simple_adversarial(int K, int rounds);
-    double feedback(int choice);
+    double feedback(int choice, double &regret);
     int k = 0;
     double max_regret = 0;
 private:
