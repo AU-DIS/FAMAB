@@ -14,8 +14,9 @@ public:
     int choose();
     void give_reward(size_t index, double feedback);
     std::vector<double> _weights;
-private:
     std::vector<double> cumulative_losses;
+private:
+
     int _t = 1;
     double _x = 1;
     double _eta;

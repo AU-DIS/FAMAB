@@ -7,6 +7,7 @@
 #include "tgmath.h"
 #include <random>
 #include "iostream"
+#include "../../utilities/random_gen.h"
 
 TsallisINF::TsallisINF(int K) {
     //double alpha = 0.5;
@@ -48,11 +49,11 @@ std::vector<double> TsallisINF::newtons_method_weights(std::vector<double> &loss
 }
 
 int TsallisINF::choose() {
-    // Keep x?
     _weights = newtons_method_weights(cumulative_losses, compute_eta(_t));
-    std::mt19937 _random_gen(static_cast<long unsigned int>(time(0)));
+    auto rg = random_gen();
     std::discrete_distribution<> d(_weights.begin(), _weights.end());
-    int s =  d(_random_gen);
+
+    int s =  d(rg);
     _t += 1;
     return s;
 }
@@ -70,6 +71,7 @@ std::vector<double> TsallisINF::RV(size_t index, double feedback) {
         double estimator = (indicator * (feedback - B))/_weights[i] + B;
         estimators.push_back(estimator);
     }
+        
     return estimators;
 }
 
@@ -78,8 +80,13 @@ void TsallisINF::give_reward(size_t index, double feedback) {
     // We can either use IW or RV to construct the estimated reward
 
     // This is RW, we should also try RV, which is a reduced variance estimator
-    double estimated_reward = IW(index, feedback);
-    cumulative_losses[index] += estimated_reward;
+    auto estimators = RV(index, feedback);
+
+    for (int i = 0; i < cumulative_losses.size(); i++) {
+        cumulative_losses[i] += estimators[i];
+    }
+
+    //cumulative_losses[index] += IW(index, feedback);
 }
 
 

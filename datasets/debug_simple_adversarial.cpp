@@ -13,13 +13,8 @@ debug_simple_adversarial::debug_simple_adversarial(int K, int rounds) {
     // Modify as needed
     constexpr int MIN = 0;
     constexpr int MAX = 1;
-    std::srand(69420);
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
 
     std::normal_distribution<double> d{10,40};
-    _gen = gen;
-    _d = d;
 
     _data_matrix.reserve(k);
 }

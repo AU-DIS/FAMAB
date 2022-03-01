@@ -2,10 +2,11 @@
 // Created by Kristoffer Strube on 08-02-2022.
 //
 
-#include "iostream"
+
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3REWARDSTRATEGY_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3REWARDSTRATEGY_H
-
+#include "iostream"
+#include "math.h"
 
 template <typename WeightStrategy>
 class Exp3RewardStrategy {

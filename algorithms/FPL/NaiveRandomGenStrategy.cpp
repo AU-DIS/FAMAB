@@ -11,9 +11,11 @@ NaiveRandomGenStrategy::NaiveRandomGenStrategy(size_t k, double eta) : _k(k), _e
 }
 
 std::vector<double> NaiveRandomGenStrategy::random_weights() {
-    std::vector<double> randomDoubles;
+    std::vector<double> random_doubles;
     for (size_t i = 0; i < _k; i++) {
-        randomDoubles.push_back(_exponential_distribution(_gen));
+        random_doubles.push_back(_exponential_distribution(_gen));
     }
-    return randomDoubles;
+    auto max_element = *std::max_element(random_doubles.begin(), random_doubles.end());
+    for (auto &v : random_doubles) v /= max_element;
+    return random_doubles;
 }

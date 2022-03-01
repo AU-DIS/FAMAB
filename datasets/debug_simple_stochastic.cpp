@@ -4,6 +4,8 @@
 
 #include "debug_simple_stochastic.h"
 #include "random"
+#include "iostream"
+#include "../utilities/random_gen.h"
 
 /// This debug data set is stochastic and contains distributes a single reward across
 /// all the choices. Each choice is given a single static reward from a gaussian distribution
@@ -14,34 +16,31 @@ debug_simple_stochastic::debug_simple_stochastic(int K, int number_to_sample) {
     // Modify as needed
     constexpr int MIN = 0;
     constexpr int MAX = 1;
-    std::srand(69420);
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
-    std::normal_distribution<double> d{10,40};
+
+    std::mt19937 gen = random_gen();
+    std::normal_distribution<double> d{1,2};
 
     _data_matrix.reserve(k);
-    double min_element = 1000000;
-    double max_element = 0;
     for (int i = 0; i < k; i++) {
         double v = d(gen);
         _data_matrix.push_back(v);
-        if (v < min_element) min_element = v;
-        if (v > max_element) max_element = v;
     }
-    // Range normalize all values
-    for (int i = 0; i < k; i++) {
-        _data_matrix[i] = (_data_matrix[i] - min_element)/(max_element - min_element);
-    }
-    auto sorted = std::vector<double>(_data_matrix);
-    std::sort(sorted.begin(), sorted.end());
 
-    max_possible_reward = *std::max_element(_data_matrix.begin(), _data_matrix.end());
-    min_possible_reward = *std::min_element(_data_matrix.begin(), _data_matrix.end());
-    //reward_min = *std::min_element(_data_matrix.begin(), _data_matrix.end());
-    max_regret = number_to_sample * (max_possible_reward - min_possible_reward);
+
+    auto max_element = *std::max_element(_data_matrix.begin(), _data_matrix.end());
+    auto min_element = *std::min_element(_data_matrix.begin(), _data_matrix.end());
+    for (auto &v : _data_matrix) v = (v-min_element)/(max_element - min_element);
+
+
+
+
+    double mean = 0;
+    for (auto v : _data_matrix) mean += v;
+    mean_value =  mean/(_data_matrix.size());
+    std::cout << mean_value;
 }
 
 double debug_simple_stochastic::feedback(int choice, double &regret) {
-    regret = max_possible_reward - _data_matrix[choice];
+    regret = 1 - _data_matrix[choice];
     return _data_matrix[choice];
 }

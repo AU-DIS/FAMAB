@@ -4,9 +4,10 @@
 
 #include "DepRoundALIASStrategy.h"
 #include "random"
+#include "../../utilities/random_gen.h"
 
 std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<double> probabilities, int k) {
-    std::mt19937_64 rng;
+    std::mt19937 rng = random_gen();
     std::uniform_real_distribution<double> uniform(0, 1);
 
     int K = probabilities.size();

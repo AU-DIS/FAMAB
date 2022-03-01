@@ -5,11 +5,11 @@
 
 #include <vector>
 #include <random>
-#include "VectorWeightStrategy.h"
+#include "Exp3VectorWeightStrategy.h"
 #include <iostream>
 
 
-VectorWeightStrategy::VectorWeightStrategy(size_t k, double gamma) : _k(k), _gamma(gamma) {
+Exp3VectorWeightStrategy::Exp3VectorWeightStrategy(size_t k, double gamma) : _k(k), _gamma(gamma) {
     _probabilities = std::vector<double>();
     for (int i = 0; i < k; i++) {
         _probabilities.push_back(0);
@@ -23,13 +23,13 @@ VectorWeightStrategy::VectorWeightStrategy(size_t k, double gamma) : _k(k), _gam
 
 
 
-int VectorWeightStrategy::sample() {
+int Exp3VectorWeightStrategy::sample() {
     std::discrete_distribution<> d(_probabilities.begin(), _probabilities.end());
     int s =  d(_random_gen);
     return s;
 }
 
-int VectorWeightStrategy::choose() {
+int Exp3VectorWeightStrategy::choose() {
     double sum_wj = 0;
     for (int i = 0; i < _k; i++) {
         sum_wj += _weights[i];
@@ -46,12 +46,13 @@ int VectorWeightStrategy::choose() {
     return choice;
 }
 
-void VectorWeightStrategy::update_weight(size_t index, double weight) {
+void Exp3VectorWeightStrategy::update_weight(size_t index, double weight) {
     _weights[index] = weight;
 }
 
-std::vector<double> VectorWeightStrategy::get_weights() {
+std::vector<double> Exp3VectorWeightStrategy::get_weights() {
     return _weights;
 }
+
 
 

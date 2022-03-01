@@ -1,28 +1,27 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy as np
+from sklearn.linear_model import LinearRegression
 from matplotlib import colors
+model = LinearRegression()
 
 with open(sys.argv[1], 'r') as f:
-    max_regret = float(f.readline())
+    mean_value = float(f.readline())
     lines = f.readlines()[0].replace('\n', '').split(',')
 
 
 lines = np.array([float(x) for x in lines])
-max_val = max(lines)
-lines = np.array([x/max_val for x in lines])
-
+max_val = np.max(lines)
 lines = np.cumsum(lines)
-N = len(lines)
-for i in range(N):
-    if i > 0:
-        #pass
-        lines[i] /= i
 
-#print([(i, x) for i, x in enumerate(lines) if x >= 2])
-
-plt.plot(range(len(lines)), lines)
-plt.ylim(0, 1)
+x = range(len(lines))
+baseline = [mean_value * (i+1) for i, x in enumerate(x)]
+y = lines
+#model.fit(x, y)
+plt.plot(x, y)
+plt.plot(x, baseline)
+plt.ylim(0, len(lines))
 plt.show()
 #plt.savefig(sys.argv[2])
 

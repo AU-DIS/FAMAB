@@ -6,6 +6,8 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
 #include <vector>
 #include <random>
+#include "FPLVectorWeightStrategy.h"
+#include "NaiveRandomGenStrategy.h"
 
 template<typename WeightStrategy, typename RandomGenStrategy>
 class FPL {
@@ -28,5 +30,4 @@ public:
         _weightStrategy.add_to_weight(choice, feedback);
     }
 };
-
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_FPL_H

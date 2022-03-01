@@ -2,21 +2,22 @@
 // Created by Mathias Ravn Tversted on 10/02/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPLVECTORWEIGHTSTRATEGY_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_FPLVECTORWEIGHTSTRATEGY_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3VECTORWEIGHTSTRATEGY_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_EXP3VECTORWEIGHTSTRATEGY_H
 #include <vector>
 #include <random>
+#include "../../utilities/random_gen.h"
 
 
-class VectorWeightStrategy {
+class Exp3VectorWeightStrategy {
 private:
     int sample();
     std::vector<double> _probabilities;
-    std::mt19937 _random_gen;
+    std::mt19937 _random_gen = random_gen();
 
 public:
     std::vector<double> _weights;
-    VectorWeightStrategy(size_t k, double gamma);
+    Exp3VectorWeightStrategy(size_t k, double gamma);
     int choose();
     void update_weight(size_t index, double weight);
     std::vector<double> get_weights();
@@ -26,4 +27,4 @@ public:
     double last_drawn_weight{};
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_FPLVECTORWEIGHTSTRATEGY_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3VECTORWEIGHTSTRATEGY_H
