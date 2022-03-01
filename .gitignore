@@ -6,3 +6,4 @@ efficient_multi_armed_bandits
 benchmark_results/
 csv-parser/
 *.csv
+*.vscode

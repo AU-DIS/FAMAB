@@ -10,7 +10,7 @@
 /// This debug data set is stochastic and contains distributes a single reward across
 /// all the choices. Each choice is given a single static reward from a gaussian distribution
 /// with mean 10 and stddev 40. The values are range normalized to [0, 1].
-debug_simple_stochastic::debug_simple_stochastic(int K, int number_to_sample) {
+debug_simple_stochastic::debug_simple_stochastic(int K) {
     k = K;
 
     // Modify as needed
@@ -30,8 +30,6 @@ debug_simple_stochastic::debug_simple_stochastic(int K, int number_to_sample) {
     auto max_element = *std::max_element(_data_matrix.begin(), _data_matrix.end());
     auto min_element = *std::min_element(_data_matrix.begin(), _data_matrix.end());
     for (auto &v : _data_matrix) v = (v-min_element)/(max_element - min_element);
-
-
 
 
     double mean = 0;

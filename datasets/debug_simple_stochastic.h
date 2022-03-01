@@ -8,7 +8,7 @@
 
 class debug_simple_stochastic {
 public:
-        explicit debug_simple_stochastic(int K, int number_to_sample);
+        explicit debug_simple_stochastic(int K);
         double feedback(int choice, double &regret);
 
         int k = 0;
