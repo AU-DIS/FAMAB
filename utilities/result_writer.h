@@ -12,9 +12,9 @@ static void write_results(vector<vector<double>> &regret_matrix, const string& m
     std::ofstream of;
     of.open(path, std::ios::out | std::ios::trunc);
     auto writer = make_csv_writer(of);
-    writer << metadata;
+    writer << vector<string>{metadata};
     for (int i = 0; i < regret_matrix.size(); i++) {
-        writer << descriptions[i];
+        //writer << vector<string>{descriptions[i]};
         writer << regret_matrix[i];
     }
 }

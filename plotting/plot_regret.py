@@ -6,24 +6,38 @@ from sklearn.linear_model import LinearRegression
 from matplotlib import colors
 model = LinearRegression()
 
+regrets = []
+
 with open(sys.argv[1], 'r') as f:
-    mean_value = float(f.readline())
-    lines = f.readlines()[0].replace('\n', '').split(',')
+    metadata = f.readline().replace('"', '').replace('\n', '').split(',')
+    algorithms = metadata[3:]
+    for _ in range(len(algorithms)):
+        regrets.append(f.readline().replace('\n', '').split(','))
 
 
-lines = np.array([float(x) for x in lines])
-max_val = np.max(lines)
-lines = np.cumsum(lines)
+description = metadata[0]
+k = metadata[1]
+rounds = metadata[2]
+for lines in regrets:
+    lines = np.array([float(x) for x in lines])
+    max_val = np.max(lines)
+    lines = np.cumsum(lines)
+    x = range(len(lines))
+    y = lines
+    plt.plot(x, y)
 
-x = range(len(lines))
-baseline = [mean_value * (i+1) for i, x in enumerate(x)]
-y = lines
-#model.fit(x, y)
-plt.plot(x, y)
-plt.plot(x, baseline)
-plt.ylim(0, len(lines))
-plt.show()
-#plt.savefig(sys.argv[2])
+
+plt.xlabel('Rounds')
+plt.ylabel('Cumulative regret')
+plt.grid(True)
+plt.title(f"{description} with k = {k}")
+plt.ylim(0, int(rounds))
+plt.legend(algorithms)
+
+if len(sys.argv) >= 3:
+    plt.savefig(sys.argv[2])
+else:
+    plt.show()
 
 
 

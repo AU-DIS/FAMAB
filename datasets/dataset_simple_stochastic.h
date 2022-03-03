@@ -4,13 +4,20 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_STOCHASTIC_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_STOCHASTIC_H
+#include "vector"
+#include "../utilities/random_gen.h"
+#include "random"
+#include "iostream"
 
-class dataset_simple_binary_stochastic{
+class dataset_simple_stochastic{
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;
 
 public:
+    /// @param values K, number_of_rounds, probability P
+    ///
+    ///
     dataset_simple_stochastic(int K, int number_of_rounds, double p) {
         auto gen = random_gen();
         auto weights = {p, 1 - p};
@@ -20,21 +27,23 @@ public:
             iterators.push_back(0);
             std::vector<double> column;
             for (int j = 0; j < number_of_rounds; j++) {
-                column.push_back(d(gen));
+                auto w = d(gen);
+                column.push_back(w);
             }
             data_matrix.push_back(column);
         }
     }
-    void clear() {
+    void reset() {
         for (auto &i : iterators) i = 0;
     }
 
     auto feedback(int choice) {
         struct return_values {
-            int feedback, regret;
+            double feedback, regret;
         };
         auto index = iterators[choice];
         auto reward = data_matrix[choice][index];
+        iterators[choice] += 1;
         return return_values{reward, 1 - reward};
     }
 };

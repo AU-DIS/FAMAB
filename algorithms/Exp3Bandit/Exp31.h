@@ -23,7 +23,7 @@ public:
         _weightStrategy._gamma = gamma;
         _r += 1;
     }
-    int choose() {
+    int choose(){
         g_r = (_K * log(_K))/(exp(1)-1)*pow(4, _r);
         auto g_max = *std::max_element(accumulated_rewards.begin(), accumulated_rewards.end());
         if (g_max > (g_r - _K/_weightStrategy._gamma)) {
