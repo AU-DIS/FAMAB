@@ -4,12 +4,11 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
-#include "../datasets/dataset_simple_stochastic.h"
+#include "../datasets/dataset_simple_adversarial.h"
 #include "../algorithms/Exp3Bandit/Exp3RewardStrategy.h"
 #include "../algorithms/Exp3Bandit/Exp3VectorWeightStrategy.h"
 #include "../utilities/weight_exporter.cpp"
 #include "../algorithms/Exp3Bandit/Exp31.h"
-#include "../datasets/debug_simple_adversarial.h"
 #include "../algorithms/Exp3Bandit/Exp3Bandit.h"
 #include "../algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "../algorithms/FPL/NaiveRandomGenStrategy.h"
@@ -20,10 +19,10 @@
 
 void run_generic_experiment() {
     int K = 10;
-    int round_factor = 100;
+    int round_factor = 10;
     int rounds = K * round_factor;
-    double p = 0.8;
-    auto d = dataset_simple_stochastic(K, rounds, p);
+    double p = 0.2;
+    auto d = dataset_simple_adversarial(K, rounds, p);
 
     Exp3VectorWeightStrategy ws31(K, 0.1);
     Exp3RewardStrategy rs31(ws31);
@@ -38,13 +37,13 @@ void run_generic_experiment() {
     FPL fpl(fpl_ws, fpl_rs);
 
     std::vector<std::vector<double>> data_matrix;
-    data_matrix.push_back(runner(exp3, d, rounds));
-    data_matrix.push_back(runner(exp31, d, rounds));
-    data_matrix.push_back(runner(tsallis, d, rounds));
-    data_matrix.push_back(runner(fpl, d, rounds));
+    data_matrix.push_back(basic_runner(exp3, d, rounds));
+    data_matrix.push_back(basic_runner(exp31, d, rounds));
+    data_matrix.push_back(basic_runner(tsallis, d, rounds));
+    data_matrix.push_back(basic_runner(fpl, d, rounds));
 
     // MUST CONTAIN ENDING COMMA
-    auto description = "Simple binary stochastic dataset with p = " + std::to_string(p) + ",";
+    auto description = "Simple binary adversarial dataset with p = " + std::to_string(p) + ",";
     auto metadata =
             description +
             std::to_string(K) + ","

@@ -11,7 +11,7 @@ template<typename Bandit, typename Dataset>
 /// @param data Must implement reset(), feedback(int choice)
 /// @param rounds Number of rounds
 /// @returns vector of regrets
-static std::vector<double> runner(Bandit &bandit, Dataset &data, int rounds){
+static std::vector<double> basic_runner(Bandit &bandit, Dataset &data, int rounds){
         data.reset();
         std::vector<double> regrets;
         for (int round = 0; round < rounds; round++) {

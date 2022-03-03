@@ -4,7 +4,7 @@
 
 #include "vector"
 #include "random"
-#include "../utilities/random_gen.h"
+#include "../../utilities/random_gen.h"
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_DEBUG_SIMPLE_ADVERSARIAL_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_DEBUG_SIMPLE_ADVERSARIAL_H

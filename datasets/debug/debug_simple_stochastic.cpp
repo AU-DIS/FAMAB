@@ -5,7 +5,7 @@
 #include "debug_simple_stochastic.h"
 #include "random"
 #include "iostream"
-#include "../utilities/random_gen.h"
+#include "../../utilities/random_gen.h"
 
 /// This debug data set is stochastic and contains distributes a single reward across
 /// all the choices. Each choice is given a single static reward from a gaussian distribution

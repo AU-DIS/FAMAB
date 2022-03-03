@@ -1,33 +1,35 @@
 //
-// Created by Mathias Ravn Tversted on 01/03/2022.
+// Created by Mathias Ravn Tversted on 03/03/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_STOCHASTIC_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_STOCHASTIC_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_ADVERSARIAL_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_ADVERSARIAL_H
+
 #include "vector"
 #include "../utilities/random_gen.h"
 #include "random"
 #include "iostream"
-
-class dataset_simple_stochastic{
+class dataset_simple_adversarial {
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;
-
 public:
-    /// @param values K
-    /// @param values number_of_rounds number of rounds
-    /// @param values p The reward of each arm is binary and Bernoulli distributed with probability p
-    dataset_simple_stochastic(int K, int number_of_rounds, double p) {
+    dataset_simple_adversarial(int K, int number_of_rounds, double p) {
         auto gen = random_gen();
-        auto weights = {p, 1 - p};
-        std::discrete_distribution<int> d(weights.begin(), weights.end());
+
+        auto p1 = p;
+        auto weights_before = {p1, 1 - p1};
+        auto p2 = 0.1;
+        auto weights_after = {p2, 1 - p2};
+
+        std::discrete_distribution<int> d1(weights_before.begin(), weights_before.end());
+        std::discrete_distribution<int> d2(weights_after.begin(), weights_after.end());
 
         for (int i = 0; i < K; i++) {
             iterators.push_back(0);
             std::vector<double> column;
             for (int j = 0; j < number_of_rounds; j++) {
-                auto w = d(gen);
+                double w = (double)j >= ((double)number_of_rounds)/2 ? d1(gen) : d2(gen);
                 column.push_back(w);
             }
             data_matrix.push_back(column);
@@ -47,6 +49,7 @@ public:
         iterators[choice] += 1;
         return return_values{reward, 1 - reward};
     }
+
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_STOCHASTIC_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_DATASET_SIMPLE_ADVERSARIAL_H
