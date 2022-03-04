@@ -1,6 +1,8 @@
 //
 // Created by Mathias Ravn Tversted on 08/02/2022.
 //
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_DATASET_DATALOADERS_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_DATASET_DATALOADERS_H
 #include <iostream>
 # include "../csv-parser/include/csv.hpp"
 #include <map>
@@ -35,3 +37,4 @@ for (int i = 0; i < max_id; i++) {
     }
     return data_matrix;
 }
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_DATASET_DATALOADERS_H
