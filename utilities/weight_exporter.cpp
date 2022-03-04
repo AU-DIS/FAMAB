@@ -1,7 +1,7 @@
 //
 // Created by Mathias Ravn Tversted on 07/02/2022.
 //
-# include "../../csv-parser/include/csv.hpp"
+# include "../csv-parser/include/csv.hpp"
 
 using namespace csv;
 

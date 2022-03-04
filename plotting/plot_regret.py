@@ -10,7 +10,7 @@ regrets = []
 
 with open(sys.argv[1], 'r') as f:
     metadata = f.readline().replace('"', '').replace('\n', '').split(',')
-    algorithms = metadata[3:]
+    algorithms = metadata[4:]
     for _ in range(len(algorithms)):
         regrets.append(f.readline().replace('\n', '').split(','))
 
@@ -18,6 +18,10 @@ with open(sys.argv[1], 'r') as f:
 description = metadata[0]
 k = metadata[1]
 rounds = metadata[2]
+expected_value = float(metadata[3])
+expected_values = [expected_value for _ in range(len(regrets[0]))]
+regrets.append(expected_values)
+algorithms.append("Uniform random guesses")
 for lines in regrets:
     lines = np.array([float(x) for x in lines])
     max_val = np.max(lines)
@@ -26,12 +30,12 @@ for lines in regrets:
     y = lines
     plt.plot(x, y)
 
-
 plt.xlabel('Rounds')
 plt.ylabel('Cumulative regret')
 plt.grid(True)
 plt.title(f"{description} with k = {k}")
 plt.ylim(0, int(rounds))
+
 plt.legend(algorithms)
 
 if len(sys.argv) >= 3:

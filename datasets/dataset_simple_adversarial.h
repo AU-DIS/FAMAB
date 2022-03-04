@@ -13,31 +13,50 @@ class dataset_simple_adversarial {
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;
+    double expected_reward;
 public:
-    dataset_simple_adversarial(int K, int number_of_rounds, double p) {
-        auto gen = random_gen();
-
-        auto p1 = p;
-        auto weights_before = {p1, 1 - p1};
-        auto p2 = 0.1;
-        auto weights_after = {p2, 1 - p2};
-
-        std::discrete_distribution<int> d1(weights_before.begin(), weights_before.end());
-        std::discrete_distribution<int> d2(weights_after.begin(), weights_after.end());
+    dataset_simple_adversarial(int K, int number_of_rounds) {
+        for (int i = 0; i < K; i++) iterators.push_back(0);
 
         for (int i = 0; i < K; i++) {
-            iterators.push_back(0);
-            std::vector<double> column;
+            std::vector<double> row;
             for (int j = 0; j < number_of_rounds; j++) {
-                double w = (double)j >= ((double)number_of_rounds)/2 ? d1(gen) : d2(gen);
-                column.push_back(w);
+                row.push_back(0.0);
             }
-            data_matrix.push_back(column);
+            data_matrix.push_back(row);
         }
+
+        for (int column = 0; column < K; column++) {
+            for (int row = 0; row < number_of_rounds; row++) {
+                double r = row >= (number_of_rounds/2) ? row % 2 : (row + 1) % 2;
+                data_matrix[column][row] = r;
+            }
+        }
+
+        std::vector<double> column_averages;
+        for (int i = 0; i < K; i++) {
+            column_averages.push_back(0.0);
+            for (int j = 0; j < number_of_rounds; j++) {
+                column_averages[i] += data_matrix[i][j];
+            }
+        }
+
+        for (auto &r : column_averages)
+        {
+            r /= number_of_rounds;
+        }
+
+        for (auto avg : column_averages) expected_reward += avg;
+        expected_reward /= K;
+
         reset();
     }
     void reset() {
         for (auto &i : iterators) i = 0;
+    }
+
+    double expected_value() {
+       return expected_reward;
     }
 
     auto feedback(int choice) {
@@ -45,6 +64,7 @@ public:
             double feedback, regret;
         };
         auto index = iterators[choice];
+
         auto reward = data_matrix[choice][index];
         iterators[choice] += 1;
         return return_values{reward, 1 - reward};

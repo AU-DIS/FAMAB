@@ -19,10 +19,9 @@
 
 void run_generic_experiment() {
     int K = 10;
-    int round_factor = 10;
+    int round_factor = 1000;
     int rounds = K * round_factor;
-    double p = 0.2;
-    auto d = dataset_simple_adversarial(K, rounds, p);
+    auto d = dataset_simple_adversarial(K, rounds);
 
     Exp3VectorWeightStrategy ws31(K, 0.1);
     Exp3RewardStrategy rs31(ws31);
@@ -36,18 +35,21 @@ void run_generic_experiment() {
     TsallisINF tsallis(K);
     FPL fpl(fpl_ws, fpl_rs);
 
+
     std::vector<std::vector<double>> data_matrix;
     data_matrix.push_back(basic_runner(exp3, d, rounds));
     data_matrix.push_back(basic_runner(exp31, d, rounds));
     data_matrix.push_back(basic_runner(tsallis, d, rounds));
     data_matrix.push_back(basic_runner(fpl, d, rounds));
 
+
     // MUST CONTAIN ENDING COMMA
-    auto description = "Simple binary adversarial dataset with p = " + std::to_string(p) + ",";
+    auto description = "Adversarial dataset,";
     auto metadata =
             description +
             std::to_string(K) + ","
             + std::to_string(rounds) + ","
+            + std::to_string(d.expected_value()) + ","
             + "Exp3,Exp3.1,Tsallis-INF,FPL";
     auto descriptions = std::vector<string>{
             "Exp3",
