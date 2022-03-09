@@ -15,8 +15,9 @@ int main(int argc, char *argv[]) {
             if (runner == "GenericBanditRunner") {
                 int K = row["K"].get<int>();
                 int rounds = row["rounds"].get<int>();
+                int averages = row["averages"].get<int>();
                 std::string out_path = row["output_path"].get();
-                run_generic_experiment(K, rounds, out_path);
+                run_generic_experiment(K, rounds,  averages, out_path);
             }
         }
     }

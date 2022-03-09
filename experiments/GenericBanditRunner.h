@@ -20,7 +20,7 @@
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 
-void run_generic_experiment(int K = 10, int rounds = 100, const std::string& out_path="/tmp/out") {
+void run_generic_experiment(int K = 10, int rounds = 100, int averages=1, const std::string& out_path="/tmp/out") {
     //auto d = Dataset_movielens("../datasets/data_directory/movielens.csv", 4);
     auto d = dataset_simple_adversarial(K, rounds);
 
@@ -37,13 +37,37 @@ void run_generic_experiment(int K = 10, int rounds = 100, const std::string& out
     FPL fpl(fpl_ws, fpl_rs);
     Uniformbandit uni(K);
 
+    std::vector<double> exp3_regrets(rounds);
+    std::vector<double> exp31_regrets(rounds);
+    std::vector<double> tsallis_regrets(rounds);
+    std::vector<double> fpl_regrets(rounds);
+    std::vector<double> uni_regrets(rounds);
+    for (int i = 0; i < averages; i++) {
+        auto exp3_run = basic_runner(exp3, d, rounds);
+        auto exp31_run = basic_runner(exp31, d, rounds);
+        auto tsallis_run = basic_runner(tsallis, d, rounds);
+        auto fpl_run = basic_runner(fpl, d, rounds);
+        auto uni_run = basic_runner(uni, d, rounds);
+        for (int round = 0; round < rounds; round++) {
+            exp3_regrets[round] += exp3_run[round];
+            exp31_regrets[round] += exp31_run[round];
+            tsallis_regrets[round] += tsallis_run[round];
+            fpl_regrets[round] += fpl_run[round];
+            uni_regrets[round] += uni_run[round];
+        }
+    }
+    for (auto &v : exp3_regrets) v /= averages;
+    for (auto &v : exp31_regrets) v /= averages;
+    for (auto &v : tsallis_regrets) v /= averages;
+    for (auto &v : fpl_regrets) v /= averages;
+    for (auto &v : uni_regrets) v /= averages;
 
     std::vector<std::vector<double>> data_matrix;
-    data_matrix.push_back(basic_runner(exp3, d, rounds));
-    data_matrix.push_back(basic_runner(exp31, d, rounds));
-    data_matrix.push_back(basic_runner(tsallis, d, rounds));
-    data_matrix.push_back(basic_runner(fpl, d, rounds));
-    data_matrix.push_back(basic_runner(uni, d, rounds));
+    data_matrix.push_back(exp3_regrets);
+    data_matrix.push_back(exp31_regrets);
+    data_matrix.push_back(tsallis_regrets);
+    data_matrix.push_back(fpl_regrets);
+    data_matrix.push_back(uni_regrets);
 
     // MUST CONTAIN ENDING COMMA
     auto description = "Adversarial dataset with " + std::to_string(d.number_of_changes()) + " distribution changes,";
