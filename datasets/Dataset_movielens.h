@@ -45,9 +45,7 @@ public:
         expected_reward = 0;
         for (auto avg : column_averages) expected_reward += avg;
         expected_reward /= K;
-
         reset();
-
     }
 
     double expected_value() {

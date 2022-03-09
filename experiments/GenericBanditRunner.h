@@ -20,10 +20,9 @@
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 
-void run_generic_experiment(int K = 10, int rounds = 100, int averages=1, const std::string& out_path="/tmp/out") {
+template <typename Dataset>
+void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int averages=1, const std::string& out_path="/tmp/out") {
     //auto d = Dataset_movielens("../datasets/data_directory/movielens.csv", 4);
-    auto d = dataset_simple_adversarial(K, rounds);
-
     Exp3VectorWeightStrategy ws31(K, 0.1);
     Exp3RewardStrategy rs31(ws31);
     Exp3VectorWeightStrategy ws(K, 0.1);
@@ -70,7 +69,7 @@ void run_generic_experiment(int K = 10, int rounds = 100, int averages=1, const 
     data_matrix.push_back(uni_regrets);
 
     // MUST CONTAIN ENDING COMMA
-    auto description = "Adversarial dataset with " + std::to_string(d.number_of_changes()) + " distribution changes,";
+    auto description = ",";
     auto metadata =
             description +
             std::to_string(K) + ","
