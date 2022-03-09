@@ -17,13 +17,11 @@
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
 #include "../runner.h"
+#include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 
-void run_generic_experiment() {
+void run_generic_experiment(int K = 10, int rounds = 100, const std::string& out_path="/tmp/out") {
     //auto d = Dataset_movielens("../datasets/data_directory/movielens.csv", 4);
-    int K = 100;
-    int round_factor = 1000;
-    int rounds = K * round_factor;
     auto d = dataset_simple_adversarial(K, rounds);
 
     Exp3VectorWeightStrategy ws31(K, 0.1);
@@ -37,6 +35,7 @@ void run_generic_experiment() {
     Exp31 exp31(ws31, rs31);
     TsallisINF tsallis(K);
     FPL fpl(fpl_ws, fpl_rs);
+    Uniformbandit uni(K);
 
 
     std::vector<std::vector<double>> data_matrix;
@@ -44,7 +43,7 @@ void run_generic_experiment() {
     data_matrix.push_back(basic_runner(exp31, d, rounds));
     data_matrix.push_back(basic_runner(tsallis, d, rounds));
     data_matrix.push_back(basic_runner(fpl, d, rounds));
-
+    data_matrix.push_back(basic_runner(uni, d, rounds));
 
     // MUST CONTAIN ENDING COMMA
     auto description = "Adversarial dataset with " + std::to_string(d.number_of_changes()) + " distribution changes,";
@@ -53,14 +52,15 @@ void run_generic_experiment() {
             std::to_string(K) + ","
             + std::to_string(rounds) + ","
             + std::to_string(d.expected_value()) + ","
-            + "Exp3,Exp3.1,Tsallis-INF,FPL";
+            + "Exp3,Exp3.1,Tsallis-INF,FPL,Uniform";
     auto descriptions = std::vector<string>{
             "Exp3",
             "Exp3.1",
             "Tsallis-INF",
-            "FPL"
+            "FPL",
+            "Uniform"
     };
-    write_results(data_matrix, metadata, descriptions, "/tmp/regret");
+    write_results(data_matrix, metadata, descriptions, out_path);
 }
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
