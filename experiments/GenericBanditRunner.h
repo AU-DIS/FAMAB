@@ -5,6 +5,8 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
 #include "../datasets/dataset_simple_adversarial.h"
+#include "../datasets/dataset_simple_stochastic.h"
+#include "../datasets/Dataset_movielens.h"
 #include "../algorithms/Exp3Bandit/Exp3RewardStrategy.h"
 #include "../algorithms/Exp3Bandit/Exp3VectorWeightStrategy.h"
 #include "../utilities/weight_exporter.cpp"
@@ -18,7 +20,8 @@
 #include "../utilities/result_writer.h"
 
 void run_generic_experiment() {
-    int K = 10;
+    //auto d = Dataset_movielens("../datasets/data_directory/movielens.csv", 4);
+    int K = 100;
     int round_factor = 1000;
     int rounds = K * round_factor;
     auto d = dataset_simple_adversarial(K, rounds);
@@ -44,7 +47,7 @@ void run_generic_experiment() {
 
 
     // MUST CONTAIN ENDING COMMA
-    auto description = "Adversarial dataset,";
+    auto description = "Adversarial dataset with " + std::to_string(d.number_of_changes()) + " distribution changes,";
     auto metadata =
             description +
             std::to_string(K) + ","

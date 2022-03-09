@@ -15,9 +15,7 @@ static std::vector<double> basic_runner(Bandit &bandit, Dataset &data, int round
         data.reset();
         std::vector<double> regrets;
         for (int round = 0; round < rounds; round++) {
-
             auto choice = bandit.choose();
-
             // Check out this shit
             // https://www.educative.io/edpresso/how-to-return-multiple-values-from-a-function-in-cpp17
             auto [feedback, regret] = data.feedback(choice);

@@ -14,8 +14,14 @@ private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;
     double expected_reward;
+    int number_of_distribution_changes = 0;
 public:
     dataset_simple_adversarial(int K, int number_of_rounds) {
+        double p = 0.5;
+        auto gen = random_gen();
+        std::vector<double> weights = {p, 1 - p};
+
+
         for (int i = 0; i < K; i++) iterators.push_back(0);
 
         for (int i = 0; i < K; i++) {
@@ -28,28 +34,30 @@ public:
 
         for (int column = 0; column < K; column++) {
             for (int row = 0; row < number_of_rounds; row++) {
-                double r = row >= (number_of_rounds/2) ? row % 2 : (row + 1) % 2;
+                if ((float) rand()/RAND_MAX >= 0.999)  {
+                    p = (float) rand()/RAND_MAX;
+                    weights = {p, 1 - p};
+                    number_of_distribution_changes += 1;
+                }
+                std::discrete_distribution<int> d(weights.begin(), weights.end());
+                double r = d(gen);
                 data_matrix[column][row] = r;
             }
         }
-
-        std::vector<double> column_averages;
-        for (int i = 0; i < K; i++) {
-            column_averages.push_back(0.0);
-            for (int j = 0; j < number_of_rounds; j++) {
-                column_averages[i] += data_matrix[i][j];
-            }
-        }
-
-        for (auto &r : column_averages)
-        {
-            r /= number_of_rounds;
-        }
-
-        for (auto avg : column_averages) expected_reward += avg;
-        expected_reward /= K;
-
         reset();
+        std::vector<double> uniform_weights;
+        for (int i = 0; i < K; i++) uniform_weights.push_back(1.0/K);
+        std::discrete_distribution<int> d(uniform_weights.begin(), uniform_weights.end());
+        for (int i = 0; i < number_of_rounds; i++) {
+            int choice = d(gen);
+            auto index = iterators[choice];
+            auto reward = data_matrix[choice][index];
+            iterators[choice] += 1;
+            expected_reward += reward;
+        }
+        expected_reward /= number_of_rounds;
+        reset();
+
     }
     void reset() {
         for (auto &i : iterators) i = 0;
@@ -57,6 +65,9 @@ public:
 
     double expected_value() {
        return expected_reward;
+    }
+    int number_of_changes() {
+        return number_of_distribution_changes;
     }
 
     auto feedback(int choice) {
