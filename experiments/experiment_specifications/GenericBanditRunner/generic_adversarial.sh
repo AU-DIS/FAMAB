@@ -3,6 +3,7 @@ alias python3="/home/tversted/miniconda3/bin/python"
 
 tmp_dir=/home/tversted/tmp
 name=adversarial
+make_dir=cmake-build-release-odin
 
 run_experiment() {
     n=10
@@ -19,7 +20,7 @@ run_experiment() {
 
       echo "runner,K,rounds,averages,dataset,output_path" >> $header
       echo "GenericBanditRunner,$K,$pow,$averages,$name,$out" >> $header
-      ./cmake-build-release-odin/efficient_multi_armed_bandits $header
+      ./$make_dir/efficient_multi_armed_bandits $header
       python3 plotting/plot_regret.py $out $plt_out
     done
 
