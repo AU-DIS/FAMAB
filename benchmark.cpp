@@ -12,6 +12,8 @@
 #include "algorithms/Exp3Bandit/Exp31.h"
 #include "algorithms/Exp3Bandit/Exp3Bandit.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
+#include "algorithms/Tsallis-INF/TsallisRV.h"
+#include "algorithms/Tsallis-INF/TsallisIW.h"
 
 static void benchmark_fpl(benchmark::State& state) {
     auto k = state.range(0);
@@ -52,10 +54,23 @@ static void benchmark_exp3(benchmark::State& state) {
         }
     }
 }
-static void benchmark_tsallis(benchmark::State& state) {
+static void benchmark_tsallis_rv(benchmark::State& state) {
     auto k = state.range(0);
     for (auto _ : state) {
-        TsallisINF b(k);
+        TsallisRV rv;
+        TsallisINF b(k, rv);
+        int rounds = 1000;
+        for (int i = 0; i < rounds; i++) {
+            int choice = b.choose();
+            b.give_reward(0, 0);
+        }
+    }
+}
+static void benchmark_tsallis_iw(benchmark::State& state) {
+    auto k = state.range(0);
+    for (auto _ : state) {
+        TsallisIW iw;
+        TsallisINF b(k, iw);
         int rounds = 1000;
         for (int i = 0; i < rounds; i++) {
             int choice = b.choose();
@@ -65,8 +80,10 @@ static void benchmark_tsallis(benchmark::State& state) {
 }
 
 
+
 BENCHMARK(benchmark_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
 BENCHMARK(benchmark_exp31)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
 BENCHMARK(benchmark_exp3)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
-BENCHMARK(benchmark_tsallis)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
+BENCHMARK(benchmark_tsallis_rv)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
+BENCHMARK(benchmark_tsallis_iw)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000)->Threads(15);
 BENCHMARK_MAIN();
