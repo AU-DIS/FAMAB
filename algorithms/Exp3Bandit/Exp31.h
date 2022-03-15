@@ -10,6 +10,11 @@
 
 template<typename WeightStrategy, typename RewardStrategy>
 class Exp31 {
+private:
+    int _r = 0;
+    int _K = 0;
+    std::vector<double> accumulated_rewards;
+    int g_r = 0;
 public:
     Exp31(WeightStrategy &ws, RewardStrategy &rs)
     :_weightStrategy(ws), _rewardStrategy(rs)
@@ -36,18 +41,13 @@ public:
     };
 
     void give_reward(int index, double feedback) {
-        auto estimated_reward = _rewardStrategy.estimated_reward(index, feedback);
+        auto estimated_reward = _rewardStrategy.estimated_reward(feedback);
         accumulated_rewards[index] += estimated_reward;
-        auto reward = _rewardStrategy.reward(index, feedback);
-        _weightStrategy.update_weight(index, reward);
+        auto new_weight = _rewardStrategy.new_weight(feedback);
+        _weightStrategy.update_weight(index, new_weight);
     }
     WeightStrategy &_weightStrategy;
     RewardStrategy &_rewardStrategy;
-private:
-    int _r = 0;
-    int _K = 0;
-    std::vector<double> accumulated_rewards;
-    int g_r = 0;
 };
 
 

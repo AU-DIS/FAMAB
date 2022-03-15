@@ -17,14 +17,13 @@ public:
     {
 
     }
-    double estimated_reward(int index, double feedback) {
+    double estimated_reward(double feedback) {
         auto est =  feedback/_weightStrategy.last_drawn_probability;
-
         return est;
     }
 
-    double reward(int index, double feedback) {
-        double est_reward = estimated_reward(index, feedback);
+    double new_weight(double feedback) {
+        double est_reward = estimated_reward(feedback);
         double v =  _weightStrategy.last_drawn_weight * exp((_weightStrategy._gamma * est_reward)/_weightStrategy._k);
         return v;
     }

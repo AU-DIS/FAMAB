@@ -15,7 +15,7 @@ public:
     WeightStrategy _weightStrategy;
 
     Exp3Bandit(WeightStrategy &ws, RewardStrategy &rs)
-    :_weightStrategy(ws), _rewardStrategy(_weightStrategy){}
+    :_weightStrategy(ws), _rewardStrategy(rs){}
 
     Exp3Bandit(const Exp3Bandit &b)
     :_weightStrategy(b._weightStrategy), _rewardStrategy(_weightStrategy) {
@@ -27,8 +27,8 @@ public:
     }
 
     void give_reward(size_t index, double feedback) {
-        auto reward = _rewardStrategy.reward(index, feedback);
-        _weightStrategy.update_weight(index, reward);
+        auto new_weight = _rewardStrategy.new_weight(feedback);
+        _weightStrategy.update_weight(index, new_weight);
     }
 };
 

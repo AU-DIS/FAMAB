@@ -1,6 +1,7 @@
 #include "experiments/GenericBanditRunner.h"
+#include "experiments/ExploreNoMoreRunner.h"
+#include <iostream>
 
 int main() {
-    run_generic_experiment();
-
+    run_explore_no_more_experiment();
 }
