@@ -14,14 +14,15 @@ with open(sys.argv[1], 'r') as f:
     for _ in range(len(algorithms)):
         regrets.append(f.readline().replace('\n', '').split(','))
 
-
 description = metadata[0]
 k = metadata[1]
 rounds = metadata[2]
 expected_value = float(metadata[3])
-#expected_values = [expected_value for _ in range(len(regrets[0]))]
-#regrets.append(expected_values)
-#algorithms.append("Uniform random guesses")
+
+indices = np.argsort(algorithms)
+regrets = regrets[indices]
+algorithms = algorithms[indices]
+
 for lines in regrets:
     lines = np.array([float(x) for x in lines])
     max_val = np.max(lines)

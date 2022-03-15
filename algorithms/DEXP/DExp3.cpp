@@ -14,9 +14,12 @@ DExp3::DExp3(size_t k, double gamma, double eta) : _weights(k), _k(k), _gamma(ga
     }
 }
 
-std::tuple<size_t, size_t> DExp3::choose() {
+Dexp3_return_values DExp3::choose() {
+
     std::discrete_distribution<size_t> d(_weights.begin(), _weights.end());
-    return std::make_tuple(d(_random_gen), d(_random_gen));
+    int choice1 = d(_random_gen);
+    int choice2 = d(_random_gen);
+    return Dexp3_return_values{choice1, choice2};
 }
 
 void DExp3::give_reward(size_t x, size_t y, size_t winner, int round) {

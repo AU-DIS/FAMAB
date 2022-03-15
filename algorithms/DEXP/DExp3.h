@@ -7,7 +7,9 @@
 
 #include "random"
 #include "../../utilities/random_gen.h"
-
+struct Dexp3_return_values {
+    int choice1, choice2;
+};
 class DExp3 {
 private:
     size_t _k;
@@ -17,7 +19,7 @@ private:
     std::vector<std::vector<double>> _s_tilde_t;
 public:
     DExp3(size_t k, double gamma, double eta);
-    std::tuple<size_t, size_t> choose();
+    Dexp3_return_values choose();
     void give_reward(size_t x, size_t y, size_t winner, int round);
     std::vector<double> _weights;
 };

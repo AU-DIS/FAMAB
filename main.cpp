@@ -10,7 +10,6 @@ int main(int argc, char *argv[]) {
     for (auto &row: reader) {
         std::string runner(row["runner"].get());
         if (runner == "GenericBanditRunner") {
-
             int rounds = row["rounds"].get<int>();
             int averages = row["averages"].get<int>();
             std::string out_path = row["output_path"].get();
