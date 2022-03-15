@@ -13,6 +13,7 @@ class dataset_simple_stochastic{
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;
+    double _p;
 
 public:
     /// @param values K
@@ -20,6 +21,7 @@ public:
     /// @param values p The reward of each arm is binary and Bernoulli distributed with probability p
     dataset_simple_stochastic(int K, int number_of_rounds, double p) {
         auto gen = random_gen();
+        _p = p;
         auto weights = {p, 1 - p};
         std::discrete_distribution<int> d(weights.begin(), weights.end());
 
@@ -36,6 +38,9 @@ public:
     }
     void reset() {
         for (auto &i : iterators) i = 0;
+    }
+    double expected_value() {
+        return _p;
     }
 
     auto feedback(int choice) {
