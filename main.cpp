@@ -1,5 +1,6 @@
 #include "experiments/GenericBanditRunner.h"
 #include "csv-parser/include/csv.hpp"
+#include "experiments/ExploreNoMoreRunner.h"
 
 using namespace csv;
 
@@ -9,6 +10,9 @@ int main(int argc, char *argv[]) {
     CSVReader reader(path);
     for (auto &row: reader) {
         std::string runner(row["runner"].get());
+        if (runner == "ExploreNoMore") {
+            run_explore_no_more_experiment();
+        }
         if (runner == "GenericBanditRunner") {
 
             int rounds = row["rounds"].get<int>();
@@ -25,5 +29,5 @@ int main(int argc, char *argv[]) {
                 run_generic_experiment(d, d.K, rounds, averages, out_path);
             }
         }
-    }
+    }*/
 }
