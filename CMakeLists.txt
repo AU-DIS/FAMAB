@@ -35,4 +35,3 @@ add_executable(benchmark_bandits benchmark.cpp
 
 target_link_libraries(efficient_multi_armed_bandits csv)
 target_link_libraries(benchmark_bandits benchmark::benchmark)
-
