@@ -9,8 +9,11 @@ headers = ['eta','mean_regret_exp3_T_half','std_regret_exp3_T_half','mean_regret
 
 df = pd.read_csv(sys.argv[1], names=headers, skiprows=2)
 
-fig, ax = plt.subplots()
-ax = df.plot(ax=ax, kind='line', x='eta', y='mean_regret_exp3_T_half', label='mean_regret_exp3_T_half')
-
-plt.legend(loc='best')
+# plot lines
+fig = plt.figure()
+ax = fig.add_subplot()
+plt.errorbar(df.loc[:,'eta'], df.loc[:,'mean_regret_exp3_T_half'], df.loc[:,'std_regret_exp3_T_half'], label = "mean regret Exp3")
+plt.errorbar(df.loc[:,'eta'], df.loc[:,'mean_regret_exp3IX_T_half'], df.loc[:,'std_regret_exp3IX_T_half'], label = "mean regret Exp3IX")
+ax.set_xscale('log')
+ax.legend()
 plt.show()

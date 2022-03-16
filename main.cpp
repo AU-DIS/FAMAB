@@ -6,7 +6,7 @@ using namespace csv;
 
 int main(int argc, char *argv[]) {
     std::string path(argv[1]);
-    std::cout << path;
+    std::cout << path << std::endl;
     CSVReader reader(path);
     for (auto &row: reader) {
         std::string runner(row["runner"].get());
@@ -29,5 +29,5 @@ int main(int argc, char *argv[]) {
                 run_generic_experiment(d, d.K, rounds, averages, out_path);
             }
         }
-    }*/
+    }
 }

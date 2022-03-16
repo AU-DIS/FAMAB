@@ -16,8 +16,10 @@
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
 #include "../utilities/standard_deviation.cpp"
 #include "../utilities/eta_mean_std_writer.h"
+#include "../utilities/sum_of_range.h"
 #include "../runner.h"
 #include <stdlib.h>
+#include <numeric>
 
 void run_explore_no_more_experiment() {
     int K = 10;
@@ -25,7 +27,7 @@ void run_explore_no_more_experiment() {
     int repititions = 50;
 
     std::vector<std::vector<double>> data_matrix;
-    for (int eta_index = 1; eta_index <= 10; eta_index++) {
+    for (int eta_index = 0; eta_index <= 10; eta_index++) {
         auto eta = pow(10, ((double)eta_index)/2.5-2);
         std::vector<double> exp3_regret_T_half;
         std::vector<double> exp3_regret_T;
@@ -37,18 +39,18 @@ void run_explore_no_more_experiment() {
         exp3IX_regret_T.reserve(repititions);
         for (int i = 0; i < repititions; i++) {
             auto d = dataset_explore_no_more(rounds);
-            Exp3VectorWeightStrategy ws(K, eta/2);
+            Exp3VectorWeightStrategy ws(K, 0);
             Exp3TorRewardStrategy rs(ws, eta);
-            Exp3VectorWeightStrategy wsIX(K, eta/2);
-            Exp3IXTorRewardStrategy rsIX(wsIX, eta);
+            Exp3VectorWeightStrategy wsIX(K, 0);
+            Exp3IXTorRewardStrategy rsIX(wsIX, eta, eta/2);
             Exp3Bandit exp3(ws, rs);
             Exp3Bandit exp3IX(wsIX, rsIX);
             auto exp3_regrets = basic_runner(exp3, d, rounds);
             auto exp3IX_regrets = basic_runner(exp3IX, d, rounds);
-            exp3_regret_T_half.push_back(exp3_regrets[rounds/2]);
-            exp3_regret_T.push_back(exp3_regrets[rounds]);
-            exp3IX_regret_T_half.push_back(exp3IX_regrets[rounds/2]);
-            exp3IX_regret_T.push_back(exp3IX_regrets[rounds]);
+            exp3_regret_T_half.push_back(sum_of_range(exp3_regrets, 0, rounds/2));
+            exp3_regret_T.push_back(sum_of_range(exp3_regrets, 0, rounds));
+            exp3IX_regret_T_half.push_back(sum_of_range(exp3IX_regrets, 0, rounds/2));
+            exp3IX_regret_T.push_back(sum_of_range(exp3IX_regrets, 0, rounds));
             exp3_regrets.clear();
             exp3IX_regrets.clear();
         }

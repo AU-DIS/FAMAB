@@ -13,9 +13,10 @@ class Exp3IXTorRewardStrategy {
 private:
     WeightStrategy &_weightStrategy;
     double _eta;
+    double _gamma;
 public:
-    Exp3IXTorRewardStrategy(WeightStrategy &ws, double eta)
-    :_weightStrategy(ws), _eta(eta)
+    Exp3IXTorRewardStrategy(WeightStrategy &ws, double eta, double gamma)
+    :_weightStrategy(ws), _eta(eta), _gamma(gamma)
     {
 
     }
@@ -26,7 +27,7 @@ public:
     }
 
     double estimated_loss(double feedback) {
-        auto est =  (1-feedback)/(_weightStrategy.last_drawn_probability+_weightStrategy._gamma);
+        auto est =  (1-feedback)/(_weightStrategy.last_drawn_probability+_gamma);
         return est;
     }
 
