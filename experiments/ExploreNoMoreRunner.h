@@ -29,14 +29,10 @@ void run_explore_no_more_experiment() {
     std::vector<std::vector<double>> data_matrix;
     for (int eta_index = 0; eta_index <= 10; eta_index++) {
         auto eta = pow(10, ((double)eta_index)/2.5-2);
-        std::vector<double> exp3_regret_T_half;
-        std::vector<double> exp3_regret_T;
-        std::vector<double> exp3IX_regret_T_half;
-        std::vector<double> exp3IX_regret_T;
-        exp3_regret_T_half.reserve(repititions);
-        exp3_regret_T.reserve(repititions);
-        exp3IX_regret_T_half.reserve(repititions);
-        exp3IX_regret_T.reserve(repititions);
+        std::vector<double> exp3_regret_T_half(repititions, 0);
+        std::vector<double> exp3_regret_T(repititions, 0);
+        std::vector<double> exp3IX_regret_T_half(repititions, 0);
+        std::vector<double> exp3IX_regret_T(repititions, 0);
         for (int i = 0; i < repititions; i++) {
             auto d = dataset_explore_no_more(rounds);
             Exp3VectorWeightStrategy ws(K, 0);
@@ -47,12 +43,10 @@ void run_explore_no_more_experiment() {
             Exp3Bandit exp3IX(wsIX, rsIX);
             auto exp3_regrets = basic_runner(exp3, d, rounds);
             auto exp3IX_regrets = basic_runner(exp3IX, d, rounds);
-            exp3_regret_T_half.push_back(sum_of_range(exp3_regrets, 0, rounds/2));
-            exp3_regret_T.push_back(sum_of_range(exp3_regrets, 0, rounds));
-            exp3IX_regret_T_half.push_back(sum_of_range(exp3IX_regrets, 0, rounds/2));
-            exp3IX_regret_T.push_back(sum_of_range(exp3IX_regrets, 0, rounds));
-            exp3_regrets.clear();
-            exp3IX_regrets.clear();
+            exp3_regret_T_half[i] = sum_of_range(exp3_regrets, 0, rounds/2);
+            exp3_regret_T[i] = sum_of_range(exp3_regrets, 0, rounds);
+            exp3IX_regret_T_half[i] = sum_of_range(exp3IX_regrets, 0, rounds/2);
+            exp3IX_regret_T[i] = sum_of_range(exp3IX_regrets, 0, rounds);
         }
         auto [mean_exp3_T_half, std_exp3_T_half] = standard_deviation(exp3_regret_T_half);
         auto [mean_exp3_T, std_exp3_T] = standard_deviation(exp3_regret_T);
@@ -61,11 +55,8 @@ void run_explore_no_more_experiment() {
         data_matrix.push_back({eta, mean_exp3_T_half, std_exp3_T_half, mean_exp3_T, std_exp3_T, mean_exp3IX_T_half, std_exp3IX_T_half, mean_exp3IX_T, std_exp3IX_T});
     }
 
-    auto comments =
-            "#Explore No More,"
-            + std::to_string(K) + ","
-            + std::to_string(rounds);
-    auto header = "eta,mean_regret_exp3_T_half,std_regret_exp3_T_half,mean_regret_exp3_T,std_regret_exp3_T,mean_regret_exp3IX_T_half,std_regret_exp3IX_T_half,mean_regret_exp3IX_T,std_regret_exp3IX_T";
+    vector<string> comments {"#Explore No More", std::to_string(K), std::to_string(rounds)};
+    vector<string> header {"eta","mean_regret_exp3_T_half","std_regret_exp3_T_half","mean_regret_exp3_T","std_regret_exp3_T","mean_regret_exp3IX_T_half","std_regret_exp3IX_T_half","mean_regret_exp3IX_T","std_regret_exp3IX_T"};
     write_results(data_matrix, comments, header, "/tmp/explore_no_more.csv");
 }
 

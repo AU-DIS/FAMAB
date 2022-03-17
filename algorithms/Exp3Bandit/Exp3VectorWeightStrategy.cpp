@@ -15,7 +15,7 @@ Exp3VectorWeightStrategy::Exp3VectorWeightStrategy(size_t k, double gamma) : _k(
         _probabilities.push_back(0);
     }
     _weights = std::vector<double>();
-    // Init all to 0
+    // Init all to 1
     for (int i = 0; i < k; i++) {
         _weights.push_back(1.0);
     }
@@ -24,8 +24,9 @@ Exp3VectorWeightStrategy::Exp3VectorWeightStrategy(size_t k, double gamma) : _k(
 
 
 int Exp3VectorWeightStrategy::sample() {
-    std::discrete_distribution<> d(_probabilities.begin(), _probabilities.end());
+    std::discrete_distribution<int> d(_probabilities);
     int s =  d(_random_gen);
+    std::cout << "s: " << std::to_string(s) << std::endl;
     return s;
 }
 
@@ -40,6 +41,7 @@ int Exp3VectorWeightStrategy::choose() {
     }
 
     int choice = sample();
+    std::cout << "last_drawn_probability: " << std::to_string(_probabilities[choice]) << std::endl;
     last_drawn_probability = _probabilities[choice];
     last_drawn_weight = _weights[choice];
 

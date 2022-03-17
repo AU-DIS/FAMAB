@@ -26,12 +26,15 @@ public:
     }
 
     double estimated_loss(double feedback) {
-        auto est =  (1-feedback)/_weightStrategy.last_drawn_probability;
+        auto est = (1-feedback)/_weightStrategy.last_drawn_probability;
         return est;
     }
 
     double new_weight(double feedback) {
         double est_loss = estimated_loss(feedback);
+        std::cout << "last_drawn_probability: " << std::to_string(_weightStrategy.last_drawn_probability) << std::endl;
+        std::cout << "feedback: " << std::to_string(feedback) << std::endl;
+        std::cout << "est_loss: " << std::to_string(est_loss) << std::endl;
         double v = _weightStrategy.last_drawn_weight * exp((-_eta * est_loss));
         return v;
     }

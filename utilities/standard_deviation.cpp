@@ -5,7 +5,7 @@
 #include "vector"
 #include "cmath"
 
-static auto standard_deviation(std::vector<double> arr) {
+auto standard_deviation(std::vector<double> arr) {
     struct result_struct {
         double mean, std;
     };
