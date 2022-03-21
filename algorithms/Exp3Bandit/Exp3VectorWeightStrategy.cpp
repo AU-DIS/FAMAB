@@ -24,7 +24,7 @@ Exp3VectorWeightStrategy::Exp3VectorWeightStrategy(size_t k, double gamma) : _k(
 
 
 int Exp3VectorWeightStrategy::sample() {
-    std::discrete_distribution<int> d(_probabilities);
+    std::discrete_distribution<int> d(_probabilities.begin(), _probabilities.end());
     int s =  d(_random_gen);
     std::cout << "s: " << std::to_string(s) << std::endl;
     return s;
