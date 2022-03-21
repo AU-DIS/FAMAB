@@ -28,4 +28,23 @@ std::vector<double> basic_runner(Bandit &bandit, Dataset &data, int rounds){
     return regrets;
 }
 
+template <typename Bandit>
+std::vector<double> basic_tsallis_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds){
+    std::vector<double> regrets;
+    regrets.reserve(rounds);
+    for (int round = 0; round < rounds; round++) {
+        auto choice = bandit.choose();
+        auto reward = data_matrix[choice][round];
+        double max_element = 0;
+        for (int i = 0; i < rounds; i++) {
+            if (data_matrix[choice][i] >= max_element) max_element = data_matrix[choice][i];
+        }
+        double regret = max_element - reward;
+        bandit.give_reward(choice, reward);
+        regrets.push_back(regret);
+    }
+    return regrets;
+}
+
+
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_RUNNER_H

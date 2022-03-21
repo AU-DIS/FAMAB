@@ -57,16 +57,15 @@ void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int average
     UCB1 ucb_fpl(10, ucb_fpl_bandit);
 
     TsallisIW iw_ucb;
-    TsallisINF ucb_tsallis_iw_bandit(K, iw);
+    TsallisINF ucb_tsallis_iw_bandit(K, iw_ucb);
     TsallisRV rv_ucb;
-    TsallisINF ucb_tsallis_rv_bandit(K, rv);
+    TsallisINF ucb_tsallis_rv_bandit(K, rv_ucb);
 
     UCB1 ucb_tsallis_iw(10, ucb_tsallis_iw_bandit);
     UCB1 ucb_tsallis_rv(10, ucb_tsallis_rv_bandit);
 
 
     Uniformbandit uni(K);
-
 
 
     std::vector<double> exp3_regrets(rounds);

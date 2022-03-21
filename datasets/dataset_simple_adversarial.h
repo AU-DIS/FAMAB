@@ -60,7 +60,7 @@ public:
 
     }
     void reset() {
-        for (auto &i : iterators) i = 0;
+        iterators = std::vector<int>(data_matrix.size(), 0);
     }
 
     double expected_value() {
