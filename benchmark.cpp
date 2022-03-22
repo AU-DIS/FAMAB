@@ -10,7 +10,7 @@
 #include "algorithms/Exp3Bandit/Exp3VectorWeightStrategy.h"
 #include "algorithms/Exp3Bandit/Exp3RewardStrategy.h"
 #include "algorithms/Exp3Bandit/Exp31.h"
-#include "algorithms/Exp3Bandit/Exp3Bandit.h"
+#include "algorithms/Exp3Bandit/Exp3.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
 #include "algorithms/Tsallis-INF/TsallisRV.h"
 #include "algorithms/Tsallis-INF/TsallisIW.h"

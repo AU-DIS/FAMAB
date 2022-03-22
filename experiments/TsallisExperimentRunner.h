@@ -6,18 +6,14 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
 
 void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k, int rounds, int averages, double gap, const std::string& out_path="/tmp/out") {
-    Exp3VectorWeightStrategy ws(k, 0.25);
-    Exp3RewardStrategy rs(ws);
-    Exp3Bandit exp3(ws, rs);
+    Exp3 exp3(k, 0.25);
 
     TsallisIW iw;
     TsallisINF tsallis_iw(k, iw);
     TsallisRV rv;
     TsallisINF tsallis_rv(k, rv);
 
-    Exp3VectorWeightStrategy ucb_ws(k, 0.1);
-    Exp3RewardStrategy ucb_rs(ucb_ws);
-    Exp3Bandit ucb_exp3_bandit(ucb_ws, ucb_rs);
+    Exp3 ucb_exp3_bandit(k, 0.1);
     UCB1 ucb_exp3(10, ucb_exp3_bandit);
 
     Uniformbandit uni(k);
@@ -31,9 +27,7 @@ void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k
     FPL ucb_fpl_bandit(fpl_ucb_ws, fpl_ucb_rs);
     UCB1 ucb_fpl(10, ucb_fpl_bandit);
 
-    Exp3VectorWeightStrategy ws31(k, 0.1);
-    Exp3RewardStrategy rs31(ws31);
-    Exp31 exp31(ws31, rs31);
+    Exp31 exp31(k);
 
     std::vector<double> exp3_regrets(rounds);
     std::vector<double> exp31_regrets(rounds);

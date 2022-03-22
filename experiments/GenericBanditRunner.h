@@ -7,11 +7,9 @@
 #include "../datasets/dataset_simple_adversarial.h"
 #include "../datasets/dataset_simple_stochastic.h"
 #include "../datasets/Dataset_movielens.h"
-#include "../algorithms/Exp3Bandit/Exp3RewardStrategy.h"
-#include "../algorithms/Exp3Bandit/Exp3VectorWeightStrategy.h"
 #include "../utilities/weight_exporter.cpp"
 #include "../algorithms/Exp3Bandit/Exp31.h"
-#include "../algorithms/Exp3Bandit/Exp3Bandit.h"
+#include "../algorithms/Exp3Bandit/Exp3.h"
 #include "../algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
@@ -26,17 +24,11 @@
 template <typename Dataset>
 void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int averages=1, const std::string& out_path="/tmp/out") {
     //auto d = Dataset_movielens("../datasets/data_directory/movielens.csv", 4);
-    Exp3VectorWeightStrategy ws31(K, 0.1);
-    Exp3RewardStrategy rs31(ws31);
-
-    Exp3VectorWeightStrategy ws(K, 0.1);
-    Exp3RewardStrategy rs(ws);
-
     FPLVectorWeightStrategy fpl_ws(K);
     NaiveRandomGenStrategy fpl_rs(K, 0.2);
 
-    Exp3Bandit exp3(ws, rs);
-    Exp31 exp31(ws31, rs31);
+    Exp3 exp3(K, 0.1);
+    Exp31 exp31(K);
 
     TsallisIW iw;
     TsallisINF tsallis_iw(K, iw);
@@ -45,10 +37,7 @@ void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int average
 
     FPL fpl(fpl_ws, fpl_rs);
 
-
-    Exp3VectorWeightStrategy ucb_ws(K, 0.1);
-    Exp3RewardStrategy ucb_rs(ucb_ws);
-    Exp3Bandit ucb_exp3_bandit(ucb_ws, ucb_rs);
+    Exp3 ucb_exp3_bandit(K, 0.1);
     UCB1 ucb_exp3(10, ucb_exp3_bandit);
 
     FPLVectorWeightStrategy fpl_ucb_ws(K);
@@ -64,9 +53,7 @@ void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int average
     UCB1 ucb_tsallis_iw(10, ucb_tsallis_iw_bandit);
     UCB1 ucb_tsallis_rv(10, ucb_tsallis_rv_bandit);
 
-
     Uniformbandit uni(K);
-
 
     std::vector<double> exp3_regrets(rounds);
     std::vector<double> exp31_regrets(rounds);

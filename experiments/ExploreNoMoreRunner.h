@@ -5,11 +5,8 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXPLORENOMORERUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXPLORENOMORERUNNER_H
 #include "../datasets/dataset_explore_no_more.h"
-#include "../algorithms/Exp3Bandit/Exp3TorRewardStrategy.h"
-#include "../algorithms/Exp3Bandit/Exp3IXTorRewardStrategy.h"
-#include "../algorithms/Exp3Bandit/Exp3VectorWeightStrategy.h"
-#include "../algorithms/Exp3Bandit/Exp31.h"
-#include "../algorithms/Exp3Bandit/Exp3Bandit.h"
+#include "../algorithms/Exp3Bandit/Exp3Tor.h"
+#include "../algorithms/Exp3Bandit/Exp3IXTor.h"
 #include "../algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
@@ -35,12 +32,8 @@ void run_explore_no_more_experiment() {
         std::vector<double> exp3IX_regret_T(repititions, 0);
         for (int i = 0; i < repititions; i++) {
             auto d = dataset_explore_no_more(rounds);
-            Exp3VectorWeightStrategy ws(K, 0);
-            Exp3TorRewardStrategy rs(ws, eta);
-            Exp3VectorWeightStrategy wsIX(K, 0);
-            Exp3IXTorRewardStrategy rsIX(wsIX, eta, eta/2);
-            Exp3Bandit exp3(ws, rs);
-            Exp3Bandit exp3IX(wsIX, rsIX);
+            Exp3Tor exp3(K, eta);
+            Exp3IXTor exp3IX(K, eta, eta/2);
             auto exp3_regrets = basic_runner(exp3, d, rounds);
             auto exp3IX_regrets = basic_runner(exp3IX, d, rounds);
             exp3_regret_T_half[i] = sum_of_range(exp3_regrets, 0, rounds/2);
