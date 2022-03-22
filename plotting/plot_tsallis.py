@@ -1,10 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy as np
-from sklearn.linear_model import LinearRegression
 from matplotlib import colors
-model = LinearRegression()
 import itertools
 
 regrets = {}

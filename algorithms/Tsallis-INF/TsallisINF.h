@@ -43,6 +43,8 @@ public:
         double x_previous = _x;
         double x_estimated = _x;
         weights.reserve(losses.size());
+
+
         for (int i = 0; i < losses.size(); i++) weights.push_back(0);
 
         do {
@@ -57,11 +59,6 @@ public:
             x_estimated = x_previous - (w_sum - 1) / (eta * w_sum_powered);
         } while (std::min(x_previous, x_estimated) / std::max(x_previous, x_estimated) >= 1.1);
         _x = x_estimated;
-
-        // It is assumed that weights are normalized. This is called "trusts".
-        double w_sum = 0;
-        for (auto w: weights) w_sum += w;
-        for (auto &w: weights) w = w / w_sum;
         return weights;
     }
 

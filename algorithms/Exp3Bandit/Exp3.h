@@ -16,7 +16,6 @@ private:
     double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;
-    std::vector<double> _weights;
     std::vector<double> _probabilities;
     std::mt19937 _random_gen = random_gen();
     int sample();
@@ -24,6 +23,7 @@ public:
     Exp3(int k, double gamma);
     int choose();
     void give_reward(int index, double feedback);
+    std::vector<double> _weights;
 };
 
 

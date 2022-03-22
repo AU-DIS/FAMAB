@@ -39,6 +39,7 @@ int Exp3::choose() {
         _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
     }
 
+
     int choice = sample();
     _last_drawn_probability = _probabilities[choice];
     _last_drawn_weight = _weights[choice];

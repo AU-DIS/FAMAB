@@ -1,12 +1,12 @@
 alias python3="/home/tversted/miniconda3/bin/python"
-
 tmp_dir=/home/tversted/tmp
 name=tsallis
 make_dir=cmake-build-release-odin
+#rounds=100000
 rounds=100000
-#rounds=1000
 averages=50
-delta=0.8
+delta=0.9
+
 
 run_experiment() {
       header=$tmp_dir/header_$name$1
@@ -25,7 +25,7 @@ run_experiment() {
 
 
 
-for k in 2 8 32 128
+for k in 32 128
 do
     run_experiment $k & disown
 done

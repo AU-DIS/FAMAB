@@ -7,7 +7,6 @@ using namespace csv;
 
 int main(int argc, char *argv[]) {
     std::string path(argv[1]);
-
     CSVReader reader(path);
     for (auto &row: reader) {
         std::string runner(row["runner"].get());

@@ -29,6 +29,7 @@ void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k
 
     Exp31 exp31(k);
 
+
     std::vector<double> exp3_regrets(rounds);
     std::vector<double> exp31_regrets(rounds);
     std::vector<double> ucb_exp3_regrets(rounds);
@@ -52,6 +53,8 @@ void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k
         auto tsallis_rv_run = basic_tsallis_runner(tsallis_rv, data_matrix, rounds);
         auto ucb_exp3_run = basic_tsallis_runner(ucb_exp3, data_matrix, rounds);
         auto uniform_run = basic_tsallis_runner(uni, data_matrix, rounds);
+
+
 
         for (int round = 0; round < rounds; round++) {
             exp3_regrets[round] += exp3_run[round];
@@ -147,7 +150,7 @@ std::vector<std::discrete_distribution<int>> create_distributions(int k, int opt
 
     std::vector<double> probabilities(k);
 
-    std::vector<double*> suboptimal_probabilities(k);
+    std::vector<double*> suboptimal_probabilities;
 
     for (int i = 0; i < k; i++) {
         if (i >= optimal_start && i <= optimal_end) {
@@ -169,11 +172,13 @@ std::vector<std::discrete_distribution<int>> create_distributions(int k, int opt
     for (double *p : suboptimal_probabilities) {
         *p /= (min_p + max_p);
     }
+
     for (int i = 0; i < k; i++) {
         std::vector<double> weights = {1 - probabilities[i], probabilities[i]};
         std::discrete_distribution<int> dist(weights.begin(), weights.end());
         distributions[i] = dist;
     }
+
     return distributions;
 }
 
@@ -183,15 +188,13 @@ std::vector<std::vector<double>> adversarial_with_gap(int k, int rounds, double 
     std::vector<std::vector<double>> data_matrix;
     data_matrix.reserve(k);
 
-    auto distributions = create_distributions(k, 0, int(pow(gap, 1)), delta);
 
+    auto distributions = create_distributions(k, 0, int(pow(gap, 1)), delta);
     for (int i = 0; i < k; i++) {
-        std::vector<double> row(rounds);
+        std::vector<double> row(rounds, 1);
         data_matrix.push_back(row);
     }
-
     bool even = true;
-
 
 
     int multiple = 1;
@@ -203,12 +206,14 @@ std::vector<std::vector<double>> adversarial_with_gap(int k, int rounds, double 
             even = !even;
             multiple++;
         }
+
         for (int arm = 0; arm < k; arm++) {
             data_matrix[arm][i] = distributions[arm](gen);
             // Outcomment to enable weight mod 2 switching
             //data_matrix[arm][i] = even ? arm % 2 : (arm+1) % 2;
         }
     }
+
     return data_matrix;
 }
 

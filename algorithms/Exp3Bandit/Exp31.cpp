@@ -14,7 +14,10 @@
 Exp31::Exp31(int k) : _k(k) {
     for (int i = 0; i < _k; i++) {
         accumulated_rewards.push_back(0);
+        _probabilities.push_back(1./k);
+        _weights.push_back(1);
     }
+
     _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
     double gamma = std::min(1.0, sqrt(_k * log(_k)) / (exp(1) - 1) * _g_r);
     _gamma = gamma;
