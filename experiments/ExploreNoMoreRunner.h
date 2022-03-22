@@ -25,7 +25,8 @@ void run_explore_no_more_experiment() {
 
     std::vector<std::vector<double>> data_matrix;
     for (int eta_index = 0; eta_index <= 10; eta_index++) {
-        auto eta = pow(10, ((double)eta_index)/2.5-2);
+        //auto eta = pow(10, ((double)eta_index)/2.5-2);
+        auto eta = pow(10, ((double)eta_index)/2.5-5);
         std::vector<double> exp3_regret_T_half(repititions, 0);
         std::vector<double> exp3_regret_T(repititions, 0);
         std::vector<double> exp3IX_regret_T_half(repititions, 0);
