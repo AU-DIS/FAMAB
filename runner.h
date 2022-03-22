@@ -29,8 +29,7 @@ std::vector<double> basic_runner(Bandit &bandit, Dataset &data, int rounds){
 }
 
 template <typename Bandit>
-std::vector<double> basic_tsallis_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds){
-    std::vector<double> regrets;
+void basic_tsallis_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds, std::vector<double> &regrets){
     regrets.reserve(rounds);
     for (int round = 0; round < rounds; round++) {
         auto choice = bandit.choose();
@@ -43,7 +42,6 @@ std::vector<double> basic_tsallis_runner(Bandit &bandit, std::vector<std::vector
         bandit.give_reward(choice, reward);
         regrets.push_back(regret);
     }
-    return regrets;
 }
 
 

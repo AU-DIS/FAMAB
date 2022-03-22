@@ -4,7 +4,7 @@ name=tsallis
 make_dir=cmake-build-release-odin
 #rounds=100000
 rounds=100000
-averages=50
+averages=200
 delta=0.9
 
 
@@ -23,9 +23,8 @@ run_experiment() {
       python3 plotting/plot_tsallis.py $out $plt_out
 }
 
-
-
 for k in 32 128
 do
-    run_experiment $k & disown
+    #run_experiment $k & disown
+    run_experiment $k
 done

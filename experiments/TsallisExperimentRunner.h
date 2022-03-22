@@ -4,6 +4,7 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
+#include <thread>
 
 void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k, int rounds, int averages, double gap, const std::string& out_path="/tmp/out") {
     Exp3 exp3(k, 0.25);
@@ -41,20 +42,43 @@ void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k
     std::vector<double> uniform_regrets(rounds);
 
 
-
-
     for (int i = 0; i < averages; i++) {
-        auto exp3_run = basic_tsallis_runner(exp3, data_matrix, rounds);
-        auto exp31_run = basic_tsallis_runner(exp31, data_matrix, rounds);
-        auto fpl_run = basic_tsallis_runner(fpl, data_matrix, rounds);
-        auto ucb_fpl_run = basic_tsallis_runner(ucb_fpl, data_matrix, rounds);
+        std::vector<double> exp3_run;
+        std::thread t1(basic_tsallis_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
 
-        auto tsallis_iw_run = basic_tsallis_runner(tsallis_iw, data_matrix, rounds);
-        auto tsallis_rv_run = basic_tsallis_runner(tsallis_rv, data_matrix, rounds);
-        auto ucb_exp3_run = basic_tsallis_runner(ucb_exp3, data_matrix, rounds);
-        auto uniform_run = basic_tsallis_runner(uni, data_matrix, rounds);
+        std::vector<double> exp31_run;
+
+        std::thread t2(basic_tsallis_runner<Exp31>, std::ref(exp31), std::ref(data_matrix), rounds, std::ref(exp31_run));
 
 
+        std::vector<double> fpl_run;
+        std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_run));
+
+        std::vector<double> ucb_fpl_run;
+        std::thread t4(basic_tsallis_runner<UCB1<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>>, std::ref(ucb_fpl), std::ref(data_matrix), rounds, std::ref(ucb_fpl_run));
+
+
+        std::vector<double> tsallis_iw_run;
+        std::thread t5(basic_tsallis_runner<TsallisINF<TsallisIW>>, std::ref(tsallis_iw), std::ref(data_matrix), rounds, std::ref(tsallis_iw_run));
+
+        std::vector<double> tsallis_rv_run;
+        std::thread t6(basic_tsallis_runner<TsallisINF<TsallisRV>>, std::ref(tsallis_rv), std::ref(data_matrix), rounds, std::ref(tsallis_rv_run));
+
+
+        std::vector<double> ucb_exp3_run;
+        std::thread t7(basic_tsallis_runner<UCB1<Exp3>>, std::ref(ucb_exp3), std::ref(data_matrix), rounds, std::ref(ucb_exp3_run));
+
+        std::vector<double> uniform_run;
+        std::thread t8(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, std::ref(uniform_run));
+
+        t1.join();
+        t2.join();
+        t3.join();
+        t4.join();
+        t5.join();
+        t6.join();
+        t7.join();
+        t8.join();
 
         for (int round = 0; round < rounds; round++) {
             exp3_regrets[round] += exp3_run[round];
