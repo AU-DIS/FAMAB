@@ -1,11 +1,13 @@
 #include "experiments/GenericBanditRunner.h"
 #include "csv-parser/include/csv.hpp"
 #include "experiments/TsallisExperimentRunner.h"
+#include "experiments/ExploreNoMoreRunner.h"
 
 using namespace csv;
 
 int main(int argc, char *argv[]) {
     std::string path(argv[1]);
+
     CSVReader reader(path);
     for (auto &row: reader) {
         std::string runner(row["runner"].get());
@@ -21,6 +23,9 @@ int main(int argc, char *argv[]) {
                 auto d = adversarial_with_gap(k, rounds, gap, delta);
                 run_tsallis_experiment(d, k, rounds, averages, gap, out_path);
             }
+        }
+        if (runner == "ExploreNoMore") {
+            run_explore_no_more_experiment();
         }
 
         if (runner == "GenericBanditRunner") {
