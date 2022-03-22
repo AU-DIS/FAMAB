@@ -47,7 +47,7 @@ int Exp3IXTor::choose() {
 }
 
 void Exp3IXTor::give_reward(int index, double feedback) {
-    double est_reward = (1 - feedback) / (_probabilities[index] + _gamma);
+    double est_loss = (1 - feedback) / (_probabilities[index] + _gamma);
     _weights[index] = _weights[index] + est_loss;
     if (std::isinf(_weights[index])) {
         std::cout << "INF!" << std::endl;
