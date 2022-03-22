@@ -29,13 +29,14 @@ int Exp3IXTor::sample() {
 }
 
 int Exp3IXTor::choose() {
-    double sum_wj = 0;
+    double sum_reduced_power_weights = 0;
+    double m = *max_element(_weights.begin(), _weights.end());
     for (int i = 0; i < _k; i++) {
-        sum_wj += _weights[i];
+        sum_reduced_power_weights += exp(-_eta * _weights[i] - (-_eta * m));
     }
 
     for (int i = 0; i < _k; i++) {
-        _probabilities[i] = (_weights[i] / sum_wj);
+        _probabilities[i] = exp(-_eta * _weights[i] - (-_eta * m) - log(sum_reduced_power_weights));
     }
 
     int choice = sample();
@@ -46,9 +47,11 @@ int Exp3IXTor::choose() {
 }
 
 void Exp3IXTor::give_reward(int index, double feedback) {
-    double est_loss = (1-feedback)/(_last_drawn_probability+_gamma);
-    double new_weight = _last_drawn_weight * exp((-_eta * est_loss));
-    _weights[index] = new_weight;
+    double est_reward = (1 - feedback) / (_probabilities[index] + _gamma);
+    _weights[index] = _weights[index] + est_loss;
+    if (std::isinf(_weights[index])) {
+        std::cout << "INF!" << std::endl;
+    }
 }
 
 

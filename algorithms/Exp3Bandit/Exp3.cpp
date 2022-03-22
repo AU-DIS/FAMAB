@@ -29,13 +29,14 @@ int Exp3::sample() {
 }
 
 int Exp3::choose() {
-    double sum_wj = 0;
+    double sum_reduced_power_weights = 0;
+    double m = *max_element(_weights.begin(), _weights.end());
     for (int i = 0; i < _k; i++) {
-        sum_wj += _weights[i];
+        sum_reduced_power_weights += exp(_gamma / _k * (_weights[i] - m));
     }
 
     for (int i = 0; i < _k; i++) {
-        _probabilities[i] = (1 - _gamma) * (_weights[i] / sum_wj) + _gamma / _k;
+        _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
     }
 
     int choice = sample();
@@ -47,7 +48,7 @@ int Exp3::choose() {
 
 void Exp3::give_reward(int index, double feedback) {
     double est_reward = feedback / _last_drawn_probability;
-    double new_weight = _last_drawn_weight * exp((_gamma * est_reward) / _k);
+    double new_weight = _last_drawn_weight + est_reward;
     _weights[index] = new_weight;
 }
 

@@ -14,8 +14,6 @@ class Exp3Tor {
 private:
     int _k;
     double _eta;
-    double _last_drawn_weight;
-    double _last_drawn_probability;
     std::vector<double> _weights;
     std::vector<double> _probabilities;
     std::mt19937 _random_gen = random_gen();

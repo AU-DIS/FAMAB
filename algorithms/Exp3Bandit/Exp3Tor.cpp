@@ -8,6 +8,7 @@
 #include "Exp3Tor.h"
 #include <random>
 #include <iostream>
+#include <cmath>
 
 Exp3Tor::Exp3Tor(int k, double eta)
         : _k(k), _eta(eta) {
@@ -29,26 +30,29 @@ int Exp3Tor::sample() {
 }
 
 int Exp3Tor::choose() {
-    double sum_wj = 0;
+    double sum_reduced_power_weights = 0;
+    double m = *max_element(_weights.begin(), _weights.end());
     for (int i = 0; i < _k; i++) {
-        sum_wj += _weights[i];
+        sum_reduced_power_weights += exp(_eta * _weights[i] - _eta * m);
     }
 
     for (int i = 0; i < _k; i++) {
-        _probabilities[i] = (_weights[i] / sum_wj);
+        _probabilities[i] = exp(_eta * _weights[i] - _eta * m - log(sum_reduced_power_weights));
     }
 
     int choice = sample();
-    _last_drawn_probability = _probabilities[choice];
-    _last_drawn_weight = _weights[choice];
 
     return choice;
 }
 
 void Exp3Tor::give_reward(int index, double feedback) {
-    double est_loss = (1-feedback)/_last_drawn_probability;
-    double new_weight = _last_drawn_weight * exp((-_eta * est_loss));
-    _weights[index] = new_weight;
+    for (int i = 0; i < _k; i++) {
+        double est_loss = i == index ? (1 - feedback) / _probabilities[i] : 0;
+        _weights[index] = _weights[index] + 1 - est_loss;
+        if (std::isinf(_weights[index])) {
+            std::cout << "INF!" << std::endl;
+        }
+    }
 }
 
 
