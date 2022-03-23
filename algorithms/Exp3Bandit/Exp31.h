@@ -13,7 +13,7 @@ class Exp31 {
 private:
     int _k;
     int _r;
-    int _g_r;
+    double _g_r;
     double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;

@@ -31,7 +31,11 @@ int Exp31::sample() {
 }
 
 int Exp31::choose() {
-    _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
+    auto fake_k = (double) _k;
+    double f_term = fake_k * log(fake_k);
+    double s_term = exp(1.0) - 1.0;
+
+    _g_r = (f_term/s_term) * pow(4, _r);
     auto g_max = *std::max_element(accumulated_rewards.begin(), accumulated_rewards.end());
     if (g_max > (_g_r - _k / _gamma)) {
         double gamma = std::min(1.0, sqrt(_k * log(_k)) / (exp(1) - 1) * _g_r);
