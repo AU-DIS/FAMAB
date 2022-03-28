@@ -29,5 +29,10 @@ public:
     void give_reward(size_t choice, double feedback) {
         _weightStrategy.add_to_weight(choice, feedback);
     }
+    std::vector<double> get_weights() {
+        return _weightStrategy.get_weights();
+    }
+
+
 };
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_FPL_H

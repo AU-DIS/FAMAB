@@ -35,8 +35,8 @@ void basic_tsallis_runner(Bandit &bandit, std::vector<std::vector<double>> &data
         auto choice = bandit.choose();
         auto reward = data_matrix[choice][round];
         double max_element = 0;
-        for (int i = 0; i < rounds; i++) {
-            if (data_matrix[choice][i] >= max_element) max_element = data_matrix[choice][i];
+        for (auto & arm : data_matrix) {
+            if (arm[round] >= max_element) max_element = arm[round];
         }
         double regret = max_element - reward;
         bandit.give_reward(choice, reward);

@@ -23,10 +23,12 @@ with open(sys.argv[1], 'r') as f:
 description = metadata[0]
 k = metadata[1]
 rounds = metadata[2]
-expected_value = float(metadata[3])
+gap = float(metadata[3])
 
 
 algorithms = sorted(algorithms)
+
+
 plt.figure(0, figsize=(10, 5))
 for nr, algorithm in enumerate(algorithms):
     lines = np.array([float(x) for x in regrets[algorithm]])
@@ -36,9 +38,17 @@ for nr, algorithm in enumerate(algorithms):
     y = lines
     plt.loglog(x, y, marker=styles[nr % len(styles)], markersize=0.5)
 
+
+gap_xs = []
+gap_iter = 0
+while int(gap**gap_iter) <= int(rounds):
+    gap_xs.append(int(gap**gap_iter))
+    gap_iter += 1
+plt.vlines(gap_xs, ymin=0, ymax=int(rounds), linestyle=(0, (5, 1)), color="darkgrey")
+
 plt.xlabel('Rounds')
 plt.ylabel('Cumulative regret')
-plt.grid(True)
+
 plt.title(f"{description} k = {k}")
 plt.ylim(0, int(rounds))
 

@@ -74,17 +74,17 @@ while int(gap**gap_iter) <= int(rounds):
     gap_iter += 1
 print(gap_xs)
 
-ax[0].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]))
-ax[1].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]))
-ax[2].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]))
+ax[0].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
+ax[1].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
+ax[2].vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
 
-ax[0].set_title(f"{description} k = {k}")
+
 ax[0].set_xlabel('Rounds')
 ax[0].set_ylabel('Cumulative regret')
-ax[1].set_title(f"{description} k = {k}")
+
 ax[1].set_xlabel('Rounds')
 ax[1].set_ylabel('Cumulative regret')
-ax[2].set_title(f"{description} k = {k}")
+
 ax[2].set_xlabel('Rounds')
 ax[2].set_ylabel('Cumulative regret')
 
@@ -100,6 +100,10 @@ ax[2].grid(True)
 ax[0].legend(legends[0])
 ax[1].legend(legends[1])
 ax[2].legend(legends[2])
+
+fig.suptitle(f"{description} k = {k}", fontsize=16)
+
+fig.tight_layout()
 
 if len(sys.argv) >= 3:
     plt.savefig(sys.argv[2])

@@ -23,6 +23,7 @@ public:
     Exp3(int k, double gamma);
     int choose();
     void give_reward(int index, double feedback);
+    std::vector<double> get_weights();
     std::vector<double> _weights;
 };
 
