@@ -8,19 +8,22 @@ colours = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 
 df = pd.read_csv(sys.argv[1])
 algorithms = sorted(set(df["name"]))
+print(algorithms)
+ks = sorted(set(df['k']))
+ks = [int(x) for x in ks]
 plt.figure(0, figsize=(10, 5))
+
 for nr, algo in enumerate(algorithms):
     rows = df.loc[df["name"] == algo]
-    ks = [x for x in rows["k"]]
-    runtimes = [x for i, x in enumerate(rows["cputime"])]
-    values = range(len(ks))
-    plt.plot(values[1:], runtimes[1:], styles[nr % len(styles)], color = colours[nr % len(colours)])
-    plt.xticks(values[1:],ks[1:])
-    plt.yscale('log')
+    runtimes = [x for i, x in enumerate(rows["cpu_time"])]
+    plt.loglog(ks, runtimes)
+    #plt.xticks(values[1:],ks[1:])
+    #plt.yscale('log')
+    #plt.xscale('log')
 
 
 
-plt.xlabel('K')
+plt.xlabel('k')
 plt.ylabel('cputime')
 plt.legend(algorithms)
 plt.grid(True)

@@ -31,8 +31,7 @@ int Exp31::sample() {
 }
 
 int Exp31::choose() {
-    auto fake_k = (double) _k;
-    double f_term = fake_k * log(fake_k);
+    double f_term = _k * log(_k);
     double s_term = exp(1.0) - 1.0;
 
     _g_r = (f_term/s_term) * pow(4, _r);
@@ -43,14 +42,16 @@ int Exp31::choose() {
         _r += 1;
     }
 
-    double sum_wj = 0;
+    double sum_reduced_power_weights = 0;
+    double m = *max_element(_weights.begin(), _weights.end());
     for (int i = 0; i < _k; i++) {
-        sum_wj += _weights[i];
+        sum_reduced_power_weights += exp(_gamma / _k * (_weights[i] - m));
     }
 
     for (int i = 0; i < _k; i++) {
-        _probabilities[i] = (1 - _gamma) * (_weights[i] / sum_wj) + _gamma / _k;
+        _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
     }
+
 
     int choice = sample();
     _last_drawn_probability = _probabilities[choice];
