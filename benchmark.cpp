@@ -20,14 +20,16 @@
 #include "algorithms/Exp3Bandit/Exp3Tor.h"
 
 
-static void benchmark_exp3m_10(benchmark::State& state) {
+static void benchmark_exp3m_1(benchmark::State& state) {
     auto k = state.range(0);
     int rounds = 1000;
-    std::vector<double> reward(10);
-    std::vector<int> index(10);
+    int K = 1;
+    std::vector<double> reward(K, 1);
+    std::vector<int> index(K, 1);
+
     for (auto _ : state) {
         DepRoundALIASStrategy a;
-        Exp3m b(k, 1, 0.1, a);
+        Exp3m b(k, K, 0.1, a);
         for (int i = 0; i < rounds; i++) {
             auto choices = b.choose();
             b.give_reward(index, reward);
@@ -35,33 +37,31 @@ static void benchmark_exp3m_10(benchmark::State& state) {
     }
 }
 
-static void benchmark_exp3m_10_sample(benchmark::State& state) {
+static void benchmark_exp3m_1_sample(benchmark::State& state) {
     auto k = state.range(0);
     int rounds = 1000;
-    std::vector<double> reward(10);
-    std::vector<int> index(10);
+    int K = 1;
+    std::vector<double> reward(K, 1);
+    std::vector<int> index(K, 1);
     for (auto _ : state) {
         DepRoundALIASStrategy a;
-        Exp3m b(k, 1, 0.1, a);
+        Exp3m b(k, K, 0.1, a);
         for (int i = 0; i < rounds; i++) {
             auto choices = b.choose();
         }
     }
 }
 
-static void benchmark_exp3m_10_update(benchmark::State& state) {
+static void benchmark_exp3m_1_update(benchmark::State& state) {
     auto k = state.range(0);
     int rounds = 1000;
-    std::vector<double> reward;
-    std::vector<int> index;
-    for (int i = 0; i < k; i++) {
-        reward.push_back(i);
-        index.push_back(i);
-    }
+    int K = 1;
+    std::vector<double> reward(K, 0);
+    std::vector<int> index(K, 0);
 
     for (auto _ : state) {
         DepRoundALIASStrategy a;
-        Exp3m b(k, 1, 0.1, a);
+        Exp3m b(k, K, 0.1, a);
         auto choices = b.choose();
         for (int i = 0; i < rounds; i++) {
             b.give_reward(index, reward);
@@ -307,16 +307,13 @@ BENCHMARK(benchmark_tsallis_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->A
 BENCHMARK(benchmark_ucb_exp3)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_ucb_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 
-
-BENCHMARK(benchmark_exp3m_10)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
-
-
-
-BENCHMARK(benchmark_exp3m_10_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
-BENCHMARK(benchmark_exp3m_10_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 */
+BENCHMARK(benchmark_exp3m_1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_exp3m_1_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_exp3m_1_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+/*
 BENCHMARK(benchmark_exp3eta)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_exp3eta_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_exp3eta_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
-
+*/
 BENCHMARK_MAIN();
