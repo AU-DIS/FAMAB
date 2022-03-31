@@ -19,6 +19,11 @@ public:
         _distribution = Incremental_sum_heap(_weights);
         _additive_term = _gamma/_k;
 
+        std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0/k)) - (1.0/k)));
+        _power_weights = Incremental_sum_heap(power_weights);
+
+        max_weight = 1.0/k;
+
     }
 
     int choose() {
@@ -26,20 +31,24 @@ public:
     }
 
     void give_reward(int index, double feedback) {
-        double probability = (1 - _gamma)/(_distribution.max_element()) * _weights[index] + _additive_term;
+        double probability = (1 - _gamma) * exp(_gamma / _k * (_weights[index] - max_weight) - log(_power_weights.max_element())) + _gamma / _k;
 
         double est_reward = feedback / probability;
-        _weights[index] *= exp((_gamma * est_reward)/_k);
+        _weights[index] += est_reward;
 
-        _distribution.update(index, _weights[index]);
-
+        _distribution.update(index, probability);
+        _power_weights.update(index, exp(_gamma / _k * (_weights[index] - max_weight)));
+        if (_weights[index] > max_weight) max_weight = _weights[index];
     }
 
 private:
     int _k;
     double _gamma;
+    double max_weight;
     std::vector<double> _weights;
     double _additive_term;
+    Incremental_sum_heap _power_weights;
+
 };
 
 
