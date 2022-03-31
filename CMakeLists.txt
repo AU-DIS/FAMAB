@@ -37,7 +37,7 @@ add_executable(benchmark_bandits benchmark.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
         algorithms/UCB/UCB1.h algorithms/RBA/RBA.h algorithms/RBA/IBA.h utilities/random_gen.h utilities/exec_command.h runner.h utilities/result_writer.h
-        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/Tsallis-INF/TsallisIW.h algorithms/Tsallis-INF/TsallisRV.h experiments/TsallisExperimentRunner.h)
+        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/Tsallis-INF/TsallisIW.h algorithms/Tsallis-INF/TsallisRV.h experiments/TsallisExperimentRunner.h datastructures/Incremental_sum_heap.h algorithms/Exp3Bandit/Exp3_heap.h experiments/Exp3ComparisonRunner.h)
 
 target_link_libraries(efficient_multi_armed_bandits csv)
 target_link_libraries(benchmark_bandits benchmark::benchmark)

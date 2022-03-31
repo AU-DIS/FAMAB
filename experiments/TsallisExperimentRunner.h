@@ -6,10 +6,14 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
 
 #include <thread>
+#include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
+#include "../algorithms/Exp3m/Exp3m.h"
+
 
 void run_tsallis_weight_experiment(std::vector<std::vector<double>> &data_matrix, int k, int rounds, double gap,
                                    int averages = 50, const std::string &regret_out_path = "/tmp/out",
-                                   const std::string &weight_out_path = "/tmp/out", const std::string& algorithm="Exp3") {
+                                   const std::string &weight_out_path = "/tmp/out",
+                                   const std::string &algorithm = "Exp3") {
     std::vector<std::vector<double>> regrets;
     std::vector<double> bandit_regrets(rounds, 0);
     std::vector<double> uniform_regrets(rounds, 0);
@@ -84,6 +88,66 @@ void run_tsallis_weight_experiment(std::vector<std::vector<double>> &data_matrix
     write_results(weights_at_r, weights_metadata, weights_descriptions, weight_out_path);
 }
 
+void run_tsallis_exp3m_experiment(std::vector<std::vector<double>> &data_matrix, int k, int K, int rounds, int averages,
+                                  double gap,
+                                  const std::string &out_path = "/tmp/out") {
+
+    std::vector<double> uniform_regrets(rounds);
+    std::vector<double> exp3m_regrets(rounds);
+    for (int avg = 0; avg < averages; avg++) {
+        Uniformbandit uni(k);
+        DepRoundALIASStrategy a;
+        Exp3m b(k, K, 0.1, a);
+        for (int round = 0; round < rounds; round++) {
+            std::vector<double> uniform_rewards(K, 0);
+            std::vector<double> exp3m_rewards(K, 0);
+            std::vector<double> round_uniform_regrets(K, 0);
+            std::vector<double> round_exp3m_regrets(K, 0);
+
+
+            auto choices = b.choose();
+            double uniform_regret = 0;
+            double uniform_reward = 0;
+            double exp3m_regret = 0;
+            double exp3m_reward = 0;
+            auto max_choice = 0;
+            for (int i = 0; i < k; i++) {
+                if (data_matrix[i][round] > max_choice) max_choice = data_matrix[i][round];
+            }
+
+            for (int c = 0; c < K; c++) {
+                auto uni_choice = uni.choose();
+                auto exp3m_choice = choices[c];
+
+                uniform_reward += data_matrix[uni_choice][round];
+                exp3m_reward += data_matrix[exp3m_choice][round];
+            }
+            uniform_regret = ((max_choice*K) - uniform_reward)/K;
+            exp3m_regret = ((max_choice*K) - exp3m_reward)/K;
+            uniform_regrets[round] += uniform_regret/averages;
+            exp3m_regrets[round] += exp3m_regret/averages;
+        }
+    }
+    std::vector<std::vector<double>> result_matrix;
+    result_matrix.push_back(uniform_regrets);
+    result_matrix.push_back(exp3m_regrets);
+
+    // MUST CONTAIN ENDING COMMA
+    auto description = ",";
+    auto metadata =
+            description +
+            std::to_string(k) + ","
+            + std::to_string(rounds) + ","
+            + std::to_string(gap) + ","
+            + std::to_string(K) + ","
+            + "Uniform,Exp3m";
+    auto descriptions = std::vector<string>{
+        "Uniform",
+        "Exp3m"
+    };
+    write_results(result_matrix, metadata, descriptions, out_path);
+
+}
 
 void run_tsallis_experiment(std::vector<std::vector<double>> &data_matrix, int k, int rounds, int averages, double gap,
                             const std::string &out_path = "/tmp/out") {
@@ -296,7 +360,6 @@ create_distributions(int k, int optimal_start, int optimal_end, double delta) {
 }
 
 
-
 std::vector<std::vector<double>> mod_2(int k, int rounds, double gap) {
     std::vector<std::vector<double>> data_matrix;
     data_matrix.reserve(k);
@@ -314,7 +377,7 @@ std::vector<std::vector<double>> mod_2(int k, int rounds, double gap) {
             multiple++;
         }
         for (int arm = 0; arm < k; arm++) {
-            data_matrix[arm][i] = even ? arm % 2 : (arm+1) % 2;
+            data_matrix[arm][i] = even ? arm % 2 : (arm + 1) % 2;
         }
     }
     return data_matrix;

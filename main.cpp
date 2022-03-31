@@ -1,7 +1,10 @@
 #include "experiments/GenericBanditRunner.h"
 #include "csv-parser/include/csv.hpp"
 #include "experiments/TsallisExperimentRunner.h"
+#include "experiments/Exp3ComparisonRunner.h"
 #include "experiments/ExploreNoMoreRunner.h"
+#include "datastructures/Incremental_sum_heap.h"
+#include "algorithms/Exp3Bandit/Exp3_heap.h"
 
 using namespace csv;
 
@@ -31,7 +34,6 @@ int main(int argc, char *argv[]) {
                 auto d = mod_2(k, rounds, gap);
                 run_tsallis_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
             }
-
         }
 
         if (runner == "tsallis") {
@@ -50,8 +52,45 @@ int main(int argc, char *argv[]) {
                 auto d = mod_2(k, rounds, gap);
                 run_tsallis_experiment(d, k, rounds, averages, gap, out_path);
             }
-
         }
+        if (runner == "exp3_tsallis") {
+            int rounds = row["rounds"].get<int>();
+            int averages = row["averages"].get<int>();
+            int k = row["k"].get<int>();
+            double gap = row["gap"].get<double>();
+            auto delta = row["delta"].get<double>();
+            std::string out_path = row["output_path"].get();
+            std::string dataset = row["dataset"].get();
+            if (dataset == "stochastically_constrained_adversarial") {
+                auto d = adversarial_with_gap(k, rounds, gap, delta);
+                run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+            }
+            if (dataset == "mod2") {
+                auto d = mod_2(k, rounds, gap);
+                run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+            }
+        }
+
+        if (runner == "tsallis_exp3m") {
+            int rounds = row["rounds"].get<int>();
+            int averages = row["averages"].get<int>();
+            int k = row["k"].get<int>();
+            int K = row["K"].get<int>();
+            double gap = row["gap"].get<double>();
+            auto delta = row["delta"].get<double>();
+            std::string out_path = row["output_path"].get();
+            std::string dataset = row["dataset"].get();
+            if (dataset == "stochastically_constrained_adversarial") {
+                auto d = adversarial_with_gap(k, rounds, gap, delta);
+                run_tsallis_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
+            }
+            if (dataset == "mod2") {
+                auto d = mod_2(k, rounds, gap);
+                run_tsallis_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
+            }
+        }
+
+
         if (runner == "ExploreNoMore") {
             run_explore_no_more_experiment();
         }

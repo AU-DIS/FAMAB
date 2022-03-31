@@ -30,7 +30,8 @@ colormap = {
     "UCB (FPL)": "blueviolet",
     "Tsallis-INF (IW)": "blue",
     "Tsallis-INF (RV)": "green",
-    "Uniform": "red"
+    "Uniform": "red",
+    "Exp3m": "blue"
 }
 
 ys = []
