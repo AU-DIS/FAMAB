@@ -25,7 +25,9 @@ gap = float(metadata[3])
 colormap = {
     "Exp3": "magenta",
     "Uniform": "red",
-    "Exp3 (heap)": "blue"
+    "Exp3 (heap)": "blue",
+    "Exp3 (average)": "blue",
+    "Exp3 (defer with xi = 128)": "blue"
 }
 
 ys = []

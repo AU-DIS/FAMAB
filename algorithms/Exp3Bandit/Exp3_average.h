@@ -1,54 +1,74 @@
 //
-// Created by Mathias Ravn Tversted on 31/03/2022.
+// Created by Mathias Ravn Tversted on 01/04/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3_DEFERRED_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_EXP3_DEFERRED_H
-
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3_AVERAGE_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_EXP3_AVERAGE_H
 
 #include <math.h>
 #include <vector>
 #include <random>
 #include "../../utilities/random_gen.h"
+#include <queue>
 
-class Exp3_deferred {
+class Exp3_average {
 private:
     int _k;
     double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;
-    int _xi;
-    int rounds_distribution_used;
+    double _avg_threshold;
+    double _running_avg;
+    int _round_counter;
+    int _no_avg;
+    std::vector<double> _running_observations;
+
     std::vector<double> _probabilities;
     std::mt19937 _random_gen;
+
+
     int sample() {
-        if (rounds_distribution_used % _xi == 0) {
+        recompute_average();
+
+        if (_running_avg >= _avg_threshold) {
             double sum_reduced_power_weights = 0;
             double m = *max_element(_weights.begin(), _weights.end());
             for (int i = 0; i < _k; i++) {
                 sum_reduced_power_weights += exp(_gamma / _k * (_weights[i] - m));
             }
-
             for (int i = 0; i < _k; i++) {
                 _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
             }
             d = std::discrete_distribution<int>(_probabilities.begin(), _probabilities.end());
         }
-        rounds_distribution_used++;
         int s = d(_random_gen);
         return s;
     }
+
+    void recompute_average() {
+        for (auto v : _running_observations) _running_avg += v;
+        _running_avg /= _no_avg;
+        //std::cout << _running_avg << std::endl;
+    }
+
     std::discrete_distribution<int> d;
 
 public:
     std::vector<double> _weights;
 
-    Exp3_deferred(int k, double gamma, int xi=2) {
+    Exp3_average(int k, double gamma, double avg_threshold) {
         _k = k;
         _gamma = gamma;
-        _xi = xi;
+        _avg_threshold = avg_threshold;
+        _running_avg = 0;
+        _round_counter = 0;
 
-        rounds_distribution_used = 0;
+        _no_avg = 5;
+        _running_observations = std::vector<double>(_no_avg, 1);
+
+        recompute_average();
+
+
         _probabilities = std::vector<double>(k, 0);
         _weights = std::vector<double>(k, 1.0);
 
@@ -69,6 +89,8 @@ public:
         double est_reward = feedback / _last_drawn_probability;
         double new_weight = _last_drawn_weight + est_reward;
         _weights[index] = new_weight;
+        _running_observations[_round_counter % _no_avg] = 1 - feedback;
+        _round_counter++;
     }
     std::vector<double> get_weights() {
         return _weights;
@@ -76,4 +98,4 @@ public:
 
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3_DEFERRED_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3_AVERAGE_H

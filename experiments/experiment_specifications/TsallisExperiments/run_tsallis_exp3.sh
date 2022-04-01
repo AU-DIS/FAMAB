@@ -9,7 +9,7 @@ name=tsallis
 
 rounds=100000
 #rounds=10000
-averages=1
+averages=25
 delta=0.9
 
 run_experiment() {
@@ -22,7 +22,7 @@ run_experiment() {
       plt_out_mod2=$tmp_dir/mod2_$name$1.png
 
 
-      rm $header $out $plt_out 2> /dev/null
+      rm $header $out $plt_out $out_mod2 $plt_out_mod2 2> /dev/null
       rm $tmp_dir/*header* 2> /dev/null
       rm $tmp_dir/*.out* 2> /dev/null
 
@@ -36,9 +36,9 @@ run_experiment() {
 
 }
 
-#for k in 4 8 16 32 128 256 512
-#for k in 4 8 16
-for k in 16
+#for k in 4 8 16 32 128 256
+for k in 4 8 16 32
+#for k in 16
 do
     run_experiment $k
 done

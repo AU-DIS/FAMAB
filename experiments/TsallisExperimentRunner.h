@@ -8,6 +8,9 @@
 #include <thread>
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/Exp3m/Exp3m.h"
+#include "../algorithms/Uniformbandit.h"
+#include "../utilities/result_writer.h"
+#include "../runner.h"
 
 
 void run_tsallis_weight_experiment(std::vector<std::vector<double>> &data_matrix, int k, int rounds, double gap,
@@ -74,13 +77,13 @@ void run_tsallis_weight_experiment(std::vector<std::vector<double>> &data_matrix
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
             + algorithm + ",uniform,";
-    auto descriptions = std::vector<string>{
+    auto descriptions = std::vector<std::string>{
             algorithm,
             "Uniform"
     };
 
     auto weights_metadata = "";
-    auto weights_descriptions = std::vector<string>{
+    auto weights_descriptions = std::vector<std::string>{
             ""
     };
 
