@@ -24,8 +24,10 @@ gap = float(metadata[3])
 
 colormap = {
     "Exp3": "magenta",
+    "FPL": "green",
     "Uniform": "red",
     "Exp3 (heap)": "blue",
+    "FPL (Hashing)": "blue",
     "Exp3 (average)": "blue",
     "Exp3 (defer with xi = 128)": "blue"
 }
@@ -51,7 +53,6 @@ gap_iter = 0
 while int(gap**gap_iter) <= int(rounds):
     gap_xs.append(int(gap**gap_iter))
     gap_iter += 1
-print(gap_xs)
 plt.vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
 plt.grid(True)
 plt.legend(algorithms)

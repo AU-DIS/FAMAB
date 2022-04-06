@@ -7,6 +7,7 @@
 #include "algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "algorithms/FPL/FPL.h"
+#include "algorithms/FPL/FPL_hash.h"
 #include "algorithms/Exp3Bandit/Exp31.h"
 #include "algorithms/Exp3Bandit/Exp3.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
@@ -22,6 +23,7 @@
 #include "algorithms/Exp3Bandit/Exp3_deferred.h"
 #include "algorithms/Exp3Bandit/Exp3_average.h"
 #include "experiments/TsallisExperimentRunner.h"
+#include "datasets/data_generators.h"
 
 
 static void benchmark_exp3m_1(benchmark::State& state) {
@@ -145,6 +147,39 @@ static void benchmark_fpl_update(benchmark::State& state) {
 }
 
 
+static void benchmark_fpl_hashing(benchmark::State& state) {
+    auto k = state.range(0);
+    int rounds = 1000;
+    FPL_hash b(k, 0.1, rounds);
+    for (auto _ : state) {
+        for (int i = 0; i < rounds; i++) {
+            int choice = b.choose();
+            b.give_reward(0, 0);
+        }
+    }
+}
+
+static void benchmark_fpl_hashing_sample(benchmark::State& state) {
+    auto k = state.range(0);
+    int rounds = 1000;
+    FPL_hash b(k, 0.1, rounds);
+    for (auto _ : state) {
+        for (int i = 0; i < rounds; i++) {
+            int choice = b.choose();
+        }
+    }
+}
+static void benchmark_fpl_hashing_update(benchmark::State& state) {
+    auto k = state.range(0);
+    int rounds = 1000;
+    FPL_hash b(k, 0.1, rounds);
+    for (auto _ : state) {
+        for (int i = 0; i < rounds; i++) {
+            b.give_reward(0, 0);
+        }
+    }
+}
+
 static void benchmark_exp31(benchmark::State& state) {
     auto k = state.range(0);
     Exp31 b(k);
@@ -196,7 +231,8 @@ static void benchmark_exp3_data(benchmark::State& state) {
     int rounds = 1000;
     double gap = 3.2;
     double delta = 0.9;
-    auto d = adversarial_with_gap(k, rounds, gap, delta);
+    auto dataset = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+    auto d = dataset.generate();
     Exp3 b(k, 0.1);
     for (auto _ : state) {
         for (int i = 0; i < rounds; i++) {
@@ -211,7 +247,8 @@ static void benchmark_exp3_average(benchmark::State& state) {
     int rounds = 1000;
     double gap = 3.2;
     double delta = 0.9;
-    auto d = adversarial_with_gap(k, rounds, gap, delta);
+    auto dataset = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+    auto d = dataset.generate();
     //auto d = mod_2(k, rounds, gap);
     Exp3_average b(k, 0.1, 0.2);
     for (auto _ : state) {
@@ -386,15 +423,21 @@ static void benchmark_tsallis_update(benchmark::State& state) {
 }
 
 
-/*
+
 BENCHMARK(benchmark_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_fpl_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_fpl_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 
+
+BENCHMARK(benchmark_fpl_hashing)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_fpl_hashing_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_fpl_hashing_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+
+/*
 BENCHMARK(benchmark_exp31)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_exp31_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_exp31_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
-*/
+
 
 //
 //BENCHMARK(benchmark_exp3_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
@@ -404,7 +447,7 @@ BENCHMARK(benchmark_exp31_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg
 //BENCHMARK(benchmark_exp3_defer)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(15);
 
 //BENCHMARK(benchmark_exp3_data)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(15);
-BENCHMARK(benchmark_exp3_average)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(15);
+//BENCHMARK(benchmark_exp3_average)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(15);
 /*
 
 

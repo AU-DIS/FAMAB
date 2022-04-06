@@ -27,8 +27,8 @@ run_experiment() {
       rm $tmp_dir/*.out* 2> /dev/null
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
-      echo "exp3_tsallis,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
-      echo "exp3_tsallis,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
+      echo "fpl_tsallis,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
+      echo "fpl_tsallis,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
 
       ./$make_dir/efficient_multi_armed_bandits $header
       python3 plotting/plot_exp3_tsallis.py $out $plt_out

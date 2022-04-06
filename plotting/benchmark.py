@@ -17,12 +17,16 @@ for nr, algo in enumerate(algorithms):
     rows = df.loc[df["name"] == algo]
     runtimes = [x for i, x in enumerate(rows["cpu_time"])]
     plt.loglog(ks, runtimes)
+    #plt.plot(ks, runtimes)
+    #plt.plot(ks, runtimes)
     #plt.xticks(values[1:],ks[1:])
     #plt.yscale('log')
     #plt.xscale('log')
 
 
 
+#plt.xscale('log')
+#plt.yscale('log')
 plt.xlabel('k')
 plt.ylabel('cputime')
 plt.legend(algorithms)
