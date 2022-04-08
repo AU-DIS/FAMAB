@@ -5,12 +5,22 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
 
-#include <thread>
+
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/Exp3m/Exp3m.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 #include "../runner.h"
+#include "../algorithms/FPL/FPLVectorWeightStrategy.h"
+#include "../algorithms/FPL/NaiveRandomGenStrategy.h"
+#include "../algorithms/FPL/FPL.h"
+#include "../algorithms/Exp3Bandit/Exp3.h"
+#include "../algorithms/Exp3Bandit/Exp31.h"
+#include "../algorithms/Tsallis-INF/TsallisINF.h"
+#include "../algorithms/Tsallis-INF/TsallisRV.h"
+#include "../algorithms/Tsallis-INF/TsallisIW.h"
+#include "../algorithms/UCB/UCB1.h"
+
 
 template<typename Dataset>
 void run_tsallis_weight_experiment(Dataset d, int k, int rounds, double gap,

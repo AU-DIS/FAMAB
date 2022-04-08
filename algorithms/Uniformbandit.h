@@ -4,6 +4,8 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_UNIFORMBANDIT_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_UNIFORMBANDIT_H
+#include "random"
+#include "../utilities/random_gen.h"
 
 class Uniformbandit {
 private:

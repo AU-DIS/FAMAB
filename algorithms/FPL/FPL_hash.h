@@ -6,7 +6,7 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_HASH_H
 
 #include "../../utilities/random_gen.h"
-
+#include "../../utilities/updateable_priority_queue.h"
 class FPL_hash {
 private:
     int _k;
@@ -14,7 +14,6 @@ private:
     std::exponential_distribution<double> _exponential_distribution;
     std::mt19937 _gen;
     double _eta;
-    std::hash<double> _h;
     std::vector<double>* _presampled_noise;
     int _number_to_presample;
     double _a;
@@ -23,13 +22,7 @@ private:
 
 private:
     unsigned int hash(double w) {
-        /*
-        return abs((int) _h(w));
-         */
         auto r =  ((unsigned int) (_a * w + _b)) % _number_to_presample;
-        if (r < 0) {
-            std::cout << _a << " * " << w << " + " << _b << std::endl;
-        }
         return r;
     }
 
@@ -39,7 +32,6 @@ public:
         _eta = eta;
         _exponential_distribution = std::exponential_distribution<double>(_eta);
         _gen = random_gen();
-        _h = std::hash<double>();
         _weights = std::vector<double>(k, 0);
         for (auto &w : _weights) w += _exponential_distribution(_gen);
 

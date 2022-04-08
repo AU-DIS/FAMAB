@@ -98,7 +98,7 @@ std::vector<std::vector<double>> stochastically_constrained_adversarial(int k, d
     }
 
     auto current_optimal = first_optimal;
-    auto current_suboptimal = first_optimal;
+    auto current_suboptimal = first_suboptimal;
     auto is_first = true;
     int multiple = 1;
     int optimal_arm = 1;
@@ -119,6 +119,47 @@ std::vector<std::vector<double>> stochastically_constrained_adversarial(int k, d
     }
     return data_matrix;
 }
+
+
+class StochasticDataset {
+private:
+    int _k;
+    int _rounds;
+    double _lambda;
+    std::mt19937 _gen;
+
+public:
+    StochasticDataset(int k, int rounds, double lambda)
+    {
+        _k = k;
+        _rounds = rounds;
+        _lambda = lambda;
+        _gen = random_gen();
+
+    }
+
+    std::vector<std::vector<double>> generate() {
+        std::vector<std::vector<double>> data_matrix;
+        data_matrix.reserve(_k);
+
+
+
+        for (int arm = 0; arm < _k; arm++) {
+            double p = _lambda - (((double) arm)/_k);
+            if (p < 0) p *= -1;
+            std::discrete_distribution<int> bernoulli({1 - p, p});
+            std::vector<double> row;
+            row.reserve(_rounds);
+            for (int round = 0; round < _rounds; round++) {
+                double v = bernoulli(_gen);
+                row.push_back(v);
+            }
+            data_matrix.push_back(row);
+        }
+        return data_matrix;
+    }
+};
+
 
 class StochasticallyConstrainedDataset {
 private:

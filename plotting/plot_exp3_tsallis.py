@@ -28,6 +28,7 @@ colormap = {
     "Uniform": "red",
     "Exp3 (heap)": "blue",
     "FPL (Hashing)": "blue",
+    "FPL (Heap)": "blue",
     "Exp3 (average)": "blue",
     "Exp3 (defer with xi = 128)": "blue"
 }
@@ -38,6 +39,7 @@ algorithms = sorted(algorithms)
 plt.figure(0, figsize=(15, 5))
 for nr, algorithm in enumerate(algorithms):
     lines = np.array([float(x) for x in regrets[algorithm]])
+
     max_val = np.max(lines)
     lines = np.cumsum(lines)
     ys.append(lines)

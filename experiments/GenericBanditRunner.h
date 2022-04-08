@@ -6,7 +6,6 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_GENERICBANDITRUNNER_H
 #include "../datasets/dataset_simple_adversarial.h"
 #include "../datasets/dataset_simple_stochastic.h"
-#include "../datasets/Dataset_movielens.h"
 #include "../utilities/weight_exporter.cpp"
 #include "../algorithms/Exp3Bandit/Exp31.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"

@@ -8,7 +8,7 @@ make_dir=cmake-build-release-odin
 name=tsallis
 
 rounds=100000
-#rounds=10000
+#rounds=1000000
 averages=25
 delta=0.9
 
@@ -21,23 +21,29 @@ run_experiment() {
       out_mod2=$tmp_dir/mod2_$name$1.out
       plt_out_mod2=$tmp_dir/mod2_$name$1.png
 
+      out_stochastic=$tmp_dir/stochastic_$name$1.out
+      plt_out_stochastic=$tmp_dir/stochastic_$name$1.png
 
-      rm $header $out $plt_out $out_mod2 $plt_out_mod2 2> /dev/null
+
+      rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2> /dev/null
       rm $tmp_dir/*header* 2> /dev/null
       rm $tmp_dir/*.out* 2> /dev/null
+
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
       echo "fpl_tsallis,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
       echo "fpl_tsallis,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
+      echo "fpl_tsallis,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
       ./$make_dir/efficient_multi_armed_bandits $header
       python3 plotting/plot_exp3_tsallis.py $out $plt_out
       python3 plotting/plot_exp3_tsallis.py $out_mod2 $plt_out_mod2
+      python3 plotting/plot_exp3_tsallis.py $out_stochastic $plt_out_stochastic
 
 }
 
-#for k in 4 8 16 32 128 256
-for k in 4 8 16 32
+for k in 4 8 16 32 128 256 512 1024
+#for k in 4 8 16 32
 #for k in 16
 do
     run_experiment $k
