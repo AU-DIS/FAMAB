@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 sed 's/exp3/Exp3/g' $1 |
     sed 's/name,/name,k,/g' |
