@@ -9,7 +9,7 @@ name=tsallis
 
 rounds=100000
 #rounds=1000000
-averages=25
+averages=100
 delta=0.9
 
 run_experiment() {
