@@ -194,12 +194,12 @@ void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double g
 
         Uniformbandit uni(k);
 
-        /*
+
         FPLVectorWeightStrategy fpl_ws(k);
         NaiveRandomGenStrategy fpl_rs(k, 10);
         FPL fpl(fpl_ws, fpl_rs);
-*/
-        FPL_weightless fpl(k, 0.9);
+
+        //FPL_weightless fpl(k, 0.9);
 
         FPLVectorWeightStrategy fpl_ucb_ws(k);
         NaiveRandomGenStrategy fpl_ucb_rs(k, 10);
@@ -220,7 +220,7 @@ void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double g
 
         std::vector<double> fpl_run;
         //std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl),
-        std::thread t3(basic_tsallis_runner<FPL_weightless>, std::ref(fpl),
+        std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy,NaiveRandomGenStrategy>>, std::ref(fpl),
                        std::ref(data_matrix), rounds, std::ref(fpl_run));
 
         std::vector<double> ucb_fpl_run;

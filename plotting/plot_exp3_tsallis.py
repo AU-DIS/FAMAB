@@ -28,6 +28,7 @@ colormap = {
     "Uniform": "red",
     "Exp3 (heap)": "blue",
     "FPL (Hashing)": "blue",
+    "QBL": "blue",
     "FPL (Heap)": "blue",
     "Exp3 (average)": "blue",
     "Exp3 (defer with xi = 128)": "blue"

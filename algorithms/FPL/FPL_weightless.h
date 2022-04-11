@@ -5,6 +5,7 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPL_WEIGHTLESS_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_WEIGHTLESS_H
 
+#include "../../utilities/updateable_priority_queue.h"
 
 class FPL_weightless {
 private:

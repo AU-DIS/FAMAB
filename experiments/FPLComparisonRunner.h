@@ -27,9 +27,9 @@ void run_fpl_tsallis_experiment(Dataset d, int k, int rounds, int averages, doub
         NaiveRandomGenStrategy fpl_rs(k, 0.9);
         FPL fpl(fpl_ws, fpl_rs);
 
-        FPL_hash fpl_new(k, 0.9, rounds);
+        //FPL_hash fpl_new(k, 0.9, rounds);
         //FPL_buckets fpl_new(k, 0.9);
-//        FPL_weightless fpl_new(k, 0.9);
+        FPL_weightless fpl_new(k, 0.9);
 
         Uniformbandit uni(k);
 
@@ -37,7 +37,7 @@ void run_fpl_tsallis_experiment(Dataset d, int k, int rounds, int averages, doub
         std::thread t1(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
 
         std::vector<double> fpl_new_run;
-        std::thread t2(basic_tsallis_runner<FPL_hash>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
+        std::thread t2(basic_tsallis_runner<FPL_weightless>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
 
         std::vector<double> uniform_run;
         std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
@@ -67,10 +67,10 @@ void run_fpl_tsallis_experiment(Dataset d, int k, int rounds, int averages, doub
             std::to_string(k) + ","
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
-            + "FPL,FPL (Hashing),Uniform,";
+            + "FPL,QBL,Uniform,";
     auto descriptions = std::vector<string>{
             "FPL",
-            "FPL (Hashing)",
+            "QBL",
             "Uniform"
     };
     write_results(result_matrix, metadata, descriptions, out_path);
