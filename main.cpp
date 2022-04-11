@@ -1,5 +1,3 @@
-#include "experiments/GenericBanditRunner.h"
-#include "csv-parser/include/csv.hpp"
 #include "experiments/TsallisExperimentRunner.h"
 #include "datasets/data_generators.h"
 #include "experiments/Exp3ComparisonRunner.h"
@@ -36,6 +34,7 @@ int main(int argc, char *argv[]) {
                 auto d = Mod2Dataset(k, rounds, gap);
                 run_tsallis_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
             }
+
         }
 
         if (runner == "tsallis") {
@@ -54,6 +53,11 @@ int main(int argc, char *argv[]) {
                 auto d = Mod2Dataset(k, rounds, gap);
                 run_tsallis_experiment(d, k, rounds, averages, gap, out_path);
             }
+            if (dataset == "stochastic") {
+                auto d = StochasticDataset(k, rounds, delta);
+                if (runner == "exp3_tsallis") run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "fpl_tsallis") run_fpl_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+            }
         }
         if (runner == "exp3_tsallis" || runner == "fpl_tsallis") {
             int rounds = row["rounds"].get<int>();
@@ -71,6 +75,11 @@ int main(int argc, char *argv[]) {
             }
             if (dataset == "mod2") {
                 auto d = Mod2Dataset(k, rounds, gap);
+                if (runner == "exp3_tsallis") run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "fpl_tsallis") run_fpl_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+            }
+            if (dataset == "stochastic") {
+                auto d = StochasticDataset(k, rounds, delta);
                 if (runner == "exp3_tsallis") run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_tsallis") run_fpl_tsallis_experiment(d, k, rounds, averages, gap, out_path);
             }
@@ -93,6 +102,11 @@ int main(int argc, char *argv[]) {
                 auto d = Mod2Dataset(k, rounds, gap);
                 run_tsallis_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
             }
+            if (dataset == "stochastic") {
+                auto d = StochasticDataset(k, rounds, delta);
+                if (runner == "exp3_tsallis") run_exp3_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "fpl_tsallis") run_fpl_tsallis_experiment(d, k, rounds, averages, gap, out_path);
+            }
         }
 
 
@@ -107,13 +121,14 @@ int main(int argc, char *argv[]) {
             std::string dataset = row["dataset"].get();
             if (dataset == "adversarial") {
                 int K = row["K"].get<int>();
-                auto d = dataset_simple_adversarial(K, rounds);
-                run_generic_experiment(d, K, rounds, averages, out_path);
+                //auto d = dataset_simple_adversarial(K, rounds);
+                //run_generic_experiment(d, K, rounds, averages, out_path);
             }
             if (dataset == "movielens") {
-                auto d = Dataset_movielens("datasets/data_directory/movielens.csv", 4);
-                run_generic_experiment(d, d.K, rounds, averages, out_path);
+                //auto d = Dataset_movielens("datasets/data_directory/movielens.csv", 4);
+                //run_generic_experiment(d, d.K, rounds, averages, out_path);
             }
+
         }
     }
 }
