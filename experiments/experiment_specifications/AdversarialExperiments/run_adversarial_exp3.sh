@@ -5,7 +5,7 @@ make_dir=cmake-build-odin
 #tmp_dir=/tmp
 #make_dir=cmake-build-materecclesia
 
-name=adversarial
+name=exp3
 
 rounds=100000
 #rounds=1000000
@@ -36,9 +36,9 @@ run_experiment() {
       echo "exp3_adversarial,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
       ./$make_dir/efficient_multi_armed_bandits $header
-      python3 plotting/plot_exp3_adversarial.py $out $plt_out
-      python3 plotting/plot_exp3_adversarial.py $out_mod2 $plt_out_mod2
-      python3 plotting/plot_exp3_adversarial.py $out_stochastic $plt_out_stochastic
+      python3 plotting/plot_compare.py $out $plt_out
+      python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
+      python3 plotting/plot_compare.py $out_stochastic $plt_out_stochastic
 
 }
 

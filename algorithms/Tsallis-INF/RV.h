@@ -13,7 +13,7 @@ public:
         for (size_t i = 0; i <weights.size(); i++) {
             double indicator = i == index? 1 : 0;
             double B = weights[i] >= (eta * eta) ? 1.0/2.0 : 0;
-            double estimator = (indicator * (feedback - B))/weights[i] + B;
+            double estimator = (indicator * ((1 - feedback) - B))/weights[i] + B;
             estimators.push_back(estimator);
         }
         return estimators;

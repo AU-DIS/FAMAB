@@ -14,7 +14,7 @@
 #include "../algorithms/FPL/FPLVectorWeightStrategy.h"
 #include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
-#include "../algorithms/FPL/FPL_weightless.h"
+#include "../algorithms/FPL/QBL.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"
 #include "../algorithms/Exp3Bandit/Exp31.h"
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
@@ -199,7 +199,7 @@ void run_adversarial_experiment(Dataset d, int k, int rounds, int averages, doub
         NaiveRandomGenStrategy fpl_rs(k, 10);
         FPL fpl(fpl_ws, fpl_rs);
 
-        //FPL_weightless fpl(k, 0.9);
+        //QBL fpl(k, 0.9);
 
         FPLVectorWeightStrategy fpl_ucb_ws(k);
         NaiveRandomGenStrategy fpl_ucb_rs(k, 10);

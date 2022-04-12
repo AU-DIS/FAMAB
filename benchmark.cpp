@@ -147,7 +147,7 @@ static void benchmark_fpl_update(benchmark::State& state) {
 }
 static void benchmark_qbl(benchmark::State& state) {
     auto k = state.range(0);
-    FPL_weightless b(k, 0.1);
+    QBL b(k, 0.1);
     for (auto _ : state) {
         int rounds = 1000;
         for (int i = 0; i < rounds; i++) {
@@ -159,7 +159,7 @@ static void benchmark_qbl(benchmark::State& state) {
 
 static void benchmark_qbl_sample(benchmark::State& state) {
     auto k = state.range(0);
-    FPL_weightless b(k, 0.1);
+    QBL b(k, 0.1);
     for (auto _ : state) {
         int rounds = 1000;
         for (int i = 0; i < rounds; i++) {
@@ -169,7 +169,7 @@ static void benchmark_qbl_sample(benchmark::State& state) {
 }
 static void benchmark_qbl_update(benchmark::State& state) {
     auto k = state.range(0);
-    FPL_weightless b(k, 0.1);
+    QBL b(k, 0.1);
     for (auto _: state) {
         int rounds = 1000;
         for (int i = 0; i < rounds; i++) {

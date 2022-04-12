@@ -1,13 +1,13 @@
 alias python3="/home/tversted/miniconda3/bin/python"
-tmp_dir=/home/tversted/tmp
-make_dir=cmake-build-odin
+#tmp_dir=/home/tversted/tmp
+#make_dir=cmake-build-odin
 
-#tmp_dir=/tmp
-#make_dir=cmake-build-materecclesia
+tmp_dir=/tmp
+make_dir=cmake-build-release
 
-name=fpl
+name=tsallis
 
-rounds=100000
+rounds=1000
 #rounds=1000000
 averages=100
 delta=0.9
@@ -31,9 +31,9 @@ run_experiment() {
 
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
-      echo "fpl_adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
-      echo "fpl_adversarial,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
-      echo "fpl_adversarial,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
+      echo "tsallis_adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
+      echo "tsallis_adversarial,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
+      echo "tsallis_adversarial,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
       ./$make_dir/efficient_multi_armed_bandits $header
       python3 plotting/plot_compare.py $out $plt_out

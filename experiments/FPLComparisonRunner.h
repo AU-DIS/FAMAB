@@ -8,8 +8,7 @@
 #include <thread>
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/FPL/FPL_hash.h"
-#include "../algorithms/FPL/FPL_buckets.h"
-#include "../algorithms/FPL/FPL_weightless.h"
+#include "../algorithms/FPL/QBL.h"
 
 
 template <typename Dataset>
@@ -29,7 +28,7 @@ void run_fpl_adversarial_experiment(Dataset d, int k, int rounds, int averages, 
 
         //FPL_hash fpl_new(k, 0.9, rounds);
         //FPL_buckets fpl_new(k, 0.9);
-        FPL_weightless fpl_new(k, 0.9);
+        QBL fpl_new(k, 0.9);
 
         Uniformbandit uni(k);
 
@@ -37,7 +36,7 @@ void run_fpl_adversarial_experiment(Dataset d, int k, int rounds, int averages, 
         std::thread t1(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
 
         std::vector<double> fpl_new_run;
-        std::thread t2(basic_tsallis_runner<FPL_weightless>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
+        std::thread t2(basic_tsallis_runner<QBL>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
 
         std::vector<double> uniform_run;
         std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,

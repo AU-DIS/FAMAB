@@ -9,7 +9,7 @@ class IW {
 public:
     std::vector<double> estimate(size_t index, double feedback, std::vector<double> &weights, double eta) {
         auto ret = std::vector<double>(weights.size(), 0);
-        ret[index] = feedback/weights[index];
+        ret[index] = (1 - feedback)/weights[index];
         return ret;
     }
 };

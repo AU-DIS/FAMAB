@@ -29,7 +29,9 @@ colormap = {
     "FPL": "royalblue",
     "UCB (FPL)": "blueviolet",
     "Tsallis-INF (IW)": "blue",
+    "Tsallis (IW)": "blue",
     "Tsallis-INF (RV)": "green",
+    "Tsallis (RV)": "green",
     "Uniform": "red",
     "Exp3m": "blue"
 }

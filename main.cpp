@@ -2,6 +2,7 @@
 #include "datasets/data_generators.h"
 #include "experiments/Exp3ComparisonRunner.h"
 #include "experiments/FPLComparisonRunner.h"
+#include "experiments/TsallisComparisonRunner.h"
 #include "experiments/ExploreNoMoreRunner.h"
 #include "datastructures/Incremental_sum_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
             }
         }
-        if (runner == "exp3_adversarial" || runner == "fpl_adversarial") {
+        if (runner == "exp3_adversarial" || runner == "fpl_adversarial" || runner == "tsallis_adversarial") {
             int rounds = row["rounds"].get<int>();
             int averages = row["averages"].get<int>();
             int k = row["k"].get<int>();
@@ -71,17 +72,20 @@ int main(int argc, char *argv[]) {
                 auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
 
             }
             if (dataset == "mod2") {
                 auto d = Mod2Dataset(k, rounds, gap);
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
             }
             if (dataset == "stochastic") {
                 auto d = StochasticDataset(k, rounds, delta);
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
             }
         }
 

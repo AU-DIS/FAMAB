@@ -2,12 +2,12 @@
 // Created by Mathias Ravn Tversted on 07/04/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPL_WEIGHTLESS_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_FPL_WEIGHTLESS_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
 
 #include "../../utilities/updateable_priority_queue.h"
 
-class FPL_weightless {
+class QBL {
 private:
     int _k;
     std::exponential_distribution<double> _exponential_distribution;
@@ -19,13 +19,13 @@ private:
     int _log_k;
 
 public:
-    FPL_weightless(int k, double eta) {
+    QBL(int k, double eta) {
         _k = k;
         _eta = eta;
         _counter = 0;
         _log_k = (int) log2(k);
-        //_log_k = k;
-        _log_k = 2;
+        _log_k = k;
+        //_log_k = 2;
 
         _exponential_distribution = std::exponential_distribution<double>(_eta);
         _gen = random_gen();
@@ -54,4 +54,4 @@ public:
 
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_FPL_WEIGHTLESS_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
