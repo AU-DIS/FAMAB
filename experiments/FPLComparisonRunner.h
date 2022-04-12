@@ -13,8 +13,8 @@
 
 
 template <typename Dataset>
-void run_fpl_tsallis_experiment(Dataset d, int k, int rounds, int averages, double gap,
-                                 const std::string &out_path = "/tmp/out") {
+void run_fpl_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+                                    const std::string &out_path = "/tmp/out") {
 
 
     std::vector<double> fpl_original_regrets(rounds);

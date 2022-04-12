@@ -5,7 +5,7 @@ make_dir=cmake-build-release-odin
 #tmp_dir=/tmp
 #make_dir=cmake-build-materecclesia
 
-name=tsallis
+name=adversarial
 
 #rounds=10000
 rounds=100000
@@ -29,13 +29,13 @@ run_experiment() {
       rm $tmp_dir/*.out* 2> /dev/null
 
       echo "runner,dataset,gap,k,K,rounds,averages,delta,output_path" >> $tmp_dir/header_$name$1$K
-      echo "tsallis_exp3m,stochastically_constrained_adversarial,3.2,$1,$K,$rounds,$averages,$delta,$out" >> $tmp_dir/header_$name$1$K
-      echo "tsallis_exp3m,mod2,3.2,$1,$K,$rounds,$averages,$delta,$out_mod2" >> $tmp_dir/header_$name$1$K
+      echo "adversarial_exp3m,stochastically_constrained_adversarial,3.2,$1,$K,$rounds,$averages,$delta,$out" >> $tmp_dir/header_$name$1$K
+      echo "adversarial_exp3m,mod2,3.2,$1,$K,$rounds,$averages,$delta,$out_mod2" >> $tmp_dir/header_$name$1$K
 
 
       ./$make_dir/efficient_multi_armed_bandits $header
-      python3 plotting/plot_tsallis_exp3m.py $out $plt_out
-      python3 plotting/plot_tsallis_exp3m.py $out_mod2 $plt_out_mod2
+      python3 plotting/plot_adversarial_exp3m.py $out $plt_out
+      python3 plotting/plot_adversarial_exp3m.py $out_mod2 $plt_out_mod2
       done
 
 }

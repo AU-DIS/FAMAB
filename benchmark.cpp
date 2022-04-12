@@ -11,8 +11,8 @@
 #include "algorithms/Exp3Bandit/Exp31.h"
 #include "algorithms/Exp3Bandit/Exp3.h"
 #include "algorithms/Tsallis-INF/TsallisINF.h"
-#include "algorithms/Tsallis-INF/TsallisRV.h"
-#include "algorithms/Tsallis-INF/TsallisIW.h"
+#include "algorithms/Tsallis-INF/RV.h"
+#include "algorithms/Tsallis-INF/IW.h"
 #include "algorithms/DEXP/DExp3.h"
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "algorithms/Exp3m/Exp3m.h"
@@ -22,7 +22,7 @@
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_deferred.h"
 #include "algorithms/Exp3Bandit/Exp3_average.h"
-#include "experiments/TsallisExperimentRunner.h"
+#include "experiments/AdversarialExperimentRunner.h"
 #include "datasets/data_generators.h"
 
 
@@ -142,6 +142,38 @@ static void benchmark_fpl_update(benchmark::State& state) {
         int rounds = 1000;
         for (int i = 0; i < rounds; i++) {
             b.give_reward(0, 0);
+        }
+    }
+}
+static void benchmark_qbl(benchmark::State& state) {
+    auto k = state.range(0);
+    FPL_weightless b(k, 0.1);
+    for (auto _ : state) {
+        int rounds = 1000;
+        for (int i = 0; i < rounds; i++) {
+            int choice = b.choose();
+            b.give_reward(i % k, 1);
+        }
+    }
+}
+
+static void benchmark_qbl_sample(benchmark::State& state) {
+    auto k = state.range(0);
+    FPL_weightless b(k, 0.1);
+    for (auto _ : state) {
+        int rounds = 1000;
+        for (int i = 0; i < rounds; i++) {
+            int choice = b.choose();
+        }
+    }
+}
+static void benchmark_qbl_update(benchmark::State& state) {
+    auto k = state.range(0);
+    FPL_weightless b(k, 0.1);
+    for (auto _: state) {
+        int rounds = 1000;
+        for (int i = 0; i < rounds; i++) {
+            b.give_reward(i % k, 1);
         }
     }
 }
@@ -374,7 +406,7 @@ static void benchmark_exp3eta_update(benchmark::State& state) {
 
 static void benchmark_tsallis_rv(benchmark::State& state) {
     auto k = state.range(0);
-    TsallisRV rv;
+    RV rv;
     TsallisINF b(k, rv);
     for (auto _ : state) {
         int rounds = 1000;
@@ -386,7 +418,7 @@ static void benchmark_tsallis_rv(benchmark::State& state) {
 }
 static void benchmark_tsallis_iw(benchmark::State& state) {
     auto k = state.range(0);
-    TsallisIW iw;
+    IW iw;
     TsallisINF b(k, iw);
     for (auto _ : state) {
         int rounds = 1000;
@@ -399,7 +431,7 @@ static void benchmark_tsallis_iw(benchmark::State& state) {
 
 static void benchmark_tsallis_sample(benchmark::State& state) {
     auto k = state.range(0);
-    TsallisIW iw;
+    IW iw;
     TsallisINF b(k, iw);
     for (auto _ : state) {
 
@@ -411,7 +443,7 @@ static void benchmark_tsallis_sample(benchmark::State& state) {
 }
 static void benchmark_tsallis_update(benchmark::State& state) {
     auto k = state.range(0);
-    TsallisIW iw;
+    IW iw;
     TsallisINF b(k, iw);
     for (auto _ : state) {
 
@@ -428,11 +460,15 @@ BENCHMARK(benchmark_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)-
 BENCHMARK(benchmark_fpl_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_fpl_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 
+BENCHMARK(benchmark_qbl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_qbl_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
+BENCHMARK(benchmark_qbl_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 
+/*
 BENCHMARK(benchmark_fpl_hashing)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_fpl_hashing_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_fpl_hashing_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
-
+*/
 /*
 BENCHMARK(benchmark_exp31)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);
 BENCHMARK(benchmark_exp31_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(15);

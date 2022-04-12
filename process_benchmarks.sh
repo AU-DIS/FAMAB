@@ -8,6 +8,8 @@ sed 's/exp3/Exp3/g' $1 |
     sed 's/\/1/,1/g' |
     sed 's/_sample/ (sample)/g' |
     sed 's/_update/ (update)/g' |
+    sed 's/qbl/QBL/g' |
+    sed 's/fpl/FPL/g' |
     sed 's/_heap/ heap/g' >> $2
 
 

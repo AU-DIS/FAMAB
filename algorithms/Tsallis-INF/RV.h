@@ -2,9 +2,9 @@
 // Created by Mathias Ravn Tversted on 11/03/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLISRV_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISRV_H
-class TsallisRV {
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_RV_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_RV_H
+class RV {
 public:
     std::vector<double> estimate(size_t index, double feedback, std::vector<double> &weights, double eta) {
         std::vector<double> estimators;
@@ -20,4 +20,4 @@ public:
     }
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLISRV_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_RV_H

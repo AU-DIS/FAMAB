@@ -2,8 +2,8 @@
 // Created by Mathias Ravn Tversted on 15/03/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_ADVERSARIALEXPERIMENTRUNNER_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_ADVERSARIALEXPERIMENTRUNNER_H
 
 
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
@@ -18,16 +18,16 @@
 #include "../algorithms/Exp3Bandit/Exp3.h"
 #include "../algorithms/Exp3Bandit/Exp31.h"
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
-#include "../algorithms/Tsallis-INF/TsallisRV.h"
-#include "../algorithms/Tsallis-INF/TsallisIW.h"
+#include "../algorithms/Tsallis-INF/RV.h"
+#include "../algorithms/Tsallis-INF/IW.h"
 #include "../algorithms/UCB/UCB1.h"
 
 
 template<typename Dataset>
-void run_tsallis_weight_experiment(Dataset d, int k, int rounds, double gap,
-                                   int averages = 50, const std::string &regret_out_path = "/tmp/out",
-                                   const std::string &weight_out_path = "/tmp/out",
-                                   const std::string &algorithm = "Exp3") {
+void run_adversarial_weight_experiment(Dataset d, int k, int rounds, double gap,
+                                       int averages = 50, const std::string &regret_out_path = "/tmp/out",
+                                       const std::string &weight_out_path = "/tmp/out",
+                                       const std::string &algorithm = "Exp3") {
     std::vector<std::vector<double>> regrets;
     std::vector<double> bandit_regrets(rounds, 0);
     std::vector<double> uniform_regrets(rounds, 0);
@@ -102,9 +102,9 @@ void run_tsallis_weight_experiment(Dataset d, int k, int rounds, double gap,
     write_results(weights_at_r, weights_metadata, weights_descriptions, weight_out_path);
 }
 template<typename Dataset>
-void run_tsallis_exp3m_experiment(Dataset d, int k, int K, int rounds, int averages,
-                                  double gap,
-                                  const std::string &out_path = "/tmp/out") {
+void run_adversarial_exp3m_experiment(Dataset d, int k, int K, int rounds, int averages,
+                                      double gap,
+                                      const std::string &out_path = "/tmp/out") {
 
     std::vector<double> uniform_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
@@ -166,8 +166,8 @@ void run_tsallis_exp3m_experiment(Dataset d, int k, int K, int rounds, int avera
 
 
 template <typename Dataset>
-void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double gap,
-                            const std::string &out_path = "/tmp/out") {
+void run_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+                                const std::string &out_path = "/tmp/out") {
 
     std::vector<double> exp3_regrets(rounds);
     std::vector<double> exp31_regrets(rounds);
@@ -184,9 +184,9 @@ void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double g
         std::vector<std::vector<double>> data_matrix = d.generate();
         Exp3 exp3(k, 0.1);
 
-        TsallisIW iw;
+        IW iw;
         TsallisINF tsallis_iw(k, iw);
-        TsallisRV rv;
+        RV rv;
         TsallisINF tsallis_rv(k, rv);
 
         Exp3 ucb_exp3_bandit(k, 0.1);
@@ -229,11 +229,11 @@ void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double g
 
 
         std::vector<double> tsallis_iw_run;
-        std::thread t5(basic_tsallis_runner<TsallisINF<TsallisIW>>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
+        std::thread t5(basic_tsallis_runner<TsallisINF<IW>>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
                        std::ref(tsallis_iw_run));
 
         std::vector<double> tsallis_rv_run;
-        std::thread t6(basic_tsallis_runner<TsallisINF<TsallisRV>>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
+        std::thread t6(basic_tsallis_runner<TsallisINF<RV>>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
                        std::ref(tsallis_rv_run));
 
 
@@ -311,4 +311,4 @@ void run_tsallis_experiment(Dataset d, int k, int rounds, int averages, double g
     write_results(result_matrix, metadata, descriptions, out_path);
 }
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLISEXPERIMENTRUNNER_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_ADVERSARIALEXPERIMENTRUNNER_H

@@ -24,7 +24,8 @@ public:
         _eta = eta;
         _counter = 0;
         _log_k = (int) log2(k);
-        _log_k = k;
+        //_log_k = k;
+        _log_k = 2;
 
         _exponential_distribution = std::exponential_distribution<double>(_eta);
         _gen = random_gen();

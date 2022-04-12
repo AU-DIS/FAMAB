@@ -10,8 +10,8 @@
 #include "../algorithms/Exp3Bandit/Exp3_average.h"
 
 template <typename Dataset>
-void run_exp3_tsallis_experiment(Dataset d, int k, int rounds, int averages, double gap,
-                            const std::string &out_path = "/tmp/out") {
+void run_exp3_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+                                     const std::string &out_path = "/tmp/out") {
 
 
     std::vector<double> exp3_compare_regrets(rounds);
