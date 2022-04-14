@@ -1,9 +1,10 @@
-alias python3="/home/tversted/miniconda3/bin/python"
-#tmp_dir=/home/tversted/tmp
-#make_dir=cmake-build-odin
+#alias python3="/home/tversted/miniconda3/bin/python"
+alias python3="/usr/bin/python3"
+make_dir=cmake-build-heroicis
 
-tmp_dir=/tmp
-make_dir=cmake-build-release
+tmp_dir=/mnt/ssd/bandits
+#tmp_dir=/tmp
+#make_dir=cmake-build-release
 
 name=tsallis
 
