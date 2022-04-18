@@ -6,6 +6,7 @@
 #include "experiments/ExploreNoMoreRunner.h"
 #include "datastructures/Incremental_sum_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
+#include "experiments/TheoreticalBoundRunner.h"
 
 using namespace csv;
 
@@ -113,9 +114,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-
         if (runner == "ExploreNoMore") {
             run_explore_no_more_experiment();
+        }
+
+        if (runner == "Theoretical") {
+            run_theoretical_bound_experiment_Exp3_varying_k();
+            run_theoretical_bound_experiment_Exp3_varying_T();
         }
 
         if (runner == "GenericBanditRunner") {
