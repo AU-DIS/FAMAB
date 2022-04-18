@@ -1,16 +1,17 @@
-#alias python3="/home/tversted/miniconda3/bin/python"
-alias python3="/usr/bin/python3"
-make_dir=cmake-build-heroicis
+alias python3="/home/tversted/miniconda3/bin/python"
+#alias python3="/usr/bin/python3"
+make_dir=cmake-build-odin
 
-tmp_dir=/mnt/ssd/bandits
-#tmp_dir=/tmp
+#tmp_dir=/mnt/ssd/bandits
+tmp_dir=../tmp
 #make_dir=cmake-build-release
 
 name=tsallis
 
 rounds=1000
 #rounds=1000000
-averages=100
+#averages=100
+averages=25
 delta=0.9
 
 run_experiment() {
@@ -49,3 +50,4 @@ for k in 4 8 16 32 128 256 512 1024
 do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out

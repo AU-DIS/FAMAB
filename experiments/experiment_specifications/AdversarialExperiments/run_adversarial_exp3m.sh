@@ -44,3 +44,4 @@ for k in 32 128 256 512
   do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out

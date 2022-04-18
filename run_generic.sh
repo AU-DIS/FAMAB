@@ -1,6 +1,6 @@
 #bash experiments/experiment_specifications/GenericBanditRunner/generic_adversarial.sh
 #bash experiments/experiment_specifications/GenericBanditRunner/generic_movielens.sh
-#bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial.sh
+bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial.sh
 #bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial_exp3m.sh
 #bash experiments/experiment_specifications/AdversarialExperiments/run_tsallis_exp3.sh
-bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial_tsallis.sh
+#bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial_tsallis.sh

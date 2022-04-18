@@ -1,6 +1,7 @@
 alias python3="/home/tversted/miniconda3/bin/python"
 tmp_dir=/home/tversted/tmp
-make_dir=cmake-build-release-odin
+make_dir=cmake-build-odin
+
 
 #tmp_dir=/tmp
 #make_dir=cmake-build-materecclesia
@@ -41,3 +42,4 @@ for k in 4 8 16 32 128 256 512
 do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out

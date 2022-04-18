@@ -73,6 +73,7 @@ public:
             double estimator = (indicator * ((1 - feedback) - B)) / _weights[i] + B;
             _cumulative_losses[i] += estimator;
         }
+
     }
 };
 

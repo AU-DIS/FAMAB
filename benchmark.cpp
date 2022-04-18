@@ -15,7 +15,7 @@
 #include "algorithms/Tsallis-INF/IW.h"
 #include "algorithms/Tsallis-INF/Tsallis_RV.h"
 #include "algorithms/Tsallis-INF/Tsallis_IW.h"
-#include "algorithms/Tsallis-INF/Tsallis_optimized.h"
+#include "algorithms/Tsallis-INF/Tsallis_LTU.h"
 #include "algorithms/DEXP/DExp3.h"
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "algorithms/Exp3m/Exp3m.h"
@@ -451,11 +451,11 @@ static void benchmark_tsallis_update(benchmark::State& state) {
     int rounds = 100;
     auto g = StochasticallyConstrainedDataset(k, rounds, 1, 0.9);
     auto d = g.generate();
-    Tsallis_optimized b(k);
+    Tsallis_IW b(k);
+    int choice = b.choose();
     for (auto _ : state) {
         for (int i = 0; i < rounds; i++) {
-            int choice = b.choose();
-            //b.give_reward(choice, d[choice][i]);
+            b.give_reward(choice, d[choice][i]);
         }
     }
 }
@@ -465,7 +465,7 @@ static void benchmark_tsallis_optimized(benchmark::State& state) {
     int rounds = 100;
     auto g = StochasticallyConstrainedDataset(k, rounds, 1, 0.9);
     auto d = g.generate();
-    Tsallis_optimized b(k);
+    Tsallis_LTU b(k);
     for (auto _ : state) {
         for (int i = 0; i < rounds; i++) {
             int choice = b.choose();
@@ -474,24 +474,25 @@ static void benchmark_tsallis_optimized(benchmark::State& state) {
     }
 }
 
-static void benchmark_tsallis_optimized_sample(benchmark::State& state) {
-    auto k = state.range(0);
-    int rounds = 100;
-    auto g = StochasticallyConstrainedDataset(k, rounds, 1, 0.9);
-    auto d = g.generate();
-    Tsallis_optimized b(k);
-    for (auto _ : state) {
-        for (int i = 0; i < rounds; i++) {
-            int choice = b.choose();
-        }
-    }
-}
 static void benchmark_tsallis_optimized_update(benchmark::State& state) {
     auto k = state.range(0);
     int rounds = 100;
     auto g = StochasticallyConstrainedDataset(k, rounds, 1, 0.9);
     auto d = g.generate();
-    Tsallis_optimized b(k);
+    Tsallis_LTU b(k);
+    int choice = b.choose();
+    for (auto _ : state) {
+        for (int i = 0; i < rounds; i++) {
+            b.give_reward(choice, d[choice][i]);
+        }
+    }
+}
+static void benchmark_tsallis_optimized_sample(benchmark::State& state) {
+    auto k = state.range(0);
+    int rounds = 100;
+    auto g = StochasticallyConstrainedDataset(k, rounds, 1, 0.9);
+    auto d = g.generate();
+    Tsallis_LTU b(k);
     for (auto _ : state) {
         for (int i = 0; i < rounds; i++) {
             int choice = b.choose();
@@ -540,13 +541,15 @@ BENCHMARK(benchmark_exp3_heap_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg
 */
 
 //BENCHMARK(benchmark_tsallis_rv)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
-BENCHMARK(benchmark_tsallis_iw)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
-BENCHMARK(benchmark_tsallis_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
-BENCHMARK(benchmark_tsallis_sample)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
 
-BENCHMARK(benchmark_tsallis_optimized)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
-BENCHMARK(benchmark_tsallis_optimized_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
-BENCHMARK(benchmark_tsallis_optimized_sample)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(5);
+BENCHMARK(benchmark_tsallis_optimized)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+BENCHMARK(benchmark_tsallis_optimized_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+BENCHMARK(benchmark_tsallis_optimized_sample)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+BENCHMARK(benchmark_tsallis_iw)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+BENCHMARK(benchmark_tsallis_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+BENCHMARK(benchmark_tsallis_sample)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Threads(5);
+
+
 
 /*
 BENCHMARK(benchmark_ucb_exp3)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(1);

@@ -17,9 +17,8 @@
 #include "../algorithms/FPL/QBL.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"
 #include "../algorithms/Exp3Bandit/Exp31.h"
-#include "../algorithms/Tsallis-INF/TsallisINF.h"
-#include "../algorithms/Tsallis-INF/RV.h"
-#include "../algorithms/Tsallis-INF/IW.h"
+#include "../algorithms/Tsallis-INF/Tsallis_RV.h"
+#include "../algorithms/Tsallis-INF/Tsallis_IW.h"
 #include "../algorithms/UCB/UCB1.h"
 
 
@@ -184,10 +183,8 @@ void run_adversarial_experiment(Dataset d, int k, int rounds, int averages, doub
         std::vector<std::vector<double>> data_matrix = d.generate();
         Exp3 exp3(k, 0.1);
 
-        IW iw;
-        TsallisINF tsallis_iw(k, iw);
-        RV rv;
-        TsallisINF tsallis_rv(k, rv);
+        Tsallis_IW tsallis_iw(k);
+        Tsallis_RV tsallis_rv(k);
 
         Exp3 ucb_exp3_bandit(k, 0.1);
         UCB1 ucb_exp3(10, ucb_exp3_bandit);
@@ -229,11 +226,11 @@ void run_adversarial_experiment(Dataset d, int k, int rounds, int averages, doub
 
 
         std::vector<double> tsallis_iw_run;
-        std::thread t5(basic_tsallis_runner<TsallisINF<IW>>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
+        std::thread t5(basic_tsallis_runner<Tsallis_IW>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
                        std::ref(tsallis_iw_run));
 
         std::vector<double> tsallis_rv_run;
-        std::thread t6(basic_tsallis_runner<TsallisINF<RV>>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
+        std::thread t6(basic_tsallis_runner<Tsallis_RV>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
                        std::ref(tsallis_rv_run));
 
 

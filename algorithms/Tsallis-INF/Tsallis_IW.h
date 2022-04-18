@@ -13,6 +13,7 @@ private:
     double _x;
     std::vector<double> _weights;
     std::vector<double> _cumulative_losses;
+    int _last_choice;
 
     double compute_eta(int t) {
         _eta = 1 / sqrt(std::max(1, t));
@@ -55,6 +56,7 @@ public:
         _t = 1;
         _x = 1;
         _eta = 1;
+        _last_choice = 0;
     }
     int choose() {
         _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
@@ -62,6 +64,7 @@ public:
 
         int s = d(_rg);
         _t += 1;
+        _last_choice = s;
         return s;
     }
 

@@ -8,7 +8,7 @@
 #include "../algorithms/Tsallis-INF/IW.h"
 #include "../algorithms/Tsallis-INF/RV.h"
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
-#include "../algorithms/Tsallis-INF/Tsallis_optimized.h"
+#include "../algorithms/Tsallis-INF/Tsallis_LTU.h"
 #include "../algorithms/Tsallis-INF/Tsallis_IW.h"
 #include "../algorithms/Tsallis-INF/Tsallis_RV.h"
 
@@ -28,7 +28,7 @@ void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averag
 
         Tsallis_IW iw(k);
         Tsallis_RV rv(k);
-        Tsallis_optimized optimized(k);
+        Tsallis_LTU optimized(k);
         Uniformbandit uni(k);
 
         std::vector<double> tsallis_iw_run;
@@ -38,7 +38,7 @@ void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averag
         std::thread t2(basic_tsallis_runner <Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds, std::ref(tsallis_rv_run));
 
         std::vector<double> tsallis_optimized_run;
-        std::thread t4(basic_tsallis_runner <Tsallis_optimized>, std::ref(optimized), std::ref(data_matrix), rounds, std::ref(tsallis_optimized_run));
+        std::thread t4(basic_tsallis_runner <Tsallis_LTU>, std::ref(optimized), std::ref(data_matrix), rounds, std::ref(tsallis_optimized_run));
 
         std::vector<double> uniform_run;
         std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,

@@ -64,7 +64,7 @@ while int(gap**gap_iter) <= int(rounds):
     gap_iter += 1
 plt.vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
 plt.grid(True)
-plt.legend(algorithms)
+plt.legend(algorithms, fontsize=15)
 plt.tight_layout()
 
 if len(sys.argv) >= 3:

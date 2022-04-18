@@ -56,8 +56,7 @@ int main(int argc, char *argv[]) {
             }
             if (dataset == "stochastic") {
                 auto d = StochasticDataset(k, rounds, delta);
-                if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
             }
         }
         if (runner == "exp3_adversarial" || runner == "fpl_adversarial" || runner == "tsallis_adversarial") {

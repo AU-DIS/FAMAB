@@ -2,10 +2,12 @@
 // Created by Mathias Tversted on 12/04/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_OPTIMIZED_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_OPTIMIZED_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
 
-class Tsallis_optimized {
+
+
+class Tsallis_LTU {
 private:
     int _t;
     double _eta;
@@ -15,6 +17,7 @@ private:
     std::vector<double> _cumulative_losses;
     int _k;
     std::discrete_distribution<> _d;
+    bool update_triggered = true;
 
     double compute_eta(int t) {
         _eta = 1 / sqrt(std::max(1, t));
@@ -47,7 +50,7 @@ private:
 
 
 public:
-    explicit Tsallis_optimized(int k) {
+    explicit Tsallis_LTU(int k) {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();
         _t = 0;
@@ -57,10 +60,11 @@ public:
     }
 
     int choose() {
-        if (_t % _k == 0) {
+        if (update_triggered) {
             _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
             _d = std::discrete_distribution(_weights.begin(), _weights.end());
         }
+        update_triggered = false;
         int s = _d(_rg);
 
         _t += 1;
@@ -70,8 +74,10 @@ public:
     void give_reward(size_t index, double feedback) {
         // We can either use IW or RV to construct the estimated reward
         // This is RW, we should also try RV, which is a reduced variance estimator
+        if (1 - feedback > 0) update_triggered = true;
+
         _cumulative_losses[index] += (1 - feedback)/_weights[index];
     }
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_OPTIMIZED_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H

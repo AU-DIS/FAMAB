@@ -100,9 +100,9 @@ ax[2].grid(True)
 
 #plt.title(f"{description} k = {k}")
 #plt.ylim([0, int(rounds)])
-ax[0].legend(legends[0])
-ax[1].legend(legends[1])
-ax[2].legend(legends[2])
+ax[0].legend(legends[0], fontsize=15)
+ax[1].legend(legends[1], fontsize=15)
+ax[2].legend(legends[2], fontsize=15)
 
 fig.suptitle(f"{description} k = {k}", fontsize=16)
 

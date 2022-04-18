@@ -48,3 +48,4 @@ for k in 4 8 16 32 128 256 512 1024
 do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out
