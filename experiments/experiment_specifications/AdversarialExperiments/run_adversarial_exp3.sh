@@ -52,7 +52,7 @@ run_experiment() {
 
 #for k in 4 8 16 32 128 256 512 1024
 #for k in 4 8 16 32
-for k in 4
+for k in 100
 do
     run_experiment $k
 done

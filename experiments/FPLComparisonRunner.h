@@ -9,9 +9,10 @@
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/FPL/FPL_hash.h"
 #include "../algorithms/FPL/QBL.h"
+#include "../datasets/dataset.h"
 
 template <typename Dataset>
-void run_fpl_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages, double gap,
                                     const std::string &out_path = "/tmp/out") {
 
 

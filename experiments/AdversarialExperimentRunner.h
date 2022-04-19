@@ -21,10 +21,11 @@
 #include "../algorithms/Tsallis-INF/RV.h"
 #include "../algorithms/Tsallis-INF/IW.h"
 #include "../algorithms/UCB/UCB1.h"
+#include "../datasets/dataset.h"
 
 
-template<typename Dataset>
-void run_adversarial_weight_experiment(Dataset d, int k, int rounds, double gap,
+//template<typename Dataset>
+void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap,
                                        int averages = 50, const std::string &regret_out_path = "/tmp/out",
                                        const std::string &weight_out_path = "/tmp/out",
                                        const std::string &algorithm = "Exp3") {
@@ -101,8 +102,8 @@ void run_adversarial_weight_experiment(Dataset d, int k, int rounds, double gap,
     write_results(regrets, metadata, descriptions, regret_out_path);
     write_results(weights_at_r, weights_metadata, weights_descriptions, weight_out_path);
 }
-template<typename Dataset>
-void run_adversarial_exp3m_experiment(Dataset d, int k, int K, int rounds, int averages,
+//template<typename Dataset>
+void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int averages,
                                       double gap,
                                       const std::string &out_path = "/tmp/out") {
 
@@ -165,8 +166,8 @@ void run_adversarial_exp3m_experiment(Dataset d, int k, int K, int rounds, int a
 }
 
 
-template <typename Dataset>
-void run_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+//template <typename Dataset>
+void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, double gap,
                                 const std::string &out_path = "/tmp/out") {
 
     std::vector<double> exp3_regrets(rounds);

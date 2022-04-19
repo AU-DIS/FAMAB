@@ -8,8 +8,9 @@
 #include "../utilities/random_gen.h"
 #include "random"
 #include "iostream"
+#include "dataset.h"
 
-class dataset_simple_stochastic{
+class dataset_simple_stochastic {
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;

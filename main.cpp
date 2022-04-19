@@ -9,6 +9,7 @@
 #include "datasets/Dataset_movielens.h"
 #include <map>
 #include "experiments/TheoreticalBoundRunner.h"
+#include "datasets/dataset.h"
 
 using namespace csv;
 
@@ -39,6 +40,7 @@ int main(int argc, char *argv[]) {
     std::string path(argv[1]);
     CSVReader reader(path);
     for (auto &row: reader) {
+        //Handle variables
         //This is ugly but so are you
         int rounds, k, K, averages;
         double gap, delta;
@@ -59,57 +61,30 @@ int main(int argc, char *argv[]) {
             else if (var_name == "output_path") out_path = row[var_name].get();
         }
 
+
+        //Handle datasets
+        Dataset *d;
+        Mod2Dataset mod2dataset; StochasticallyConstrainedDataset sCD; StochasticDataset stochasticDataset;
+
+        if (dataset == "stochastically_constrained_adversarial") {sCD = StochasticallyConstrainedDataset(k, rounds, gap, delta); d = &sCD;}
+        else if (dataset == "mod2") {mod2dataset = Mod2Dataset(k, rounds, gap); d = &mod2dataset;}
+        else if (dataset == "stochastic") {stochasticDataset = StochasticDataset(k, rounds, delta); d = &stochasticDataset;}
+
+
         switch (s_mapStringValues[runner]) {
             case adversarial_weights:
-                if (dataset == "stochastically_constrained_adversarial") {
-                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
-                    run_adversarial_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
-                }
-                if (dataset == "mod2") {
-                    auto d = Mod2Dataset(k, rounds, gap);
-                    run_adversarial_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
-                }
+                run_adversarial_weight_experiment(*d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
                 break;
             case adversarial:
-                if (dataset == "stochastically_constrained_adversarial") {
-                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
-                    run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                }
-                if (dataset == "mod2") {
-                    auto d = Mod2Dataset(k, rounds, gap);
-                    run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                }
+                run_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
                 break;
             case specific_adversarial:
-                if (dataset == "stochastically_constrained_adversarial") {
-                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
-                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-
-                }
-                if (dataset == "mod2") {
-                    auto d = Mod2Dataset(k, rounds, gap);
-                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                }
-                if (dataset == "stochastic") {
-                    auto d = StochasticDataset(k, rounds, delta);
-                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
-                }
+                if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
+                if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
                 break;
             case adversarial_exp3m:
-                if (dataset == "stochastically_constrained_adversarial") {
-                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
-                    run_adversarial_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
-                }
-                if (dataset == "mod2") {
-                    auto d = Mod2Dataset(k, rounds, gap);
-                    run_adversarial_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
-                }
+                run_adversarial_exp3m_experiment(*d, k, K, rounds, averages, gap, out_path);
                 break;
             case explore_no_more:
                 run_explore_no_more_experiment();
