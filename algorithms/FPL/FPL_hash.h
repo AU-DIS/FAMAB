@@ -21,8 +21,9 @@ private:
 
 
 private:
+    int mersenne_8 = 2147483647;
     unsigned int hash(double w) {
-        auto r =  ((unsigned int) (_a * w + _b)) % _number_to_presample;
+        auto r =  (((unsigned int) (_a * w + _b)) % mersenne_8) % _number_to_presample;
         return r;
     }
 

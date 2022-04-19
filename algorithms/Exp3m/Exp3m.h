@@ -10,6 +10,7 @@
 #include "iostream"
 #include "../../utilities/argsort.h"
 
+#include "cmath"
 template<typename ALIASStrategy>
 class Exp3m {
 private:

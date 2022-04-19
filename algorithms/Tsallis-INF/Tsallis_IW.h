@@ -1,35 +1,18 @@
 //
-// Created by Mathias Ravn Tversted on 22/02/2022.
+// Created by Mathias Tversted on 12/04/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLISINF_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLISINF_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
 
-#include <vector>
-#include "tgmath.h"
-#include <random>
-#include "iostream"
-#include "../../utilities/random_gen.h"
-
-
-template<typename Estimator>
-class TsallisINF {
+class Tsallis_IW {
 private:
-    Estimator _estimator;
-    int _t = 1;
+    int _t;
     double _eta;
-    std::mt19937 rg = random_gen();
-    double _x = rg();
-
-
-public:
-    TsallisINF(int k, Estimator &estimator) {
-        _estimator = estimator;
-        //double alpha = 0.5;
-        cumulative_losses.reserve(k);
-        for (int i = 0; i < k; i++) cumulative_losses.push_back(0);
-    }
-
+    std::mt19937 _rg;
+    double _x;
+    std::vector<double> _weights;
+    std::vector<double> _cumulative_losses;
 
     double compute_eta(int t) {
         _eta = 1 / sqrt(std::max(1, t));
@@ -62,11 +45,22 @@ public:
         return weights;
     }
 
+
+
+
+public:
+    explicit Tsallis_IW(int k) {
+        _cumulative_losses = std::vector<double>(k, 0);
+        _rg = random_gen();
+        _t = 1;
+        _x = 1;
+        _eta = 1;
+    }
     int choose() {
-        _weights = newtons_method_weights(cumulative_losses, compute_eta(_t));
+        _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
         std::discrete_distribution<> d(_weights.begin(), _weights.end());
 
-        int s = d(rg);
+        int s = d(_rg);
         _t += 1;
         return s;
     }
@@ -74,16 +68,11 @@ public:
     void give_reward(size_t index, double feedback) {
         // We can either use IW or RV to construct the estimated reward
         // This is RW, we should also try RV, which is a reduced variance estimator
-        auto estimators = _estimator.estimate(index, feedback, _weights, _eta);
-        for (int i = 0; i < cumulative_losses.size(); i++) {
-            cumulative_losses[i] += estimators[i];
-        }
+        _cumulative_losses[index] += (1 - feedback)/_weights[index];
+
     }
 
-    std::vector<double> _weights;
-    std::vector<double> cumulative_losses;
 
 };
 
-
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLISINF_H
+#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H

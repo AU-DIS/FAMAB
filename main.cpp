@@ -1,46 +1,133 @@
-#include "experiments/GenericBanditRunner.h"
-#include "csv-parser/include/csv.hpp"
-#include "experiments/TsallisExperimentRunner.h"
+#include "experiments/AdversarialExperimentRunner.h"
 #include "datasets/data_generators.h"
 #include "experiments/Exp3ComparisonRunner.h"
 #include "experiments/FPLComparisonRunner.h"
+#include "experiments/TsallisComparisonRunner.h"
 #include "experiments/ExploreNoMoreRunner.h"
 #include "datastructures/Incremental_sum_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
 #include "datasets/Dataset_movielens.h"
-#include "main-support/main_cases.h"
 #include <map>
+#include "experiments/TheoreticalBoundRunner.h"
 
 using namespace csv;
 
+enum StringValue { adversarial_weights,
+    adversarial,
+    specific_adversarial,
+    adversarial_exp3m,
+    explore_no_more,
+    generic_bandit_runner,
+    theoretical};
+
+//Enum init, so static
+static std::map<std::string, StringValue> s_mapStringValues;
+static void Initialize() {
+    s_mapStringValues["adversarial_weights"] = adversarial_weights;
+    s_mapStringValues["adversarial"] = adversarial;
+    s_mapStringValues["exp3_adversarial"] = specific_adversarial;
+    s_mapStringValues["fpl_adversarial"] = specific_adversarial;
+    s_mapStringValues["tsallis_adversarial"] = specific_adversarial;
+    s_mapStringValues["adversarial_exp3m"] = adversarial_exp3m;
+    s_mapStringValues["ExploreNoMore"] = explore_no_more;
+    s_mapStringValues["GenericBanditRunner"] = generic_bandit_runner;
+    s_mapStringValues["Theoretical"] = theoretical;
+}
 
 int main(int argc, char *argv[]) {
     Initialize();
     std::string path(argv[1]);
     CSVReader reader(path);
     for (auto &row: reader) {
+        //This is ugly but so are you
+        int rounds, k, K, averages;
+        double gap, delta;
+        std::string dataset, regret_out, plot_out, algorithm, out_path;
         std::string runner(row["runner"].get());
+        for (auto &var_name: row.get_col_names()) {
+            //This is ugly but so are you
+            if (var_name == "rounds") rounds = row[var_name].get<int>();
+            else if (var_name == "k") k = row[var_name].get<int>();
+            else if (var_name == "K") K = row[var_name].get<int>();
+            else if (var_name == "averages") averages = row[var_name].get<int>();
+            else if (var_name == "gap") gap = row[var_name].get<double>();
+            else if (var_name == "delta") delta = row[var_name].get<double>();
+            else if (var_name == "dataset") dataset = row[var_name].get<std::string>();
+            else if (var_name == "regret_out") regret_out = row[var_name].get();
+            else if (var_name == "plot_out") plot_out = row[var_name].get();
+            else if (var_name == "algorithm") algorithm = row[var_name].get();
+            else if (var_name == "output_path") out_path = row[var_name].get();
+        }
+
         switch (s_mapStringValues[runner]) {
-            case tsallis_weights:
-                main_case_tsallis_weight(row);
+            case adversarial_weights:
+                if (dataset == "stochastically_constrained_adversarial") {
+                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+                    run_adversarial_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
+                }
+                if (dataset == "mod2") {
+                    auto d = Mod2Dataset(k, rounds, gap);
+                    run_adversarial_weight_experiment(d, k, rounds, gap, averages, regret_out, plot_out, algorithm);
+                }
                 break;
-            case tsallis:
-                main_case_tsallis(row);
+            case adversarial:
+                if (dataset == "stochastically_constrained_adversarial") {
+                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+                    run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                }
+                if (dataset == "mod2") {
+                    auto d = Mod2Dataset(k, rounds, gap);
+                    run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                }
                 break;
-            case exp3_tsallis:
-                main_case_exp3_tsallis(row);
+            case specific_adversarial:
+                if (dataset == "stochastically_constrained_adversarial") {
+                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+
+                }
+                if (dataset == "mod2") {
+                    auto d = Mod2Dataset(k, rounds, gap);
+                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                }
+                if (dataset == "stochastic") {
+                    auto d = StochasticDataset(k, rounds, delta);
+                    if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                    if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                }
                 break;
-            case fpl_tsallis:
-                main_case_fpl_tsallis(row);
-                break;
-            case tsallis_exp3m:
-                main_case_tsallis_exp3m(row);
+            case adversarial_exp3m:
+                if (dataset == "stochastically_constrained_adversarial") {
+                    auto d = StochasticallyConstrainedDataset(k, rounds, gap, delta);
+                    run_adversarial_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
+                }
+                if (dataset == "mod2") {
+                    auto d = Mod2Dataset(k, rounds, gap);
+                    run_adversarial_exp3m_experiment(d, k, K, rounds, averages, gap, out_path);
+                }
                 break;
             case explore_no_more:
-                main_case_explore_no_more(row);
+                run_explore_no_more_experiment();
                 break;
             case generic_bandit_runner:
-                main_case_generic_bandit_runner(row);
+                if (dataset == "adversarial") {
+                    int K = row["K"].get<int>();
+                    //auto d = dataset_simple_adversarial(K, rounds);
+                    //run_generic_experiment(d, K, rounds, averages, out_path);
+                }
+                if (dataset == "movielens") {
+                    //auto d = Dataset_movielens("datasets/data_directory/movielens.csv", 4);
+                    //run_generic_experiment(d, d.K, rounds, averages, out_path);
+                }
+                break;
+            case theoretical:
+                run_theoretical_bound_experiment_Exp3_varying_k();
+                run_theoretical_bound_experiment_Exp3_varying_T();
                 break;
             default:
                 std::cout << "The Requested runner was not found" << std::endl;
@@ -48,4 +135,6 @@ int main(int argc, char *argv[]) {
         }
     }
 }
+
+
 

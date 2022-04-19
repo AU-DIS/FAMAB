@@ -7,10 +7,6 @@
 #include "../datasets/dataset_explore_no_more.h"
 #include "../algorithms/Exp3Bandit/Exp3Tor.h"
 #include "../algorithms/Exp3Bandit/Exp3IXTor.h"
-#include "../algorithms/FPL/FPLVectorWeightStrategy.h"
-#include "../algorithms/FPL/NaiveRandomGenStrategy.h"
-#include "../algorithms/FPL/FPL.h"
-#include "../algorithms/Tsallis-INF/TsallisINF.h"
 #include "../utilities/standard_deviation.cpp"
 #include "../utilities/eta_mean_std_writer.h"
 #include "../utilities/sum_of_range.h"
@@ -18,7 +14,7 @@
 #include <stdlib.h>
 #include <numeric>
 
-void run_explore_no_more_experiment() {
+void run_explore_no_more_experiment(const std::string& out_path="/tmp/out") {
     int K = 10;
     int rounds = 1000000;
     int repititions = 50;
@@ -51,7 +47,7 @@ void run_explore_no_more_experiment() {
 
     vector<string> comments {"#Explore No More", std::to_string(K), std::to_string(rounds)};
     vector<string> header {"eta","mean_regret_exp3_T_half","std_regret_exp3_T_half","mean_regret_exp3_T","std_regret_exp3_T","mean_regret_exp3IX_T_half","std_regret_exp3IX_T_half","mean_regret_exp3IX_T","std_regret_exp3IX_T"};
-    write_results(data_matrix, comments, header, "/tmp/explore_no_more.csv");
+    write_results(data_matrix, comments, header, out_path + "/explore_no_more.csv");
 }
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_EXPLORENOMORERUNNER_H

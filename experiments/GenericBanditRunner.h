@@ -14,8 +14,8 @@
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/UCB/UCB1.h"
 #include "../algorithms/Tsallis-INF/TsallisINF.h"
-#include "../algorithms/Tsallis-INF/TsallisIW.h"
-#include "../algorithms/Tsallis-INF/TsallisRV.h"
+#include "../algorithms/Tsallis-INF/IW.h"
+#include "../algorithms/Tsallis-INF/RV.h"
 #include "../runner.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
@@ -29,9 +29,9 @@ void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int average
     Exp3 exp3(K, 0.1);
     Exp31 exp31(K);
 
-    TsallisIW iw;
+    IW iw;
     TsallisINF tsallis_iw(K, iw);
-    TsallisRV rv;
+    RV rv;
     TsallisINF tsallis_rv(K, rv);
 
     FPL fpl(fpl_ws, fpl_rs);
@@ -44,9 +44,9 @@ void run_generic_experiment(Dataset d, int K = 10, int rounds = 100, int average
     FPL ucb_fpl_bandit(fpl_ucb_ws, fpl_ucb_rs);
     UCB1 ucb_fpl(10, ucb_fpl_bandit);
 
-    TsallisIW iw_ucb;
+    IW iw_ucb;
     TsallisINF ucb_tsallis_iw_bandit(K, iw_ucb);
-    TsallisRV rv_ucb;
+    RV rv_ucb;
     TsallisINF ucb_tsallis_rv_bandit(K, rv_ucb);
 
     UCB1 ucb_tsallis_iw(10, ucb_tsallis_iw_bandit);

@@ -28,7 +28,12 @@ colormap = {
     "Uniform": "red",
     "Exp3 (heap)": "blue",
     "FPL (Hashing)": "blue",
+    "QBL": "blue",
     "FPL (Heap)": "blue",
+    "Tsallis-INF (IW)": "blue",
+    "Tsallis (IW)": "blue",
+    "Tsallis-INF (RV)": "green",
+    "Tsallis (RV)": "green",
     "Exp3 (average)": "blue",
     "Exp3 (defer with xi = 128)": "blue"
 }
@@ -47,6 +52,7 @@ for nr, algorithm in enumerate(algorithms):
     y = lines
 
     plt.loglog(x, y, color=colormap[algorithm])
+    #plt.plot(x, y, color=colormap[algorithm])
 
 
 gap_xs = []

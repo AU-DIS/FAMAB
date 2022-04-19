@@ -1,3 +1,4 @@
+
 #alias python3="/home/tversted/miniconda3/bin/python"
 #alias python3="/opt/homebrew/bin/python3"
 alias python3="$(which python3)"
@@ -11,7 +12,7 @@ if [[ $make_dir == cmake-build-release-odin ]]; then
   tmp_dir=/home/$(whoami)/tmp
 fi
 
-name=tsallis
+name=exp3
 
 rounds=100000
 #rounds=1000000
@@ -37,14 +38,15 @@ run_experiment() {
 
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
-      echo "fpl_tsallis,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
-      echo "fpl_tsallis,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
-      echo "fpl_tsallis,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
+      echo "exp3_adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
+      echo "exp3_adversarial,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2" >> $header
+      echo "exp3_adversarial,stochastic,3.2,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
       ./$make_dir/efficient_multi_armed_bandits $header
-      python3 plotting/plot_exp3_tsallis.py $out $plt_out
-      python3 plotting/plot_exp3_tsallis.py $out_mod2 $plt_out_mod2
-      #python3 plotting/plot_exp3_tsallis.py $out_stochastic $plt_out_stochastic
+
+      python3 plotting/plot_compare.py $out $plt_out
+      python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
+      python3 plotting/plot_compare.py $out_stochastic $plt_out_stochastic
 
 }
 
