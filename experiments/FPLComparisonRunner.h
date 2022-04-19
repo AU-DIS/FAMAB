@@ -11,7 +11,6 @@
 #include "../algorithms/FPL/FPL_buckets.h"
 #include "../algorithms/FPL/FPL_weightless.h"
 
-
 template <typename Dataset>
 void run_fpl_tsallis_experiment(Dataset d, int k, int rounds, int averages, double gap,
                                  const std::string &out_path = "/tmp/out") {

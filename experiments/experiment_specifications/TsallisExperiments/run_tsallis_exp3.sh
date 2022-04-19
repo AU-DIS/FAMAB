@@ -1,16 +1,22 @@
-alias python3="/home/tversted/miniconda3/bin/python"
-tmp_dir=/home/tversted/tmp
-make_dir=cmake-build-release-odin
+#alias python3="/home/tversted/miniconda3/bin/python"
+#alias python3="/opt/homebrew/bin/python3"
+alias python3="$(which python3)"
+#"/usr/bin/python3"
 
-#tmp_dir=/tmp
-#make_dir=cmake-build-materecclesia
+
+make_dir=cmake-build-release-wsl
+tmp_dir=/tmp
+if [[ $make_dir == cmake-build-release-odin ]]; then
+  mkdir -p /home/$(whoami)/tmp
+  tmp_dir=/home/$(whoami)/tmp
+fi
 
 name=tsallis
 
 rounds=100000
 #rounds=1000000
 averages=100
-delta=0.9
+delta=0.1
 
 run_experiment() {
       header=$tmp_dir/header_$name$1
@@ -25,9 +31,9 @@ run_experiment() {
       plt_out_stochastic=$tmp_dir/stochastic_$name$1.png
 
 
-      rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2> /dev/null
-      rm $tmp_dir/*header* 2> /dev/null
-      rm $tmp_dir/*.out* 2> /dev/null
+      rm -f $header $out $plt_out $out_mod2 $plt_out_mod2 $out_stochastic $plt_out_stochastic 2> /dev/null
+      rm -f $tmp_dir/*header* 2> /dev/null
+      rm -f $tmp_dir/*.out* 2> /dev/null
 
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
@@ -38,13 +44,13 @@ run_experiment() {
       ./$make_dir/efficient_multi_armed_bandits $header
       python3 plotting/plot_exp3_tsallis.py $out $plt_out
       python3 plotting/plot_exp3_tsallis.py $out_mod2 $plt_out_mod2
-      python3 plotting/plot_exp3_tsallis.py $out_stochastic $plt_out_stochastic
+      #python3 plotting/plot_exp3_tsallis.py $out_stochastic $plt_out_stochastic
 
 }
 
-for k in 4 8 16 32 128 256 512 1024
+#for k in 4 8 16 32 128 256 512 1024
 #for k in 4 8 16 32
-#for k in 16
+for k in 4
 do
     run_experiment $k
 done

@@ -1,6 +1,6 @@
 alias python3="/home/tversted/miniconda3/bin/python"
 tmp_dir=/home/tversted/tmp
-make_dir=cmake-build-release-odin
+make_dir=cmake-build-release-odin:
 
 #tmp_dir=/tmp
 #make_dir=cmake-build-materecclesia

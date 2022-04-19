@@ -10,6 +10,7 @@ using namespace std;
 
 static void write_results(vector<vector<double>> &regret_matrix, const string& metadata, vector<string> &descriptions, const string& path) {
     std::ofstream of;
+    std::cout << "result writer Path:"  << path << std::endl;
     of.open(path, std::ios::out | std::ios::trunc);
     auto writer = make_csv_writer(of);
     writer << vector<string>{metadata};

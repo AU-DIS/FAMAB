@@ -3,13 +3,15 @@
 alias python3="$(which python3)"
 #"/usr/bin/python3"
 
-name=adversarial
+
 make_dir=cmake-build-release-wsl
 tmp_dir=/tmp
 if [[ $make_dir == cmake-build-release-odin ]]; then
   mkdir -p /home/$(whoami)/tmp
   tmp_dir=/home/$(whoami)/tmp
 fi
+
+name=adversarial
 
 run_experiment() {
     n=10
@@ -33,7 +35,7 @@ run_experiment() {
     rm $tmp_dir/*header* 2> /dev/null
     rm $tmp_dir/*.out* 2> /dev/null
 }
-for i in 1 2 3 4 5
+for i in 1 #2 3 4 5
 do
   run_experiment $i & disown
 done
