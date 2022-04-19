@@ -21,7 +21,7 @@ add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
         algorithms/UCB/UCB1.h algorithms/RBA/RBA.h algorithms/RBA/IBA.h utilities/random_gen.h utilities/exec_command.h runner.h utilities/result_writer.h
-        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h)
+        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/Tsallis-INF/Tsallis_approx_rv.h)
 
 add_executable(benchmark_bandits benchmark.cpp
         algorithms/FPL/FPL.h
@@ -37,7 +37,7 @@ add_executable(benchmark_bandits benchmark.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
         algorithms/UCB/UCB1.h algorithms/RBA/RBA.h algorithms/RBA/IBA.h utilities/random_gen.h utilities/exec_command.h runner.h utilities/result_writer.h
-        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/FPL/FPL_hash.h experiments/FPLComparisonRunner.h datasets/data_generators.h utilities/updateable_priority_queue.h algorithms/FPL/QBL.h experiments/TsallisComparisonRunner.h algorithms/Tsallis-INF/Tsallis_IW.h algorithms/Tsallis-INF/Tsallis_RV.h algorithms/Tsallis-INF/Tsallis_LTU.h)
+        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/FPL/FPL_hash.h experiments/FPLComparisonRunner.h datasets/data_generators.h utilities/updateable_priority_queue.h algorithms/FPL/QBL.h experiments/TsallisComparisonRunner.h algorithms/Tsallis-INF/Tsallis_IW.h algorithms/Tsallis-INF/Tsallis_RV.h algorithms/Tsallis-INF/Tsallis_LTU.h algorithms/Tsallis-INF/Tsallis_approx_rv.h)
 
 
 target_link_libraries(efficient_multi_armed_bandits csv)
