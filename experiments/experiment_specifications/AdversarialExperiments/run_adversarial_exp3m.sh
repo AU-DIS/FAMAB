@@ -45,3 +45,5 @@ for k in 32 128 256 512
     run_experiment $k
 done
 zip $tmp_dir/$name.zip $tmp_dir/*.out
+rm $tmp_dir/*header* 2> /dev/null
+rm $tmp_dir/*.out* 2> /dev/null

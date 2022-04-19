@@ -24,8 +24,7 @@ run_experiment() {
 
 
       rm $header $out $plt_out 2> /dev/null
-      rm $tmp_dir/*header* 2> /dev/null
-      rm $tmp_dir/*.out* 2> /dev/null
+
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
       echo "adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out" >> $header
@@ -43,3 +42,5 @@ do
     run_experiment $k
 done
 zip $tmp_dir/$name.zip $tmp_dir/*.out
+rm $tmp_dir/*header* 2> /dev/null
+rm $tmp_dir/*.out* 2> /dev/null

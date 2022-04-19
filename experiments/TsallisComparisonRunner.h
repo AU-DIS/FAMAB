@@ -13,9 +13,9 @@
 #include "../algorithms/Tsallis-INF/Tsallis_RV.h"
 
 
-template <typename Dataset>
+template<typename Dataset>
 void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
-                                    const std::string &out_path = "/tmp/out") {
+                                        const std::string &out_path = "/tmp/out") {
 
 
     std::vector<double> tsallis_iw_regrets(rounds);
@@ -33,13 +33,16 @@ void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averag
         Uniformbandit uni(k);
 
         std::vector<double> tsallis_iw_run;
-        std::thread t1(basic_tsallis_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds, std::ref(tsallis_iw_run));
+        std::thread t1(basic_tsallis_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_iw_run));
 
         std::vector<double> tsallis_rv_run;
-        std::thread t2(basic_tsallis_runner <Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds, std::ref(tsallis_rv_run));
+        std::thread t2(basic_tsallis_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_rv_run));
 
         std::vector<double> tsallis_optimized_run;
-        std::thread t4(basic_tsallis_runner <Tsallis_approx_rv>, std::ref(optimized), std::ref(data_matrix), rounds, std::ref(tsallis_optimized_run));
+        std::thread t4(basic_tsallis_runner<Tsallis_approx_rv>, std::ref(optimized), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_optimized_run));
 
         std::vector<double> uniform_run;
         std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
@@ -84,5 +87,29 @@ void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averag
 }
 
 
+template<typename Dataset>
+void run_tsallis_variance_experiment(Dataset d, int k, int rounds, int averages, double gap,
+                                     const std::string &out_path = "/tmp/out") {
+
+    for (int i = 0; i < averages; i++) {
+        std::vector<std::vector<double>> data_matrix = d.generate();
+
+        Tsallis_RV rv(k);
+        Tsallis_approx_rv optimized(k);
+
+        std::vector<double> tsallis_rv_run;
+        std::thread t1(basic_tsallis_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_rv_run));
+
+        std::vector<double> tsallis_optimized_run;
+        std::thread t2(basic_tsallis_runner<Tsallis_approx_rv>, std::ref(optimized), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_optimized_run));
+
+        t1.join();
+        t2.join();
+
+
+    }
+}
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLISCOMPARISONRUNNER_H

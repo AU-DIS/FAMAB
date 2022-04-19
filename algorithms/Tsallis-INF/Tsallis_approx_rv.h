@@ -72,13 +72,26 @@ public:
     }
 
     void give_reward(size_t index, double feedback) {
-        for (size_t i = 0; i < _k; i++) {
-            double indicator = i == index ? 1 : 0;
-            double B = _weights[i] >= (_eta * _eta) ? 1.0 / 2.0 : 0;
-            double estimator = (indicator * ((1 - feedback) - B)) / _weights[i] + B;
-            _cumulative_losses[i] += estimator;
-        }
 
+        // Every k'th round, we try to reduce variance
+        if (_t % _k == 0) {
+            for (auto i = 0; i < _k; i++) {
+                auto above  = _weights[i] >= (_eta * _eta);
+
+                // Arm had weight above eta^2 at last update and also above now
+                if (above && _above_threshold[i]) {
+                    double approximated_estimator = (_k - _C[i]) * (1./2.);
+                    _cumulative_losses[i] += approximated_estimator;
+                    // Reset C
+                    _C[i] = 0;
+                    _above_threshold[i] = above;
+                }
+            }
+        }
+        double B = _weights[index] >= (_eta * _eta) ? 1.0 / 2.0 : 0;
+        double estimator = (1 * ((1 - feedback) - B)) / _weights[index] + B;
+        _cumulative_losses[index] += estimator;
+        _C[index] += 1;
     }
 };
 
