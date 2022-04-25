@@ -12,19 +12,21 @@ class Tsallis_approx_rv {
 private:
     int _t;
     double _eta;
+    double previous_eta;
     std::mt19937 _rg;
     double _x;
-    std::vector<double> _weights;
-    std::vector<double> _cumulative_losses;
     int _k;
     std::discrete_distribution<> _d;
-    std::vector<int> _C;
-    std::vector<bool> _above_threshold;
+    int last_choice;
+    double last_feedback;
+    bool update_triggered = true;
+
 
     double compute_eta(int t) {
         _eta = 1 / sqrt(std::max(1, t));
         return _eta;
     }
+
 
     /// This assumes alpha = 1/2
     std::vector<double> newtons_method_weights(std::vector<double> &losses, double eta) {
@@ -33,6 +35,7 @@ private:
         double x_previous = _x;
         double x_estimated = _x;
         weights.reserve(losses.size());
+
 
         for (int i = 0; i < losses.size(); i++) weights.push_back(0);
         do {
@@ -52,6 +55,9 @@ private:
 
 
 public:
+    std::vector<double> _weights;
+    std::vector<double> _cumulative_losses;
+
     explicit Tsallis_approx_rv(int k) {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();
@@ -59,39 +65,32 @@ public:
         _x = 1;
         _k = k;
         _eta = 1;
-        _C = std::vector<int>(k, 0);
-        _above_threshold = std::vector<bool>(k, false);
+        last_feedback = 0;
+        _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
     }
 
     int choose() {
-        _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
-        _d = std::discrete_distribution(_weights.begin(), _weights.end());
+        if (update_triggered) {
+            for (size_t i = 0; i < _k; i++) {
+                double indicator = i == last_choice ? 1 : 0;
+                double B = _weights[i] >= (_eta * _eta) ? 1.0 / 2.0 : 0;
+                double estimator = (indicator * ((1 - last_feedback) - B)) / _weights[i] + B;
+                _cumulative_losses[i] += estimator;
+            }
+            _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
+            _d = std::discrete_distribution(_weights.begin(), _weights.end());
+        }
+        update_triggered = false;
         int s = _d(_rg);
+
         _t += 1;
+        last_choice = s;
         return s;
     }
 
     void give_reward(size_t index, double feedback) {
+        if (1 - feedback > 0) update_triggered = true;
 
-        // Every k'th round, we try to reduce variance
-        if (_t % _k == 0) {
-            for (auto i = 0; i < _k; i++) {
-                auto above  = _weights[i] >= (_eta * _eta);
-
-                // Arm had weight above eta^2 at last update and also above now
-                if (above && _above_threshold[i]) {
-                    double approximated_estimator = (_k - _C[i]) * (1./2.);
-                    _cumulative_losses[i] += approximated_estimator;
-                    // Reset C
-                    _C[i] = 0;
-                    _above_threshold[i] = above;
-                }
-            }
-        }
-        double B = _weights[index] >= (_eta * _eta) ? 1.0 / 2.0 : 0;
-        double estimator = (1 * ((1 - feedback) - B)) / _weights[index] + B;
-        _cumulative_losses[index] += estimator;
-        _C[index] += 1;
     }
 };
 

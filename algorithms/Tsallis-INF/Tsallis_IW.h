@@ -11,8 +11,6 @@ private:
     double _eta;
     std::mt19937 _rg;
     double _x;
-    std::vector<double> _weights;
-    std::vector<double> _cumulative_losses;
     int _last_choice;
 
     double compute_eta(int t) {
@@ -50,6 +48,9 @@ private:
 
 
 public:
+    std::vector<double> _weights;
+    std::vector<double> _cumulative_losses;
+
     explicit Tsallis_IW(int k) {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();

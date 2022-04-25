@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
                 run_adversarial_experiment(d, k, rounds, averages, gap, out_path);
             }
         }
-        if (runner == "exp3_adversarial" || runner == "fpl_adversarial" || runner == "tsallis_adversarial") {
+        if (runner == "exp3_adversarial" || runner == "fpl_adversarial" || runner == "tsallis_adversarial" || runner == "tsallis_variance") {
             int rounds = row["rounds"].get<int>();
             int averages = row["averages"].get<int>();
             int k = row["k"].get<int>();
@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_variance") run_tsallis_variance_experiment(d, k, rounds, averages, gap, out_path);
 
             }
             if (dataset == "mod2") {
@@ -79,12 +80,14 @@ int main(int argc, char *argv[]) {
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_variance") run_tsallis_variance_experiment(d, k, rounds, averages, gap, out_path);
             }
             if (dataset == "stochastic") {
                 auto d = StochasticDataset(k, rounds, delta);
                 if (runner == "exp3_adversarial") run_exp3_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "fpl_adversarial") run_fpl_adversarial_experiment(d, k, rounds, averages, gap, out_path);
                 if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(d, k, rounds, averages, gap, out_path);
+                if (runner == "tsallis_variance") run_tsallis_variance_experiment(d, k, rounds, averages, gap, out_path);
             }
         }
 

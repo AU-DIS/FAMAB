@@ -13,8 +13,7 @@ private:
     double _eta;
     std::mt19937 _rg;
     double _x;
-    std::vector<double> _weights;
-    std::vector<double> _cumulative_losses;
+
     int _k;
     std::discrete_distribution<> _d;
 
@@ -49,6 +48,9 @@ private:
 
 
 public:
+    std::vector<double> _weights;
+    std::vector<double> _cumulative_losses;
+
     explicit Tsallis_RV(int k) {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();
@@ -73,7 +75,6 @@ public:
             double estimator = (indicator * ((1 - feedback) - B)) / _weights[i] + B;
             _cumulative_losses[i] += estimator;
         }
-
     }
 };
 
