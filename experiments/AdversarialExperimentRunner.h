@@ -165,7 +165,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int 
 }
 
 
-//template <typename Dataset>
+
 void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, double gap,
                                 const std::string &out_path = "/tmp/out") {
 

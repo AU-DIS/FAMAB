@@ -13,8 +13,8 @@
 #include "../algorithms/Tsallis-INF/Tsallis_RV.h"
 
 
-template<typename Dataset>
-void run_tsallis_adversarial_experiment(Dataset d, int k, int rounds, int averages, double gap,
+
+void run_tsallis_adversarial_experiment(Dataset &d, int k, int rounds, int averages, double gap,
                                         const std::string &out_path = "/tmp/out") {
 
 
