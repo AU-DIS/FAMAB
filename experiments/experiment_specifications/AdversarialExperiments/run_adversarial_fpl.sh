@@ -1,15 +1,19 @@
-alias python3="/home/tversted/miniconda3/bin/python"
-tmp_dir=/home/tversted/tmp
-make_dir=cmake-build-odin
+#alias python3="/home/tversted/miniconda3/bin/python"
+alias python3="/usr/bin/python3"
+#make_dir=cmake-build-odin
 
-#tmp_dir=/tmp
-#make_dir=cmake-build-materecclesia
+tmp_dir=/mnt/ssd/bandits
+#tmp_dir=../tmp
+make_dir=cmake-build-heroicis
 
-name=fpl
+name=FPL
 
+#rounds=1000
+#rounds=1000
 rounds=100000
-#rounds=1000000
+#averages=10
 averages=100
+gap=3.2
 delta=0.9
 
 run_experiment() {
@@ -26,8 +30,6 @@ run_experiment() {
 
 
       rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2> /dev/null
-      rm $tmp_dir/*header* 2> /dev/null
-      rm $tmp_dir/*.out* 2> /dev/null
 
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
@@ -42,9 +44,10 @@ run_experiment() {
 
 }
 
-for k in 4 8 16 32 128 256 512 1024
-#for k in 4 8 16 32
-#for k in 16
+for k in 4 8 16 32 64 128 256 512 1024
+#for k in 4 8 16 32 64 128
+#for k in 32
+#for k in 1024 2048 4096 8192 16384
 do
     run_experiment $k
 done

@@ -17,12 +17,15 @@ private:
     better_priority_queue::updatable_priority_queue<int, int> _q;
     int _counter;
     int _log_k;
+    int _round;
 
 public:
     QBL(int k, double eta) {
         _k = k;
         _eta = eta;
         _counter = 0;
+        _round = 0;
+
         _log_k = (int) log2(k);
         _log_k = k;
         //_log_k = 2;
@@ -38,6 +41,28 @@ public:
         }
     }
 
+
+    std::vector<int> choose(int K) {
+        std::vector<int> choices(K, 0);
+        for (int i = 0; i < K; i++) {
+            choices[i] = _q.top().key;
+            _q.pop();
+        }
+        for (int i = 0; i < K; i++) {
+            _q.push(choices[i], _priorities[choices[i]]);
+        }
+        return choices;
+    }
+    void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
+        for (int i = 0; i < indices.size(); i++) {
+            int choice = indices[i];
+            if (rewards[i] == 0) {
+                _priorities[choice] = 0;
+                _q.update(choice, 0);
+            }
+        }
+    }
+
     int choose() {
         for (int i = 0; i < _log_k; i++) {
             int priority_delta = (int) _exponential_distribution(_gen);
@@ -48,8 +73,11 @@ public:
         return _q.top().key;
     }
     void give_reward(int choice, double feedback) {
-        _priorities[choice] -= (int) (1 - feedback);
-        _q.update(choice, _priorities[choice]);
+        if (feedback == 0) {
+            _priorities[choice] = 0;
+            _q.pop();
+            _q.push(choice, _priorities[choice]);
+        }
     }
 
 };
