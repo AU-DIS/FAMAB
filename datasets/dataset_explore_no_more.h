@@ -9,7 +9,7 @@
 #include "random"
 #include "iostream"
 
-class dataset_explore_no_more{
+class dataset_explore_no_more {
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;

@@ -4,6 +4,7 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_DATA_GENERATORS_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_DATA_GENERATORS_H
+#include "dataset.h"
 
 std::vector<std::discrete_distribution<int>> create_distributions(int k) {
     std::vector<std::discrete_distribution<int>> distributions(k);
@@ -121,14 +122,15 @@ std::vector<std::vector<double>> stochastically_constrained_adversarial(int k, d
 }
 
 
-class StochasticDataset {
+class StochasticDataset: public Dataset{
 private:
-    int _k;
-    int _rounds;
-    double _lambda;
+    int _k{};
+    int _rounds{};
+    double _lambda{};
     std::mt19937 _gen;
 
 public:
+    StochasticDataset() = default;
     StochasticDataset(int k, int rounds, double lambda)
     {
         _k = k;
@@ -161,15 +163,16 @@ public:
 };
 
 
-class StochasticallyConstrainedDataset {
+class StochasticallyConstrainedDataset: public Dataset {
 private:
-    int _k;
-    int _rounds;
-    double _gap;
-    double _delta;
+    int _k{};
+    int _rounds{};
+    double _gap{};
+    double _delta{};
 
 
 public:
+    StochasticallyConstrainedDataset() = default;
     StochasticallyConstrainedDataset(int k, int rounds, double gap, double delta) {
         _k = k;
         _rounds = rounds;
@@ -215,13 +218,14 @@ public:
 };
 
 
-class Mod2Dataset {
+class Mod2Dataset: public Dataset {
 private:
-    int _k;
-    int _rounds;
-    double _gap;
+    int _k{};
+    int _rounds{};
+    double _gap{};
 
 public:
+    Mod2Dataset() = default;
     Mod2Dataset(int k, int rounds, double gap) {
         _k = k;
         _rounds = rounds;

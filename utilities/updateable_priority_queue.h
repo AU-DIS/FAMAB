@@ -36,7 +36,8 @@ namespace better_priority_queue {
         std::size_t size() const { return heap.size(); }
 
         /** first is priority, second is key */
-        const priority_queue_node<Key,Priority>& top() const { return heap.front(); }
+        const priority_queue_node<Key,Priority>& top() const {
+            return heap.front(); }
 
         void pop(bool remember_key=false) {
             if(size() == 0) return;

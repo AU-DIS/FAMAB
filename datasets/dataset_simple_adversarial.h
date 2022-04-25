@@ -9,7 +9,9 @@
 #include "../utilities/random_gen.h"
 #include "random"
 #include "iostream"
-class dataset_simple_adversarial {
+#include "dataset.h"
+
+class dataset_simple_adversarial{
 private:
     std::vector<std::vector<double>> data_matrix;
     std::vector<int> iterators;

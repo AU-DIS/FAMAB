@@ -1,9 +1,17 @@
-alias python3="/home/tversted/miniconda3/bin/python"
+#alias python3="/home/tversted/miniconda3/bin/python"
 #alias python3="/opt/homebrew/bin/python3"
+alias python3="$(which python3)"
+#"/usr/bin/python3"
 
-tmp_dir=/home/tversted/tmp
+
+make_dir=cmake-build-release-wsl
+tmp_dir=/tmp
+if [[ $make_dir == cmake-build-release-odin ]]; then
+  mkdir -p /home/$(whoami)/tmp
+  tmp_dir=/home/$(whoami)/tmp
+fi
+
 name=adversarial
-make_dir=cmake-build-release-odin
 
 run_experiment() {
     n=10
@@ -16,7 +24,8 @@ run_experiment() {
       header=$tmp_dir/header_$name$1_$K
       out=$tmp_dir/$name$1.out_$K
       plt_out=$tmp_dir/$name$1_$K.png
-      rm $header $out $plt_out 2> /dev/null
+
+      rm -f $header $out $plt_out 2> /dev/null
 
       echo "runner,K,rounds,averages,dataset,output_path" >> $header
       echo "GenericBanditRunner,$K,$pow,$averages,$name,$out" >> $header
@@ -26,7 +35,7 @@ run_experiment() {
     rm $tmp_dir/*header* 2> /dev/null
     rm $tmp_dir/*.out* 2> /dev/null
 }
-for i in 1 2 3 4 5
+for i in 1 #2 3 4 5
 do
   run_experiment $i & disown
 done
