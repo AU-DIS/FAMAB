@@ -24,7 +24,8 @@ K = int(metadata[4])
 
 colormap = {
     "Uniform": "red",
-    "Exp3m": "blue"
+    "Exp3m": "blue",
+    "QBL": "Magenta"
 }
 
 ys = []

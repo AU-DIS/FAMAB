@@ -21,7 +21,7 @@
 #include "../algorithms/Tsallis-INF/Tsallis_IW.h"
 #include "../algorithms/UCB/UCB1.h"
 #include "../datasets/dataset.h"
-
+#include "set"
 
 //template<typename Dataset>
 void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap,
@@ -101,6 +101,7 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
     write_results(regrets, metadata, descriptions, regret_out_path);
     write_results(weights_at_r, weights_metadata, weights_descriptions, weight_out_path);
 }
+
 //template<typename Dataset>
 void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int averages,
                                       double gap,
@@ -108,44 +109,43 @@ void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int 
 
     std::vector<double> uniform_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
-    for (int avg = 0; avg < averages; avg++) {
+    std::vector<double> qbl_regrets(rounds);
+    for (int i = 0; i < averages; i++) {
         std::vector<std::vector<double>> data_matrix = d.generate();
+
         Uniformbandit uni(k);
         DepRoundALIASStrategy a;
         Exp3m b(k, K, 0.1, a);
+        QBL qbl(k, 0.9);
+
+        std::vector<double> uniform_run;
+        std::thread t1(top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, K,
+                       std::ref(uniform_run));
+
+        /*
+        std::vector<double> exp3m_run;
+        std::thread t2(top_k_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, K,
+                       std::ref(exp3m_run));
+    */
+        std::vector<double> qbl_run;
+        std::thread t3(qbl_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, K,
+                       std::ref(qbl_run));
+
+        t1.join();
+        //t2.join();
+        t3.join();
+
+
         for (int round = 0; round < rounds; round++) {
-            std::vector<double> uniform_rewards(K, 0);
-            std::vector<double> exp3m_rewards(K, 0);
-            std::vector<double> round_uniform_regrets(K, 0);
-            std::vector<double> round_exp3m_regrets(K, 0);
-
-
-            auto choices = b.choose();
-            double uniform_regret = 0;
-            double uniform_reward = 0;
-            double exp3m_regret = 0;
-            double exp3m_reward = 0;
-            auto max_choice = 0;
-            for (int i = 0; i < k; i++) {
-                if (data_matrix[i][round] > max_choice) max_choice = data_matrix[i][round];
-            }
-
-            for (int c = 0; c < K; c++) {
-                auto uni_choice = uni.choose();
-                auto exp3m_choice = choices[c];
-
-                uniform_reward += data_matrix[uni_choice][round];
-                exp3m_reward += data_matrix[exp3m_choice][round];
-            }
-            uniform_regret = ((max_choice*K) - uniform_reward)/K;
-            exp3m_regret = ((max_choice*K) - exp3m_reward)/K;
-            uniform_regrets[round] += uniform_regret/averages;
-            exp3m_regrets[round] += exp3m_regret/averages;
+            uniform_regrets[round] += uniform_run[round];
+            //exp3m_regrets[round] += exp3m_run[round];
+            qbl_regrets[round] += qbl_run[round];
         }
     }
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
-    result_matrix.push_back(exp3m_regrets);
+    //result_matrix.push_back(exp3m_regrets);
+    result_matrix.push_back(qbl_regrets);
 
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
@@ -155,10 +155,12 @@ void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int 
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
             + std::to_string(K) + ","
-            + "Uniform,Exp3m";
+            //+ "Uniform,Exp3m,QBL";
+            + "Uniform,QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
-        "Exp3m"
+        //"Exp3m",
+        "QBL"
     };
     write_results(result_matrix, metadata, descriptions, out_path);
 
