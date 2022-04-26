@@ -4,8 +4,6 @@
 #include "iostream"
 #include <benchmark/benchmark.h>
 #include "random"
-#include "algorithms/FPL/FPLVectorWeightStrategy.h"
-#include "algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "algorithms/FPL/FPL.h"
 #include "algorithms/FPL/FPL_hash.h"
 #include "algorithms/Exp3Bandit/Exp31.h"

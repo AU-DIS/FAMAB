@@ -11,8 +11,6 @@
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 #include "../runner.h"
-#include "../algorithms/FPL/FPLVectorWeightStrategy.h"
-#include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/FPL/QBL.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"

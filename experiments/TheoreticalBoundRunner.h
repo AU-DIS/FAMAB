@@ -8,8 +8,6 @@
 #include "../utilities/eta_mean_std_writer.h"
 #include "../algorithms/Exp3Bandit/Exp31.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"
-#include "../algorithms/FPL/FPLVectorWeightStrategy.h"
-#include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/UCB/UCB1.h"
 #include "../runner.h"

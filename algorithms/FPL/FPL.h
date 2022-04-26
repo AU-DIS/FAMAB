@@ -6,8 +6,6 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
 #include <vector>
 #include <random>
-#include "FPLVectorWeightStrategy.h"
-#include "NaiveRandomGenStrategy.h"
 #include "../../utilities/random_gen.h"
 
 class FPL

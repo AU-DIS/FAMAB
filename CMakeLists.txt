@@ -15,8 +15,7 @@ add_executable(efficient_multi_armed_bandits main.cpp
         datasets/dataset_theoretical_bounds.h datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
         datasets/debug/debug_simple_stochastic.cpp datasets/debug/debug_simple_stochastic.h datasets/debug/debug_simple_adversarial.cpp
         datasets/debug/debug_simple_adversarial.h algorithms/DEXP/DExp3.cpp algorithms/DEXP/DExp3.h algorithms/Exp3m/Exp3m.h
-        utilities/argsort.h algorithms/FPL/NaiveRandomGenStrategy.cpp algorithms/FPL/NaiveRandomGenStrategy.h
-        algorithms/FPL/FPLVectorWeightStrategy.cpp algorithms/FPL/FPLVectorWeightStrategy.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
+        utilities/argsort.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
         algorithms/Exp3m/DepRoundALIASStrategy.h algorithms/Exp3m/Exp31m.h algorithms/Tsallis-INF/TsallisINF.h
         algorithms/Exp3Bandit/Exp3.h algorithms/Exp3Bandit/Exp3.cpp
         algorithms/Exp3Bandit/Exp31.h algorithms/Exp3Bandit/Exp31.cpp
@@ -31,8 +30,7 @@ add_executable(benchmark_bandits benchmark.cpp
         datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
         datasets/debug/debug_simple_stochastic.cpp datasets/debug/debug_simple_stochastic.h datasets/debug/debug_simple_adversarial.cpp
         datasets/debug/debug_simple_adversarial.h algorithms/DEXP/DExp3.cpp algorithms/DEXP/DExp3.h algorithms/Exp3m/Exp3m.h
-        utilities/argsort.h algorithms/FPL/NaiveRandomGenStrategy.cpp algorithms/FPL/NaiveRandomGenStrategy.h
-        algorithms/FPL/FPLVectorWeightStrategy.cpp algorithms/FPL/FPLVectorWeightStrategy.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
+        utilities/argsort.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
         algorithms/Exp3m/DepRoundALIASStrategy.h algorithms/Exp3m/Exp31m.h algorithms/Tsallis-INF/TsallisINF.h
         algorithms/Exp3Bandit/Exp3.h algorithms/Exp3Bandit/Exp3.cpp
         algorithms/Exp3Bandit/Exp31.h algorithms/Exp3Bandit/Exp31.cpp
