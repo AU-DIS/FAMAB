@@ -41,9 +41,8 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
 
     for (int avg = 0; avg < averages; avg++) {
         std::vector<std::vector<double>> data_matrix = d.generate();
-        FPLVectorWeightStrategy fpl_ws(k);
-        NaiveRandomGenStrategy fpl_rs(k, 10);
-        FPL fpl(fpl_ws, fpl_rs);
+
+        FPL fpl(k, 10);
         Uniformbandit uni(k);
 
 //        Exp3 fpl(k, 0.1);
@@ -194,16 +193,10 @@ void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, dou
 
         Uniformbandit uni(k);
 
-
-        FPLVectorWeightStrategy fpl_ws(k);
-        NaiveRandomGenStrategy fpl_rs(k, 10);
-        FPL fpl(fpl_ws, fpl_rs);
-
-        //QBL fpl(k, 0.9);
-
-        FPLVectorWeightStrategy fpl_ucb_ws(k);
-        NaiveRandomGenStrategy fpl_ucb_rs(k, 10);
-        FPL ucb_fpl_bandit(fpl_ucb_ws, fpl_ucb_rs);
+    
+        FPL fpl(k, 10);
+    
+        FPL ucb_fpl_bandit(k, 10);
         UCB1 ucb_fpl(10, ucb_fpl_bandit);
 
         Exp31 exp31(k);
@@ -220,11 +213,11 @@ void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, dou
 
         std::vector<double> fpl_run;
         //std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl),
-        std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy,NaiveRandomGenStrategy>>, std::ref(fpl),
+        std::thread t3(basic_tsallis_runner<FPL>, std::ref(fpl),
                        std::ref(data_matrix), rounds, std::ref(fpl_run));
 
         std::vector<double> ucb_fpl_run;
-        std::thread t4(basic_tsallis_runner<UCB1<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>>,
+        std::thread t4(basic_tsallis_runner<UCB1<FPL>>,
                        std::ref(ucb_fpl), std::ref(data_matrix), rounds, std::ref(ucb_fpl_run));
 
 

@@ -23,21 +23,7 @@ void FPLVectorWeightStrategy::add_to_weights(std::vector<double> vector) {
 }
 
 int FPLVectorWeightStrategy::max_weight() {
-    /*
-    * Draw is simply an arg-max, but std::vector does not support argmax
-    * All code examples use chaining of algorithms that will only add useless computations,
-    * so we implement it manually
-     */
-    int max_index = 0;
-    double max_element = 0;
 
-    for (int i = 0; i < _k; i++) {
-        if (_weights[i] > max_element) {
-            max_index = i;
-            max_element = _weights[i];
-        }
-    }
-    return max_index;
 }
 std::vector<double> FPLVectorWeightStrategy::get_weights() {
     return _weights;

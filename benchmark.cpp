@@ -79,9 +79,7 @@ static void benchmark_exp3m_1_update(benchmark::State& state) {
 
 static void benchmark_ucb_fpl(benchmark::State& state) {
     auto k = state.range(0);
-    FPLVectorWeightStrategy ws(k);
-    NaiveRandomGenStrategy gs(k, 0.1);
-    FPL bandit(ws, gs);
+    FPL bandit(k, 0.1);
     UCB1 b(1, bandit);
     for (auto _ : state) {
         int rounds = 100;
@@ -111,12 +109,9 @@ static void benchmark_ucb_exp3(benchmark::State& state) {
 
 static void benchmark_fpl(benchmark::State& state) {
     auto k = state.range(0);
-    FPLVectorWeightStrategy ws(k);
-    NaiveRandomGenStrategy gs(k, 0.1);
-    FPL b(ws, gs);
+    FPL b(k, 0.1);
     for (auto _ : state) {
         int rounds = 100;
-
         for (int i = 0; i < rounds; i++) {
             int choice = b.choose();
             b.give_reward(0, 0);
@@ -126,9 +121,7 @@ static void benchmark_fpl(benchmark::State& state) {
 
 static void benchmark_fpl_sample(benchmark::State& state) {
     auto k = state.range(0);
-    FPLVectorWeightStrategy ws(k);
-    NaiveRandomGenStrategy gs(k, 0.1);
-    FPL b(ws, gs);
+    FPL b(k, 0.1);
     for (auto _ : state) {
         int rounds = 100;
         for (int i = 0; i < rounds; i++) {
@@ -138,9 +131,7 @@ static void benchmark_fpl_sample(benchmark::State& state) {
 }
 static void benchmark_fpl_update(benchmark::State& state) {
     auto k = state.range(0);
-    FPLVectorWeightStrategy ws(k);
-    NaiveRandomGenStrategy gs(k, 0.1);
-    FPL b(ws, gs);
+    FPL b(k, 0.1);
     for (auto _ : state) {
         int rounds = 100;
         for (int i = 0; i < rounds; i++) {

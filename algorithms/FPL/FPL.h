@@ -8,31 +8,67 @@
 #include <random>
 #include "FPLVectorWeightStrategy.h"
 #include "NaiveRandomGenStrategy.h"
+#include "../../utilities/random_gen.h"
 
-template<typename WeightStrategy, typename RandomGenStrategy>
-class FPL {
+class FPL
+{
 private:
-    RandomGenStrategy &_randomGenStrategy;
+    std::vector<double> _weights;
+    std::mt19937 _gen;
+    int _k;
+    std::exponential_distribution<double> _exponential_distribution;
+
 public:
-    WeightStrategy &_weightStrategy;
-    FPL(WeightStrategy &ws, RandomGenStrategy &rgs)
-    :_weightStrategy(ws), _randomGenStrategy(rgs)
+    FPL(int k, double eta)
+    {
+        _weights = std::vector<double>(k, 1);
+        _gen = random_gen();
+        _exponential_distribution = std::exponential_distribution<double>(eta);
+        _k = k;
+    }
+
+    void give_reward(size_t choice, double feedback)
+    {
+    }
+    std::vector<double> &get_weights()
+    {
+        return _weights;
+    }
+
+    int choose()
     {
 
-    }
-    int choose() {
-        std::vector<double> random_weights = _randomGenStrategy.random_weights();
-        _weightStrategy.add_to_weights(random_weights);
+        for (auto &v : _weights)
+            v += _exponential_distribution(_gen);
+        /*
+         * Draw is simply an arg-max, but std::vector does not support argmax
+         * All code examples use chaining of algorithms that will only add useless computations,
+         * so we implement it manually
+         */
+        int max_index = 0;
+        double max_element = 0;
 
-        return _weightStrategy.max_weight();
+        for (int i = 0; i < _k; i++)
+        {
+            if (_weights[i] > max_element)
+            {
+                max_index = i;
+                max_element = _weights[i];
+            }
+        }
+        return max_index;
     }
-    void give_reward(size_t choice, double feedback) {
-        _weightStrategy.add_to_weight(choice, feedback);
+    std::vector<int> choose(int K)
+    {
+        return std::vector<int>(_k, 1);
     }
-    std::vector<double> get_weights() {
-        return _weightStrategy.get_weights();
+    void give_reward(int choice, double feedback)
+    {
+        _weights[choice] += feedback;
     }
 
-
+    void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
+    {
+    }
 };
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_FPL_H

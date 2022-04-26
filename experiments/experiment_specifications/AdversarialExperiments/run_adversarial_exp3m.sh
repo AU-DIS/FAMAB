@@ -21,8 +21,8 @@ run_experiment() {
       out=$tmp_dir/$name$1_m$K.out
       plt_out=$tmp_dir/$name$1_m$K.png
 
-      out_mod2=$tmp_dir/mod2_$name$1.out
-      plt_out_mod2=$tmp_dir/mod2_$name$1.png
+      out_mod2=$tmp_dir/mod2_$name$1_m$K.out
+      plt_out_mod2=$tmp_dir/mod2_$name$1_m$K.png
 
       out_stochastic=$tmp_dir/stochastic_$name$1.out
       plt_out_stochastic=$tmp_dir/stochastic_$name$1.png

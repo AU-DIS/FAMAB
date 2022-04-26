@@ -22,9 +22,7 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
 
     for (int i = 0; i < averages; i++) {
     std::vector<std::vector<double>> data_matrix = d.generate();
-        FPLVectorWeightStrategy fpl_ws(k);
-        NaiveRandomGenStrategy fpl_rs(k, 0.9);
-        FPL fpl(fpl_ws, fpl_rs);
+        FPL fpl(k, 0.9);
 
         //FPL_hash fpl_new(k, 0.9, rounds);
         //FPL_buckets fpl_new(k, 0.9);
@@ -33,7 +31,7 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         Uniformbandit uni(k);
 
         std::vector<double> fpl_original_run;
-        std::thread t1(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
+        std::thread t1(basic_tsallis_runner<FPL>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
 
         std::vector<double> fpl_new_run;
         std::thread t2(basic_tsallis_runner<QBL>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));

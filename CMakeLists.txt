@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(csv-parser)
 add_subdirectory(benchmark)
 
+SET(DBENCHMARK_ENABLE_GTEST_TESTS OFF)
+
 add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/FPL/FPL.h
         utilities/weight_exporter.cpp
