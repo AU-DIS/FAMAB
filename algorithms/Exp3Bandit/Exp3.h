@@ -20,6 +20,7 @@ private:
     std::mt19937 _random_gen = random_gen();
     int sample();
 public:
+    Exp3() = default;
     Exp3(int k, double gamma);
     Exp3 (const Exp3 &prototype);
     int choose();
