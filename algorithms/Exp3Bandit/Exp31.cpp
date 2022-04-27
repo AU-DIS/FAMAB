@@ -13,15 +13,12 @@
 
 Exp31::Exp31(int k) : _k(k)
 {
-    for (int i = 0; i < _k; i++)
-    {
-        accumulated_rewards.push_back(0);
-    }
-
+    accumulated_rewards = std::vector<double>(k, 0);
     _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
     _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
     _exp3 = Exp3(_k, _gamma);
     _r = 0;
+    round = 0;
 }
 
 int Exp31::choose()
@@ -37,7 +34,7 @@ int Exp31::choose()
         _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
         _exp3 = Exp3(_k, _gamma);
     }
-
+    round += 1;
     return _exp3.choose();
 }
 

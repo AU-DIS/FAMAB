@@ -16,6 +16,7 @@ private:
     int _r;
     double _g_r;
     double _gamma;
+    int round;
 
     std::vector<double> accumulated_rewards;
     Exp3 _exp3;
