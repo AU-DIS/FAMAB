@@ -21,6 +21,7 @@ private:
     int sample();
 public:
     Exp3(int k, double gamma);
+    Exp3 (const Exp3 &prototype);
     int choose();
     void give_reward(int index, double feedback);
     std::vector<double> get_weights();

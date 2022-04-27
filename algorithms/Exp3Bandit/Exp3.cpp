@@ -11,16 +11,17 @@
 
 Exp3::Exp3(int k, double gamma)
         : _k(k), _gamma(gamma) {
-    _probabilities = std::vector<double>();
-    for (int i = 0; i < k; i++) {
-        _probabilities.push_back(0);
-    }
-    _weights = std::vector<double>();
-    // Init all to 1
-    for (int i = 0; i < k; i++) {
-        _weights.push_back(1.0);
-    }
+    _probabilities = std::vector<double>(k, 0.0);
+    _weights = std::vector<double>(k, 1.0);    
 };
+
+Exp3::Exp3(const Exp3 &prototype) {
+    _k = prototype._k;
+    _gamma = prototype._gamma;
+    _probabilities = std::vector<double>(_k, 0.0);
+    _weights = std::vector<double>(_k, 1.0);    
+    _random_gen = random_gen();
+}
 
 int Exp3::sample() {
     std::discrete_distribution<int> d(_probabilities.begin(), _probabilities.end());
