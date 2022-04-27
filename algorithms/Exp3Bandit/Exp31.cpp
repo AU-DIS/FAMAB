@@ -11,35 +11,40 @@
 #include "Exp31.h"
 #include <iostream>
 
-Exp31::Exp31(int k) : _k(k) {
-    for (int i = 0; i < _k; i++) {
+Exp31::Exp31(int k) : _k(k)
+{
+    for (int i = 0; i < _k; i++)
+    {
         accumulated_rewards.push_back(0);
     }
 
     _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
-    double gamma = std::min(1.0, sqrt(_k * log(_k)) / (exp(1) - 1) * _g_r);
-    _gamma = gamma;
+    _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
     _exp3 = Exp3(_k, _gamma);
+    _r = 0;
 }
 
-int Exp31::choose() {
+int Exp31::choose()
+{
     double f_term = _k * log(_k);
     double s_term = exp(1.0) - 1.0;
 
     auto g_max = *std::max_element(accumulated_rewards.begin(), accumulated_rewards.end());
-    if (g_max > (_g_r - _k / _gamma)) {
+    if (g_max > (_g_r - _k / _gamma))
+    {
         _r += 1;
-        _g_r = (f_term/s_term) * pow(4, _r);
-        _gamma = std::min(1.0, sqrt(_k * log(_k)) / (exp(1) - 1) * _g_r);
+        _g_r = (f_term / s_term) * pow(4, _r);
+        _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
         _exp3 = Exp3(_k, _gamma);
     }
 
     return _exp3.choose();
 }
 
-void Exp31::give_reward(int index, double feedback) {
+void Exp31::give_reward(int index, double feedback)
+{
     accumulated_rewards[index] += feedback;
     _exp3.give_reward(index, feedback);
 }
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP31_CPP
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP31_CPP

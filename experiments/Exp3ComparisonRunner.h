@@ -22,12 +22,13 @@ void run_exp3_adversarial_experiment(Dataset &d, int k, int rounds, int averages
     for (int i = 0; i < averages; i++) {
         std::vector<std::vector<double>> data_matrix = d.generate();
         //Exp3_average exp3_compare(k, 0.2, 0.8);
-        Exp3_deferred exp3_compare(k, 0.2, 128);
+        //Exp3_deferred exp3_compare(k, 0.2, 128);
+        Exp31 exp3_compare(k);
         Exp3 exp3(k, 0.2);
         Uniformbandit uni(k);
 
         std::vector<double> exp3_compare_run;
-        std::thread t1(basic_tsallis_runner<Exp3_deferred>, std::ref(exp3_compare), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
+        std::thread t1(basic_tsallis_runner<Exp31>, std::ref(exp3_compare), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
 
         std::vector<double> exp3_run;
         std::thread t2(basic_tsallis_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
