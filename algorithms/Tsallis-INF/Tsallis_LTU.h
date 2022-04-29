@@ -5,9 +5,8 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
 
-
-
-class Tsallis_LTU {
+class Tsallis_LTU
+{
 private:
     int _t;
     double _eta;
@@ -19,26 +18,32 @@ private:
     std::discrete_distribution<> _d;
     bool update_triggered = true;
 
-    double compute_eta(int t) {
+    double compute_eta(int t)
+    {
         _eta = 1 / sqrt(std::max(1, t));
         return _eta;
     }
 
     /// This assumes alpha = 1/2
-    std::vector<double> newtons_method_weights(std::vector<double> &losses, double eta) {
+    std::vector<double> newtons_method_weights(std::vector<double> &losses, double eta)
+    {
 
         std::vector<double> weights;
         double x_previous = _x;
         double x_estimated = _x;
         weights.reserve(losses.size());
 
-        for (int i = 0; i < losses.size(); i++) weights.push_back(0);
-        do {
+        for (int i = 0; i < losses.size(); i++)
+            weights.push_back(0);
+        do
+        {
             x_previous = x_estimated;
-            for (int i = 0; i < losses.size(); i++) weights[i] = 4 * pow((eta * (losses[i] - x_previous)), -2);
+            for (int i = 0; i < losses.size(); i++)
+                weights[i] = 4 * pow((eta * (losses[i] - x_previous)), -2);
             double w_sum_powered = 0;
             double w_sum = 0;
-            for (auto w: weights) {
+            for (auto w : weights)
+            {
                 w_sum_powered += pow(w, (3 / 2));
                 w_sum += w;
             }
@@ -48,9 +53,9 @@ private:
         return weights;
     }
 
-
 public:
-    explicit Tsallis_LTU(int k) {
+    explicit Tsallis_LTU(int k)
+    {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();
         _t = 0;
@@ -59,11 +64,13 @@ public:
         _eta = 1;
     }
 
-    int choose() {
+    int choose()
+    {
         if (update_triggered) {
             _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
             _d = std::discrete_distribution(_weights.begin(), _weights.end());
         }
+
         update_triggered = false;
         int s = _d(_rg);
 
@@ -71,13 +78,15 @@ public:
         return s;
     }
 
-    void give_reward(size_t index, double feedback) {
+    void give_reward(size_t index, double feedback)
+    {
         // We can either use IW or RV to construct the estimated reward
         // This is RW, we should also try RV, which is a reduced variance estimator
-        if (1 - feedback > 0) update_triggered = true;
+        if (1 - feedback > 0)
+            update_triggered = true;
 
-        _cumulative_losses[index] += (1 - feedback)/_weights[index];
+        _cumulative_losses[index] += (1 - feedback) / _weights[index];
     }
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H

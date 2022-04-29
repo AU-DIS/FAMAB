@@ -27,6 +27,7 @@ public:
 
     void give_reward(size_t choice, double feedback)
     {
+        _weights[choice] += feedback;
     }
     std::vector<double> &get_weights()
     {

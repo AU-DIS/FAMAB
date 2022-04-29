@@ -6,7 +6,6 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_HASH_H
 
 #include "../../utilities/random_gen.h"
-#include "../../utilities/updateable_priority_queue.h"
 class FPL_hash {
 private:
     int _k;
