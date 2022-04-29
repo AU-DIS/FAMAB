@@ -33,10 +33,14 @@ public:
         _eta = eta;
         current_round = 0;
         // Super fast round up int division
-        split_line = k / 2 + (k % 2 != 0);
+        // split_line = k / 2 + (k % 2 != 0);
         // split_line = k - 6;
+        int I_1 = (int)(k * log2(2)) / log2(k);
+        split_line = k - I_1;
+        // std::cout << "k = " + std::to_string(k) + " split_line = " + std::to_string(split_line) << std::endl;
 
-        lower_update_interval = split_line * (int)log2(k);
+        // lower_update_interval = split_line * (int)log2(k);
+        lower_update_interval = split_line;
         upper_update_interval = 1;
 
         // The first half start in the lowers
@@ -73,6 +77,17 @@ public:
 
     int choose()
     {
+
+        current_round++;
+        if (current_round % (int) _eta == 0) {
+            double sum = U_max.heap_sum();
+            sum += L_max.heap_sum();
+            L_max.normalize(sum);
+            L_min.normalize(sum);
+            U_max.normalize(sum);
+            U_min.normalize(sum);
+        } 
+
         if (current_round % lower_update_interval == 0)
         {
             // Add noise to all arms (Except the upper ones, but that's fine)

@@ -141,6 +141,18 @@ namespace better_priority_queue
             }
             return false;
         }
+        void normalize(const Priority &factor) {
+            for (auto &f : heap) {
+                f.priority /= factor;
+            }
+        }
+        double heap_sum() {
+            double sum = 0;
+            for (auto v : heap) {
+                v.priority += sum;
+            }
+            return sum;
+        }
 
     private:
         void extend_ids(Key k)

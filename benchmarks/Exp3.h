@@ -19,7 +19,6 @@ static void benchmark_exp3_data(benchmark::State &state)
     }
 }
 
-
 static void benchmark_exp3(benchmark::State &state)
 {
     auto k = state.range(0);
