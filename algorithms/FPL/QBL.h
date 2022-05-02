@@ -26,7 +26,7 @@ public:
         _counter = 0;
         _round = 0;
 
-        _log_k = (int) log2(k);
+        //_log_k = (int) log2(k);
         _log_k = k;
         //_log_k = 2;
 

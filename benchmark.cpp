@@ -17,6 +17,8 @@
 #include "algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "algorithms/Exp3m/Exp3m.h"
 #include "algorithms/Exp3m/Exp31m.h"
+#include "algorithms/FPL/FPL_buckets.h"
+#include "algorithms/FPL/FPL_toplog.h"
 #include "algorithms/UCB/UCB1.h"
 #include "algorithms/Exp3Bandit/Exp3Tor.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
@@ -33,14 +35,24 @@
 #include "benchmarks/Exp3m.h"
 #include "benchmarks/FPL_H.h"
 #include "benchmarks/FPL.h"
+#include "benchmarks/FPL_buckets.h"
+#include "benchmarks/FPL_toplog.h"
 #include "benchmarks/QBL.h"
 #include "benchmarks/Tsallis_iw.h"
 #include "benchmarks/Tsallis_LTU.h"
 #include "benchmarks/Tsallis_rv.h"
 #include "benchmarks/UCB.h"
 
-BENCHMARK(benchmark_fpl)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(1);
-BENCHMARK(benchmark_fpl_sample)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(1);
-BENCHMARK(benchmark_fpl_update)->Arg(1)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Threads(1);
+
+/*
+BENCHMARK(benchmark_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+BENCHMARK(benchmark_fpl_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+BENCHMARK(benchmark_fpl_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+*/
+
+BENCHMARK(benchmark_fpl_toplog)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+BENCHMARK(benchmark_fpl_toplog_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+BENCHMARK(benchmark_fpl_toplog_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
+
 
 BENCHMARK_MAIN();
