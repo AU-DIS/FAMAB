@@ -105,6 +105,8 @@ int main(int argc, char *argv[]) {
                 run_theoretical_bound_experiment_Exp3_varying_T();
                 run_theoretical_bound_experiment_Exp3ix_varying_k();
                 run_theoretical_bound_experiment_Exp3ix_varying_T();
+                run_theoretical_bound_experiment_FPL_varying_k();
+                run_theoretical_bound_experiment_FPL_varying_T();
                 run_theoretical_bound_experiment_Exp3m_varying_small_k();
                 run_theoretical_bound_experiment_Exp3m_varying_big_k();
                 run_theoretical_bound_experiment_Exp3m_varying_T();
