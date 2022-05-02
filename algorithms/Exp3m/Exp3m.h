@@ -39,7 +39,7 @@ public:
             _weights.push_back(1.0);
         }
     };
-    std::vector<int> choose() {
+    std::vector<int> choose(int k) {
         auto sorted_weight_indices = argsort(_weights);
 
         double sum_weights = 0;

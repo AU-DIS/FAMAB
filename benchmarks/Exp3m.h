@@ -14,7 +14,7 @@ static void benchmark_exp3m_1(benchmark::State &state)
     {
         for (int i = 0; i < rounds; i++)
         {
-            auto choices = b.choose();
+            auto choices = b.choose(k);
             b.give_reward(index, reward);
         }
     }
@@ -33,7 +33,7 @@ static void benchmark_exp3m_1_sample(benchmark::State &state)
     {
         for (int i = 0; i < rounds; i++)
         {
-            auto choices = b.choose();
+            auto choices = b.choose(k);
         }
     }
 }
@@ -47,7 +47,7 @@ static void benchmark_exp3m_1_update(benchmark::State &state)
     std::vector<int> index(K, 0);
     DepRoundALIASStrategy a;
     Exp3m b(k, K, 0.1, a);
-    b.choose();
+    b.choose(k);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)

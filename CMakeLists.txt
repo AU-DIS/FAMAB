@@ -12,7 +12,7 @@ SET(DBENCHMARK_ENABLE_GTEST_TESTS OFF)
 add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/FPL/FPL.h
         utilities/weight_exporter.cpp
-        datasets/dataset_theoretical_bounds.h datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
+        datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
         datasets/debug/debug_simple_stochastic.cpp datasets/debug/debug_simple_stochastic.h datasets/debug/debug_simple_adversarial.cpp
         datasets/debug/debug_simple_adversarial.h algorithms/DEXP/DExp3.cpp algorithms/DEXP/DExp3.h algorithms/Exp3m/Exp3m.h
         utilities/argsort.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
