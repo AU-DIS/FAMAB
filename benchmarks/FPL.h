@@ -4,7 +4,7 @@
 static void benchmark_fpl(benchmark::State &state)
 {
     auto k = state.range(0);
-    FPL b(k, 0.1);
+    FPL b(k, 10);
     for (auto _ : state)
     {
         int rounds = 100;
@@ -19,7 +19,7 @@ static void benchmark_fpl(benchmark::State &state)
 static void benchmark_fpl_sample(benchmark::State &state)
 {
     auto k = state.range(0);
-    FPL b(k, 0.1);
+    FPL b(k, 10);
     for (auto _ : state)
     {
         int rounds = 100;
@@ -32,7 +32,7 @@ static void benchmark_fpl_sample(benchmark::State &state)
 static void benchmark_fpl_update(benchmark::State &state)
 {
     auto k = state.range(0);
-    FPL b(k, 0.1);
+    FPL b(k, 10);
     for (auto _ : state)
     {
         int rounds = 100;

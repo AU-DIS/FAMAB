@@ -5,6 +5,8 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
 
+#include "../../utilities/argsort.h"
+
 class Tsallis_IW
 {
 private:
@@ -47,6 +49,11 @@ private:
             x_estimated = x_previous - (w_sum - 1) / (eta * w_sum_powered);
         } while (std::min(x_previous, x_estimated) / std::max(x_previous, x_estimated) >= 1.1);
         _x = x_estimated;
+        /*
+        auto indices = argsort(weights);
+        for (auto v : indices) std::cout << std::to_string(v) + ",";
+        std::cout << std::endl;
+        */
 
         return weights;
     }

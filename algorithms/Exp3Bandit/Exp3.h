@@ -2,7 +2,6 @@
 // Created by Mathias Ravn Tversted on 10/02/2022.
 //
 
-
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H
 #include <math.h>
@@ -10,7 +9,8 @@
 #include <random>
 #include "../../utilities/random_gen.h"
 
-class Exp3 {
+class Exp3
+{
 private:
     int _k;
     double _gamma;
@@ -19,15 +19,15 @@ private:
     std::vector<double> _probabilities;
     std::mt19937 _random_gen = random_gen();
     int sample();
+
 public:
     Exp3() = default;
     Exp3(int k, double gamma);
-    Exp3 (const Exp3 &prototype);
+    Exp3(const Exp3 &prototype);
     int choose();
     void give_reward(int index, double feedback);
     std::vector<double> get_weights();
     std::vector<double> _weights;
 };
 
-
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H
