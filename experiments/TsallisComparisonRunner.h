@@ -31,20 +31,20 @@ void run_tsallis_adversarial_experiment(Dataset &d, int k, int rounds, int avera
         Uniformbandit uni(k);
 
         std::vector<double> tsallis_iw_run;
-        std::thread t1(basic_tsallis_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds,
+        std::thread t1(basic_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds,
                        std::ref(tsallis_iw_run));
 
         std::vector<double> tsallis_rv_run;
-        std::thread t2(basic_tsallis_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
+        std::thread t2(basic_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
                        std::ref(tsallis_rv_run));
 
-        std::vector<double> tsallis_optimized_run;
-        std::thread t4(basic_tsallis_runner<Tsallis_LTU>, std::ref(optimized), std::ref(data_matrix), rounds,
-                       std::ref(tsallis_optimized_run));
-
         std::vector<double> uniform_run;
-        std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
+        std::thread t3(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
+
+        std::vector<double> tsallis_optimized_run;
+        std::thread t4(basic_runner<Tsallis_LTU>, std::ref(optimized), std::ref(data_matrix), rounds,
+                       std::ref(tsallis_optimized_run));
 
         t1.join();
         t2.join();
@@ -107,15 +107,15 @@ void run_tsallis_variance_experiment(Dataset d, int k, int rounds, int averages,
         Tsallis_IW iw(k);
 
         std::vector<double> tsallis_rv_run;
-        std::thread t1(basic_tsallis_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
+        std::thread t1(basic_runner<Tsallis_RV>, std::ref(rv), std::ref(data_matrix), rounds,
                        std::ref(tsallis_rv_run));
 
         std::vector<double> tsallis_optimized_run;
-        std::thread t2(basic_tsallis_runner<Tsallis_approx_rv>, std::ref(optimized), std::ref(data_matrix), rounds,
+        std::thread t2(basic_runner<Tsallis_approx_rv>, std::ref(optimized), std::ref(data_matrix), rounds,
                        std::ref(tsallis_optimized_run));
 
         std::vector<double> tsallis_iw_run;
-        std::thread t3(basic_tsallis_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds,
+        std::thread t3(basic_runner<Tsallis_IW>, std::ref(iw), std::ref(data_matrix), rounds,
                        std::ref(tsallis_iw_run));
 
         t1.join();

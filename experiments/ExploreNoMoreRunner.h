@@ -29,10 +29,13 @@ void run_explore_no_more_experiment(const std::string& out_path="/tmp/out") {
         std::vector<double> exp3IX_regret_T(repititions, 0);
         for (int i = 0; i < repititions; i++) {
             auto d = dataset_explore_no_more(rounds);
+            auto data_matrix = d.generate();
             Exp3Tor exp3(K, eta);
             Exp3IXTor exp3IX(K, eta, eta/2);
-            auto exp3_regrets = basic_runner(exp3, d, rounds);
-            auto exp3IX_regrets = basic_runner(exp3IX, d, rounds);
+            std::vector<double> exp3_regrets;
+            basic_runner(exp3, data_matrix, rounds, exp3_regrets);
+            std::vector<double> exp3IX_regrets;
+            basic_runner(exp3IX, data_matrix, rounds, exp3IX_regrets);
             exp3_regret_T_half[i] = sum_of_range(exp3_regrets, 0, rounds/2);
             exp3_regret_T[i] = sum_of_range(exp3_regrets, 0, rounds);
             exp3IX_regret_T_half[i] = sum_of_range(exp3IX_regrets, 0, rounds/2);

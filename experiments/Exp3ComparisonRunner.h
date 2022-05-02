@@ -30,13 +30,13 @@ void run_exp3_adversarial_experiment(Dataset &d, int k, int rounds, int averages
         Uniformbandit uni(k);
 
         std::vector<double> exp3_compare_run;
-        std::thread t1(basic_tsallis_runner<Exp31_optimized>, std::ref(exp3_compare), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
+        std::thread t1(basic_runner<Exp31_optimized>, std::ref(exp3_compare), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
 
         std::vector<double> exp3_run;
-        std::thread t2(basic_tsallis_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
+        std::thread t2(basic_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
 
         std::vector<double> uniform_run;
-        std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
+        std::thread t3(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
 
         t1.join();

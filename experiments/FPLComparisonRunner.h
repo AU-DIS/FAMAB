@@ -34,13 +34,13 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         Uniformbandit uni(k);
 
         std::vector<double> fpl_original_run;
-        std::thread t1(basic_tsallis_runner<FPL>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
+        std::thread t1(basic_runner<FPL>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
 
         std::vector<double> fpl_new_run;
-        std::thread t2(basic_tsallis_runner<FPL_toplog>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
+        std::thread t2(basic_runner<FPL_toplog>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
 
         std::vector<double> uniform_run;
-        std::thread t3(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
+        std::thread t3(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
 
         t1.join();

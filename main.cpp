@@ -103,6 +103,11 @@ int main(int argc, char *argv[]) {
             case theoretical:
                 run_theoretical_bound_experiment_Exp3_varying_k();
                 run_theoretical_bound_experiment_Exp3_varying_T();
+                run_theoretical_bound_experiment_Exp3ix_varying_k();
+                run_theoretical_bound_experiment_Exp3ix_varying_T();
+                run_theoretical_bound_experiment_Exp3m_varying_small_k();
+                run_theoretical_bound_experiment_Exp3m_varying_big_k();
+                run_theoretical_bound_experiment_Exp3m_varying_T();
                 break;
             default:
                 std::cout << "The Requested runner was not found" << std::endl;
