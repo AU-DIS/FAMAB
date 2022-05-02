@@ -17,7 +17,6 @@
 void run_theoretical_bound_experiment_Exp3_varying_k(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = pow(2, i);
         int T = 1000000;
         double average = 0;
@@ -45,7 +44,6 @@ void run_theoretical_bound_experiment_Exp3_varying_k(int averages=50, const std:
 void run_theoretical_bound_experiment_Exp3_varying_T(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = 10000;
         int T = pow(10, i);
         double average = 0;
@@ -73,7 +71,6 @@ void run_theoretical_bound_experiment_Exp3_varying_T(int averages=50, const std:
 void run_theoretical_bound_experiment_Exp3ix_varying_k(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = pow(2, i);
         int T = 1000000;
         double average = 0;
@@ -102,7 +99,6 @@ void run_theoretical_bound_experiment_Exp3ix_varying_k(int averages=50, const st
 void run_theoretical_bound_experiment_Exp3ix_varying_T(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = 10000;
         int T = pow(10, i);
         double average = 0;
@@ -131,7 +127,6 @@ void run_theoretical_bound_experiment_Exp3ix_varying_T(int averages=50, const st
 void run_theoretical_bound_experiment_FPL_varying_k(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = pow(2, i);
         int T = 1000000;
         double average = 0;
@@ -160,7 +155,6 @@ void run_theoretical_bound_experiment_FPL_varying_k(int averages=50, const std::
 void run_theoretical_bound_experiment_FPL_varying_T(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = 10000;
         int T = pow(10, i);
         double average = 0;
@@ -189,7 +183,6 @@ void run_theoretical_bound_experiment_FPL_varying_T(int averages=50, const std::
 void run_theoretical_bound_experiment_Exp3m_varying_small_k(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = pow(2, i);
         int K = 10000;
         int T = 1000000;
@@ -219,7 +212,6 @@ void run_theoretical_bound_experiment_Exp3m_varying_small_k(int averages=50, con
 void run_theoretical_bound_experiment_Exp3m_varying_big_k(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 10; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = 10;
         int K = 10 * pow(2, i);
         int T = 1000000;
@@ -249,7 +241,6 @@ void run_theoretical_bound_experiment_Exp3m_varying_big_k(int averages=50, const
 void run_theoretical_bound_experiment_Exp3m_varying_T(int averages=50, const std::string& out_path="/tmp") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 6; i++) {
-        std::cout << std::to_string(i) << std::endl;
         int k = 100;
         int K = 10000;
         int T = pow(10, i);
