@@ -44,11 +44,11 @@
 #include "benchmarks/UCB.h"
 
 
-/*
+
 BENCHMARK(benchmark_fpl)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
 BENCHMARK(benchmark_fpl_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
 BENCHMARK(benchmark_fpl_update)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
-*/
+
 
 BENCHMARK(benchmark_fpl_toplog)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);
 BENCHMARK(benchmark_fpl_toplog_sample)->Arg(10)->Arg(100)->Arg(1000)->Arg(10000)->Threads(8);

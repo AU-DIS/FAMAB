@@ -26,16 +26,20 @@ private:
     std::vector<double> newtons_method_weights(std::vector<double> &losses, double eta)
     {
 
+        double initial_x = _x;
+
         std::vector<double> weights;
         double x_previous = _x;
         double x_estimated = _x;
         weights.reserve(losses.size());
+        int number_iterations = 0;
 
         for (int i = 0; i < losses.size(); i++)
             weights.push_back(0);
 
         do
         {
+            number_iterations++;
             x_previous = x_estimated;
             for (int i = 0; i < losses.size(); i++)
                 weights[i] = 4 * pow((eta * (losses[i] - x_previous)), -2);
@@ -49,12 +53,6 @@ private:
             x_estimated = x_previous - (w_sum - 1) / (eta * w_sum_powered);
         } while (std::min(x_previous, x_estimated) / std::max(x_previous, x_estimated) >= 1.1);
         _x = x_estimated;
-        /*
-        auto indices = argsort(weights);
-        for (auto v : indices) std::cout << std::to_string(v) + ",";
-        std::cout << std::endl;
-        */
-
         return weights;
     }
 
