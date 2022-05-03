@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     for (auto &row: reader) {
         //Handle variables
         //This is ugly but so are you
-        int rounds, k, K, averages;
+        int rounds, k, m, averages;
         double gap, delta;
         std::string dataset, regret_out, plot_out, algorithm, out_path;
         std::string runner(row["runner"].get());
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
             //This is ugly but so are you
             if (var_name == "rounds") rounds = row[var_name].get<int>();
             else if (var_name == "k") k = row[var_name].get<int>();
-            else if (var_name == "K") K = row[var_name].get<int>();
+            else if (var_name == "m") m = row[var_name].get<int>();
             else if (var_name == "averages") averages = row[var_name].get<int>();
             else if (var_name == "gap") gap = row[var_name].get<double>();
             else if (var_name == "delta") delta = row[var_name].get<double>();
@@ -60,7 +60,6 @@ int main(int argc, char *argv[]) {
             else if (var_name == "algorithm") algorithm = row[var_name].get();
             else if (var_name == "output_path") out_path = row[var_name].get();
         }
-
 
         //Handle datasets
         Dataset *d;
@@ -84,7 +83,7 @@ int main(int argc, char *argv[]) {
                 if (runner == "tsallis_adversarial") run_tsallis_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
                 break;
             case adversarial_exp3m:
-                run_adversarial_exp3m_experiment(*d, k, K, rounds, averages, gap, out_path);
+                run_adversarial_exp3m_experiment(*d, m, k, rounds, averages, gap, out_path);
                 break;
             case explore_no_more:
                 run_explore_no_more_experiment();
@@ -96,7 +95,7 @@ int main(int argc, char *argv[]) {
                     //run_generic_experiment(d, K, rounds, averages, out_path);
                 }
                 if (dataset == "movielens") {
-                    //auto d = Dataset_movielens("datasets/data_directory/movielens.csv", 4);
+                    //auto d = Dataset_movielens("datasets/data_directory/movi:elens.csv", 4);
                     //run_generic_experiment(d, d.K, rounds, averages, out_path);
                 }
                 break;

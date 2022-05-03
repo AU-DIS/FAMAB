@@ -4,6 +4,8 @@
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_UNIFORMBANDIT_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_UNIFORMBANDIT_H
+
+#include <set>
 #include "random"
 #include "../utilities/random_gen.h"
 
@@ -20,6 +22,13 @@ public:
     int choose() {
         std::discrete_distribution<int> d(uniform_weights.begin(), uniform_weights.end());
         return d(gen);
+    }
+    std::vector<int> choose(int m) {
+        std::set<int> choices;
+        while (choices.size() < m) {
+            choices.insert(choose());
+        }
+        return std::vector(choices.begin(), choices.end());
     }
     void give_reward(int index, double feedback) {
         //HAH! Bamboozled;
