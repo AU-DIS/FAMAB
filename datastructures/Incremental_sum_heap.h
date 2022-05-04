@@ -12,6 +12,7 @@
 #include "cmath"
 #include "random"
 #include <stdio.h>
+#include "../utilities/random_gen.h"
 
 class Incremental_sum_heap
 {
