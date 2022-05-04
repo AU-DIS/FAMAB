@@ -42,13 +42,13 @@ public:
     }
 
 
-    std::vector<int> choose(int K) {
-        std::vector<int> choices(K, 0);
-        for (int i = 0; i < K; i++) {
+    std::vector<int> choose(int m) {
+        std::vector<int> choices(m, 0);
+        for (int i = 0; i < m; i++) {
             choices[i] = _q.top().key;
             _q.pop();
         }
-        for (int i = 0; i < K; i++) {
+        for (int i = 0; i < m; i++) {
             _q.push(choices[i], _priorities[choices[i]]);
         }
         return choices;

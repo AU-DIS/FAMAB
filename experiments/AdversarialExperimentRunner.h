@@ -100,7 +100,7 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
 }
 
 //template<typename Dataset>
-void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int averages,
+void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int averages,
                                       double gap,
                                       const std::string &out_path = "/tmp/out") {
 
@@ -108,55 +108,100 @@ void run_adversarial_exp3m_experiment(Dataset& d, int k, int K, int rounds, int 
     std::vector<double> exp3m_regrets(rounds);
     std::vector<double> qbl_regrets(rounds);
     for (int i = 0; i < averages; i++) {
+
         std::vector<std::vector<double>> data_matrix = d.generate();
 
         Uniformbandit uni(k);
         DepRoundALIASStrategy a;
-        Exp3m b(k, K, 0.1, a);
+        Exp3m b(m, k, 0.1, a);
         QBL qbl(k, 0.9);
 
-        std::vector<double> uniform_run;
-        std::thread t1(single_top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, K,
-                       std::ref(uniform_run));
+        /*Exp3m b(m, k, 0.1, a);
 
-        /*
+        for (int round = 0; round < rounds; round++) {
+            std::vector<double> uniform_rewards(k, 0);
+            std::vector<double> exp3m_rewards(k, 0);
+            std::vector<double> round_uniform_regrets(k, 0);
+            std::vector<double> round_exp3m_regrets(k, 0);
+
+            auto choices = b.choose();
+            double uniform_regret = 0;
+            double uniform_reward = 0;
+            double exp3m_regret = 0;
+            double exp3m_reward = 0;
+            double max_choice = 0;
+            vector<double> vec = vector<double>(k);
+            for (int i = 0; i < k; i++) {
+                vec[i] = data_matrix[i][round];
+            }
+            sort(vec.begin(), vec.end(), greater<>());
+            for (int i = 0; i < m; i++) {
+                max_choice += vec[i];
+            }
+            vector<int> uni_choices = uni.choose(m);
+            for (int c = 0; c < m; c++) {
+                auto exp3m_choice = choices[c];
+                auto uni_choice = uni_choices[c];
+
+                uniform_reward += data_matrix[uni_choice][round];
+                exp3m_reward += data_matrix[exp3m_choice][round];
+                exp3m_rewards[exp3m_choice] = data_matrix[exp3m_choice][round];
+            }
+            b.give_reward(choices,exp3m_rewards);
+            //if (uniform_reward > max_choice) uniform_reward = max_choice; //Fix this garbage
+            uniform_regret = ((max_choice) - uniform_reward);
+            exp3m_regret = ((max_choice) - exp3m_reward);
+            uniform_regrets[round] += uniform_regret/averages;
+            exp3m_regrets[round] += exp3m_regret/averages;*/
+
+
+
+        std::vector<double> uniform_run;
+        //single_top_k_runner<Uniformbandit>( std::ref(uni), std::ref(data_matrix), rounds, k, m,
+              //  std::ref(uniform_run));
+        std::thread t1(single_top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, k, m, std::ref(uniform_run));
+
         std::vector<double> exp3m_run;
-        std::thread t2(top_k_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, K,
-                       std::ref(exp3m_run));
-    */
+        exp3m_runner<Exp3m<DepRoundALIASStrategy>>( std::ref(b), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_run));
+        //std::thread t2(exp3m_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, k, m,
+        //               std::ref(exp3m_run));
+
         std::vector<double> qbl_run;
-        std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, K,
-                       std::ref(qbl_run));
+        //top_k_runner<QBL>( std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
+        std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
 
         t1.join();
         //t2.join();
         t3.join();
 
-
         for (int round = 0; round < rounds; round++) {
             uniform_regrets[round] += uniform_run[round];
-            //exp3m_regrets[round] += exp3m_run[round];
+            exp3m_regrets[round] += exp3m_run[round];
             qbl_regrets[round] += qbl_run[round];
         }
     }
+    for (auto &v: uniform_regrets) v /= averages;
+    for (auto &v: exp3m_regrets) v /= averages;
+    for (auto &v: qbl_regrets) v /= averages;
+
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
-    //result_matrix.push_back(exp3m_regrets);
+    result_matrix.push_back(exp3m_regrets);
     result_matrix.push_back(qbl_regrets);
 
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
     auto metadata =
             description +
-            std::to_string(k) + ","
+            std::to_string(m) + ","
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
-            + std::to_string(K) + ","
-            //+ "Uniform,Exp3m,QBL";
-            + "Uniform,QBL";
+            + std::to_string(m) + ","
+            + "Uniform,Exp3m,QBL";
+            //+ "Uniform,QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
-        //"Exp3m",
+        "Exp3m",
         "QBL"
     };
     write_results(result_matrix, metadata, descriptions, out_path);
