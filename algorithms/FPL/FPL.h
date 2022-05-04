@@ -29,6 +29,12 @@ public:
         _eta = eta;
     }
 
+    void set_parameter(double eta)
+    {
+        _eta = eta;
+        _exponential_distribution = std::exponential_distribution<double>(eta);
+    }
+
     void give_reward(size_t choice, double feedback)
     {
         _weights[choice] += feedback;
@@ -42,10 +48,13 @@ public:
     {
 
         current_round++;
-        if (current_round % (int)_eta == 0) {
+        if (current_round % (int)_eta == 0)
+        {
             double sum = 0;
-            for (auto v : _weights) sum += v;
-            for (auto &v : _weights) v/= sum;
+            for (auto v : _weights)
+                sum += v;
+            for (auto &v : _weights)
+                v /= sum;
         }
 
         for (auto &v : _weights)

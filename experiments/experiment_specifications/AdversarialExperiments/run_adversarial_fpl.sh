@@ -11,8 +11,8 @@ name=FPL
 #rounds=1000
 #rounds=1000
 rounds=10000
-averages=100
-#averages=25
+#averages=100
+averages=25
 gap=3.2
 delta=0.9
 
@@ -44,9 +44,10 @@ run_experiment() {
 
 }
 
-for k in 16 32 64 128
+#for k in 16 32 64 128
 #for k in 16 32 64 128
 #for k in 16384
+for k in 16
 #for k in 1024 2048 4096 8192 16384
 do
     run_experiment $k

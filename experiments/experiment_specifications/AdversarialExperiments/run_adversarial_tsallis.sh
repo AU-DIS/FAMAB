@@ -8,7 +8,7 @@ make_dir=cmake-build-heroicis
 
 name=tsallis
 
-rounds=1000
+rounds=100000
 #rounds=10000
 #rounds=10000
 averages=1
@@ -21,11 +21,11 @@ run_experiment() {
       out=$tmp_dir/$name$1.out
       plt_out=$tmp_dir/$name$1.png
 
-      out_mod2=$tmp_dir/mod2_$name$1.out
-      plt_out_mod2=$tmp_dir/mod2_$name$1.png
+      out_mod2=$tmp_dir/$name$1_mod2.out
+      plt_out_mod2=$tmp_dir/$name$1_mod2.png
 
-      out_stochastic=$tmp_dir/stochastic_$name$1.out
-      plt_out_stochastic=$tmp_dir/stochastic_$name$1.png
+      out_stochastic=$tmp_dir/$name$1_stochastic.out
+      plt_out_stochastic=$tmp_dir/$name$1_stochastic.png
 
 
       rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2> /dev/null
@@ -34,7 +34,7 @@ run_experiment() {
 
       echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >> $header
       echo "tsallis_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out" >> $header
-      #echo "tsallis_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2" >> $header
+      echo "tsallis_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2" >> $header
       #echo "tsallis_adversarial,stochastic,$gap,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
 
@@ -51,8 +51,8 @@ run_experiment() {
 }
 
 #for k in 4 8 16 32 64 128 256 512 1024
-#for k in 4 8 16 32 64 128
-for k in 4
+#for k in 8 16 32 64 128 256 512
+for k in 10
 #for k in 1024 2048 4096 8192 16384
 do
     run_experiment $k

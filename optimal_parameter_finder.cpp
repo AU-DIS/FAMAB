@@ -48,13 +48,30 @@ double find_optimal_parameter(Dataset &d, Bandit &prototype, double initial_para
 
 int main(int argc, char *argv[])
 {
-    int k = 320;
+    double sum_best = 0;
+    auto ks = {8,
+               16,
+               32,
+               64,
+               128};
     int rounds = 1000;
     double gap = 3.2;
     double delta = 0.9;
-    auto b = FPL(k, 10);
-    //auto b = Exp3(k, 0.1);
-    StochasticallyConstrainedDataset sCD(k, rounds, gap, delta);
-    auto best = find_optimal_parameter(sCD, b, 100, 1000, rounds);
-    std::cout << std::to_string(best);
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (auto k : ks)
+        {
+            auto b = FPL(k, 10);
+            // auto b = Exp3(k, 0.1);
+            StochasticallyConstrainedDataset sCD(k, rounds, gap, delta);
+            Mod2Dataset mod2(k, rounds, gap);
+            auto best1 = find_optimal_parameter(sCD, b, 100, 1000, rounds);
+            auto best2 = find_optimal_parameter(mod2, b, 100, 1000, rounds);
+            sum_best += (best1 + best2) / 2;
+        }
+        sum_best /= ks.size();
+    }
+
+    std::cout << std::to_string(sum_best / 10);
 }

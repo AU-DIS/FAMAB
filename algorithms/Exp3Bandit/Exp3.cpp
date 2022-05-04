@@ -16,6 +16,10 @@ Exp3::Exp3(int k, double gamma)
     _weights = std::vector<double>(k, 1.0);
 };
 
+void Exp3::set_parameter(double gamma) {
+    _gamma = gamma;
+}
+
 Exp3::Exp3(const Exp3 &prototype)
 {
     _k = prototype._k;
