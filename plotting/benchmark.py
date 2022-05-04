@@ -29,7 +29,7 @@ for nr, algo in enumerate(algorithms):
 #plt.yscale('log')
 plt.xlabel('k')
 plt.ylabel('cputime')
-plt.legend(algorithms)
+plt.legend(algorithms, fontsize=15)
 plt.grid(True)
 if len(sys.argv) >= 3:
     plt.savefig(sys.argv[2])

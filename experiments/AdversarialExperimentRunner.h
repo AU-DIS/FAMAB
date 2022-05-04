@@ -11,18 +11,15 @@
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 #include "../runner.h"
-#include "../algorithms/FPL/FPLVectorWeightStrategy.h"
-#include "../algorithms/FPL/NaiveRandomGenStrategy.h"
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/FPL/QBL.h"
 #include "../algorithms/Exp3Bandit/Exp3.h"
 #include "../algorithms/Exp3Bandit/Exp31.h"
-#include "../algorithms/Tsallis-INF/TsallisINF.h"
-#include "../algorithms/Tsallis-INF/RV.h"
-#include "../algorithms/Tsallis-INF/IW.h"
+#include "../algorithms/Tsallis-INF/Tsallis_RV.h"
+#include "../algorithms/Tsallis-INF/Tsallis_IW.h"
 #include "../algorithms/UCB/UCB1.h"
 #include "../datasets/dataset.h"
-
+#include "set"
 
 //template<typename Dataset>
 void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap,
@@ -42,9 +39,8 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
 
     for (int avg = 0; avg < averages; avg++) {
         std::vector<std::vector<double>> data_matrix = d.generate();
-        FPLVectorWeightStrategy fpl_ws(k);
-        NaiveRandomGenStrategy fpl_rs(k, 10);
-        FPL fpl(fpl_ws, fpl_rs);
+
+        FPL fpl(k, 10);
         Uniformbandit uni(k);
 
 //        Exp3 fpl(k, 0.1);
@@ -102,6 +98,7 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
     write_results(regrets, metadata, descriptions, regret_out_path);
     write_results(weights_at_r, weights_metadata, weights_descriptions, weight_out_path);
 }
+
 //template<typename Dataset>
 void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int averages,
                                       double gap,
@@ -109,12 +106,17 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
 
     std::vector<double> uniform_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
+    std::vector<double> qbl_regrets(rounds);
+    for (int i = 0; i < averages; i++) {
 
-    for (int avg = 0; avg < averages; avg++) {
         std::vector<std::vector<double>> data_matrix = d.generate();
+
         Uniformbandit uni(k);
         DepRoundALIASStrategy a;
         Exp3m b(m, k, 0.1, a);
+        QBL qbl(k, 0.9);
+
+        /*Exp3m b(m, k, 0.1, a);
 
         for (int round = 0; round < rounds; round++) {
             std::vector<double> uniform_rewards(k, 0);
@@ -150,13 +152,42 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             uniform_regret = ((max_choice) - uniform_reward);
             exp3m_regret = ((max_choice) - exp3m_reward);
             uniform_regrets[round] += uniform_regret/averages;
-            exp3m_regrets[round] += exp3m_regret/averages;
+            exp3m_regrets[round] += exp3m_regret/averages;*/
+
+
+
+        std::vector<double> uniform_run;
+        //single_top_k_runner<Uniformbandit>( std::ref(uni), std::ref(data_matrix), rounds, k, m,
+              //  std::ref(uniform_run));
+        std::thread t1(single_top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, k, m, std::ref(uniform_run));
+
+        std::vector<double> exp3m_run;
+        exp3m_runner<Exp3m<DepRoundALIASStrategy>>( std::ref(b), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_run));
+        //std::thread t2(exp3m_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, k, m,
+        //               std::ref(exp3m_run));
+
+        std::vector<double> qbl_run;
+        //top_k_runner<QBL>( std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
+        std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
+
+        t1.join();
+        //t2.join();
+        t3.join();
+
+        for (int round = 0; round < rounds; round++) {
+            uniform_regrets[round] += uniform_run[round];
+            exp3m_regrets[round] += exp3m_run[round];
+            qbl_regrets[round] += qbl_run[round];
         }
     }
+    for (auto &v: uniform_regrets) v /= averages;
+    for (auto &v: exp3m_regrets) v /= averages;
+    for (auto &v: qbl_regrets) v /= averages;
 
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
     result_matrix.push_back(exp3m_regrets);
+    result_matrix.push_back(qbl_regrets);
 
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
@@ -165,18 +196,20 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             std::to_string(m) + ","
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
-            + std::to_string(k) + ","
-            + "Uniform,Exp3m";
+            + std::to_string(m) + ","
+            + "Uniform,Exp3m,QBL";
+            //+ "Uniform,QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
-        "Exp3m"
+        "Exp3m",
+        "QBL"
     };
     write_results(result_matrix, metadata, descriptions, out_path);
 
 }
 
 
-//template <typename Dataset>
+
 void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, double gap,
                                 const std::string &out_path = "/tmp/out") {
 
@@ -195,65 +228,57 @@ void run_adversarial_experiment(Dataset& d, int k, int rounds, int averages, dou
         std::vector<std::vector<double>> data_matrix = d.generate();
         Exp3 exp3(k, 0.1);
 
-        IW iw;
-        TsallisINF tsallis_iw(k, iw);
-        RV rv;
-        TsallisINF tsallis_rv(k, rv);
+        Tsallis_IW tsallis_iw(k);
+        Tsallis_RV tsallis_rv(k);
 
         Exp3 ucb_exp3_bandit(k, 0.1);
         UCB1 ucb_exp3(10, ucb_exp3_bandit);
 
         Uniformbandit uni(k);
 
-
-        FPLVectorWeightStrategy fpl_ws(k);
-        NaiveRandomGenStrategy fpl_rs(k, 10);
-        FPL fpl(fpl_ws, fpl_rs);
-
-        //QBL fpl(k, 0.9);
-
-        FPLVectorWeightStrategy fpl_ucb_ws(k);
-        NaiveRandomGenStrategy fpl_ucb_rs(k, 10);
-        FPL ucb_fpl_bandit(fpl_ucb_ws, fpl_ucb_rs);
+    
+        FPL fpl(k, 10);
+    
+        FPL ucb_fpl_bandit(k, 10);
         UCB1 ucb_fpl(10, ucb_fpl_bandit);
 
         Exp31 exp31(k);
 
 
         std::vector<double> exp3_run;
-        std::thread t1(basic_tsallis_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
+        std::thread t1(basic_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
 
         std::vector<double> exp31_run;
 
-        std::thread t2(basic_tsallis_runner<Exp31>, std::ref(exp31), std::ref(data_matrix), rounds,
+        std::thread t2(basic_runner<Exp31>, std::ref(exp31), std::ref(data_matrix), rounds,
                        std::ref(exp31_run));
 
 
         std::vector<double> fpl_run;
         //std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>, std::ref(fpl),
-        std::thread t3(basic_tsallis_runner<FPL<FPLVectorWeightStrategy,NaiveRandomGenStrategy>>, std::ref(fpl),
+        std::thread t3(basic_runner<FPL>, std::ref(fpl),
                        std::ref(data_matrix), rounds, std::ref(fpl_run));
 
         std::vector<double> ucb_fpl_run;
-        std::thread t4(basic_tsallis_runner<UCB1<FPL<FPLVectorWeightStrategy, NaiveRandomGenStrategy>>>,
+        std::thread t4(basic_runner<UCB1<FPL>>,
                        std::ref(ucb_fpl), std::ref(data_matrix), rounds, std::ref(ucb_fpl_run));
 
 
         std::vector<double> tsallis_iw_run;
-        std::thread t5(basic_tsallis_runner<TsallisINF<IW>>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
+        std::thread t5(basic_runner<Tsallis_IW>, std::ref(tsallis_iw), std::ref(data_matrix), rounds,
                        std::ref(tsallis_iw_run));
 
         std::vector<double> tsallis_rv_run;
-        std::thread t6(basic_tsallis_runner<TsallisINF<RV>>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
+        std::thread t6(basic_runner<Tsallis_RV>, std::ref(tsallis_rv), std::ref(data_matrix), rounds,
                        std::ref(tsallis_rv_run));
 
 
         std::vector<double> ucb_exp3_run;
-        std::thread t7(basic_tsallis_runner<UCB1<Exp3>>, std::ref(ucb_exp3), std::ref(data_matrix), rounds,
+        std::thread t7(basic_runner<UCB1<Exp3>>, std::ref(ucb_exp3), std::ref(data_matrix), rounds,
                        std::ref(ucb_exp3_run));
 
         std::vector<double> uniform_run;
-        std::thread t8(basic_tsallis_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
+        std::thread t8(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
 
         t1.join();

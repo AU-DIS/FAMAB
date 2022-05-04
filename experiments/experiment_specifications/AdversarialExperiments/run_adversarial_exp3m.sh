@@ -11,11 +11,11 @@ if [[ $make_dir == cmake-build-release-odin ]]; then
   tmp_dir=/home/$(whoami)/tmp
 fi
 
-name=adversarial
 
-#rounds=10000
+name=exp3m
+
 rounds=100000
-averages=10
+averages=1
 delta=0.9
 
 run_experiment() {
@@ -26,8 +26,8 @@ run_experiment() {
       echo $m
       header=$tmp_dir/header_$name$1_$m
 
-      out=$tmp_dir/$name$1_$m.out
-      plt_out=$tmp_dir/$name$1_$m.png
+      out=$tmp_dir/constrained_$name$1_$m.out
+      plt_out=$tmp_dir/constrained_$name$1_$m.png
 
       out_mod2=$tmp_dir/mod2_$name$1_$m.out
       plt_out_mod2=$tmp_dir/mod2_$name$1_$m.png
@@ -56,3 +56,6 @@ for k in 20
   do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out
+rm $tmp_dir/*header* 2> /dev/null
+rm $tmp_dir/*.out* 2> /dev/null

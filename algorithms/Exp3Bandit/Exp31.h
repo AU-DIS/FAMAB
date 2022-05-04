@@ -8,6 +8,7 @@
 #include <vector>
 #include <random>
 #include "../../utilities/random_gen.h"
+#include "Exp3.h"
 
 class Exp31 {
 private:
@@ -15,18 +16,14 @@ private:
     int _r;
     double _g_r;
     double _gamma;
-    double _last_drawn_weight;
-    double _last_drawn_probability;
+    int round;
 
-    std::vector<double> _probabilities;
-    std::mt19937 _random_gen = random_gen();
     std::vector<double> accumulated_rewards;
-    int sample();
+    Exp3 _exp3;
 public:
-    Exp31(int k);
+    explicit Exp31(int k);
     int choose();
     void give_reward(int index, double feedback);
-    std::vector<double> _weights;
 };
 
 

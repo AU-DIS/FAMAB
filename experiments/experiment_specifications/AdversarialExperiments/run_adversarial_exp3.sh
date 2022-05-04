@@ -1,23 +1,15 @@
+alias python3="/usr/bin/python3"
 
-#alias python3="/home/tversted/miniconda3/bin/python"
-#alias python3="/opt/homebrew/bin/python3"
-alias python3="$(which python3)"
-#"/usr/bin/python3"
+tmp_dir=/mnt/ssd/bandits
+make_dir=cmake-build-heroicis
 
-
-make_dir=cmake-build-release-wsl
-tmp_dir=/tmp
-if [[ $make_dir == cmake-build-release-odin ]]; then
-  mkdir -p /home/$(whoami)/tmp
-  tmp_dir=/home/$(whoami)/tmp
-fi
 
 name=exp3
 
 rounds=100000
 #rounds=1000000
-averages=100
-delta=0.1
+averages=25
+delta=0.9
 
 run_experiment() {
       header=$tmp_dir/header_$name$1
@@ -25,8 +17,8 @@ run_experiment() {
       out=$tmp_dir/$name$1.out
       plt_out=$tmp_dir/$name$1.png
 
-      out_mod2=$tmp_dir/mod2_$name$1.out
-      plt_out_mod2=$tmp_dir/mod2_$name$1.png
+      out_mod2=$tmp_dir/$name$1_mod2.out
+      plt_out_mod2=$tmp_dir/$name$1_mod2.png
 
       out_stochastic=$tmp_dir/stochastic_$name$1.out
       plt_out_stochastic=$tmp_dir/stochastic_$name$1.png
@@ -50,9 +42,11 @@ run_experiment() {
 
 }
 
-#for k in 4 8 16 32 128 256 512 1024
-#for k in 4 8 16 32
-for k in 100
+for k in 4 8 16 32 128 256 512 1024
+#for k in 2
 do
     run_experiment $k
 done
+zip $tmp_dir/$name.zip $tmp_dir/*.out
+rm $tmp_dir/*header* 2> /dev/null
+rm $tmp_dir/*.out* 2> /dev/null

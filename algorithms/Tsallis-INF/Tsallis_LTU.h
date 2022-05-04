@@ -2,19 +2,21 @@
 // Created by Mathias Tversted on 12/04/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H
 
-#include "../../utilities/argsort.h"
-
-class Tsallis_IW
+class Tsallis_LTU
 {
 private:
     int _t;
     double _eta;
     std::mt19937 _rg;
     double _x;
-    int _last_choice;
+    std::vector<double> _weights;
+    std::vector<double> _cumulative_losses;
+    int _k;
+    std::discrete_distribution<> _d;
+    bool update_triggered = true;
 
     double compute_eta(int t)
     {
@@ -33,7 +35,6 @@ private:
 
         for (int i = 0; i < losses.size(); i++)
             weights.push_back(0);
-
         do
         {
             x_previous = x_estimated;
@@ -49,36 +50,31 @@ private:
             x_estimated = x_previous - (w_sum - 1) / (eta * w_sum_powered);
         } while (std::min(x_previous, x_estimated) / std::max(x_previous, x_estimated) >= 1.1);
         _x = x_estimated;
-        /*
-        auto indices = argsort(weights);
-        for (auto v : indices) std::cout << std::to_string(v) + ",";
-        std::cout << std::endl;
-        */
-
         return weights;
     }
 
 public:
-    std::vector<double> _weights;
-    std::vector<double> _cumulative_losses;
-
-    explicit Tsallis_IW(int k)
+    explicit Tsallis_LTU(int k)
     {
         _cumulative_losses = std::vector<double>(k, 0);
         _rg = random_gen();
-        _t = 1;
+        _t = 0;
         _x = 1;
+        _k = k;
         _eta = 1;
-        _last_choice = 0;
     }
+
     int choose()
     {
-        _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
-        std::discrete_distribution<> d(_weights.begin(), _weights.end());
+        if (update_triggered) {
+            _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
+            _d = std::discrete_distribution(_weights.begin(), _weights.end());
+        }
 
-        int s = d(_rg);
+        update_triggered = false;
+        int s = _d(_rg);
+
         _t += 1;
-        _last_choice = s;
         return s;
     }
 
@@ -86,8 +82,11 @@ public:
     {
         // We can either use IW or RV to construct the estimated reward
         // This is RW, we should also try RV, which is a reduced variance estimator
+        if (1 - feedback > 0)
+            update_triggered = true;
+
         _cumulative_losses[index] += (1 - feedback) / _weights[index];
     }
 };
 
-#endif // EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_IW_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_LTU_H

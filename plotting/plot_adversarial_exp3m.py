@@ -24,13 +24,14 @@ K = int(metadata[4])
 
 colormap = {
     "Uniform": "red",
-    "Exp3m": "blue"
+    "Exp3m": "blue",
+    "QBL": "Magenta"
 }
 
 ys = []
 algorithms = sorted(algorithms)
 
-plt.figure(0, figsize=(10, 10))
+plt.figure(0, figsize=(5, 5))
 for nr, algorithm in enumerate(algorithms):
     lines = np.array([float(x) for x in regrets[algorithm]])
     max_val = np.max(lines)
@@ -49,7 +50,7 @@ while int(gap**gap_iter) <= int(rounds):
 print(gap_xs)
 plt.vlines(gap_xs, ymin=np.min([np.min(obs) for obs in ys]), ymax=np.max([np.max(obs) for obs in ys]), linestyle=(0, (5, 1)), color="darkgrey")
 plt.grid(True)
-plt.legend(algorithms)
+plt.legend(algorithms, fontsize=15)
 plt.tight_layout()
 
 if len(sys.argv) >= 3:

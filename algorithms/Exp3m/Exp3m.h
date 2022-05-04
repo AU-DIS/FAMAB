@@ -40,7 +40,7 @@ public:
             _weights.push_back(1.0/_k);
         }
     };
-    std::vector<int> choose() {
+    std::vector<int> choose(int m) {
         auto sorted_weight_indices = argsort(_weights);
 
         double sum_weights = 0;
@@ -51,7 +51,7 @@ public:
         std::vector<double> weights_prime;
         //std::cout << "back" << sorted_weight_indices.back() << std::endl;
         //std::cout << "front" << sorted_weight_indices.front() << std::endl;
-        if (false) { //(_weights[sorted_weight_indices.back()] >= threshold) {
+        if (_weights[sorted_weight_indices.back()] >= threshold) {
             double rhs =  (1.0/_m-_gamma/_k)/(1-_gamma);
             double alpha_t = get_alpha(rhs, sorted_weight_indices);
             for (size_t i = 0; i < _k; i++) {

@@ -2,13 +2,13 @@
 // Created by Mathias Tversted on 05/02/2022.
 //
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPL_TOPLOG_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_FPL_TOPLOG_H
 #include <vector>
 #include <random>
 #include "../../utilities/random_gen.h"
 
-class FPL
+class FPL_toplog
 {
 private:
     std::vector<double> _weights;
@@ -17,9 +17,12 @@ private:
     std::exponential_distribution<double> _exponential_distribution;
     int current_round;
     double _eta;
+    int update_interval;
+    std::vector<int> optimal_indices;
+    std::vector<int> suboptimal_indices;
 
 public:
-    FPL(int k, double eta)
+    FPL_toplog(int k, double eta)
     {
         _weights = std::vector<double>(k, 1);
         _gen = random_gen();
@@ -27,6 +30,7 @@ public:
         _k = k;
         current_round = 0;
         _eta = eta;
+        update_interval = (int)k * log2(k);
     }
 
     void give_reward(size_t choice, double feedback)
@@ -41,15 +45,45 @@ public:
     int choose()
     {
 
-        current_round++;
-        if (current_round % (int)_eta == 0) {
-            double sum = 0;
-            for (auto v : _weights) sum += v;
-            for (auto &v : _weights) v/= sum;
+        if (current_round % update_interval == 0)
+        {
+            auto indices = argsort(_weights);
+            int number_optimal = (int)log2(_k);
+
+            optimal_indices = std::vector<int>();
+            for (int i = 0; i < number_optimal; i++)
+            {
+                optimal_indices.push_back(indices[i]);
+            }
+            suboptimal_indices = std::vector<int>();
+            for (int i = number_optimal; i < _k; i++)
+            {
+                suboptimal_indices.push_back(indices[i]);
+            }
         }
 
-        for (auto &v : _weights)
-            v += _exponential_distribution(_gen);
+        for (int i = 0; i < optimal_indices.size(); i++)
+        {
+            _weights[optimal_indices[i]] += _exponential_distribution(_gen);
+        }
+        int offset = current_round % (int)((_k - log2(_k)) / log2(_k));
+
+        for (int i = 0; i < (int)log2(_k); i++)
+        {
+            _weights[i * offset] += _exponential_distribution(_gen);
+        }
+
+        current_round++;
+
+        if (current_round % (int)_eta == 0)
+        {
+            double sum = 0;
+            for (auto v : _weights)
+                sum += v;
+            for (auto &v : _weights)
+                v /= sum;
+        }
+
         /*
          * Draw is simply an arg-max, but std::vector does not support argmax
          * All code examples use chaining of algorithms that will only add useless computations,
@@ -81,4 +115,4 @@ public:
     {
     }
 };
-#endif // EFFICIENT_MULTI_ARMED_BANDITS_FPL_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_FPL_TOPLOG_H

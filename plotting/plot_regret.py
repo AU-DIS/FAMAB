@@ -52,7 +52,7 @@ plt.ylabel('Cumulative regret')
 plt.title(f"{description} k = {k}")
 plt.ylim(0, int(rounds))
 
-plt.legend(algorithms)
+plt.legend(algorithms, fontsize=15)
 
 if len(sys.argv) >= 3:
     plt.savefig(sys.argv[2])
