@@ -23,7 +23,6 @@ public:
         _power_weights = Incremental_sum_heap(power_weights);
 
         max_weight = 1.0/k;
-
     }
 
     int choose() {

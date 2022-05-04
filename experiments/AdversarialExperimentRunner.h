@@ -8,6 +8,7 @@
 
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/Exp3m/Exp3m.h"
+#include "../algorithms/Exp3m/Exp3m_heap.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 #include "../runner.h"
@@ -106,6 +107,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
 
     std::vector<double> uniform_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
+    std::vector<double> exp3m_heap_regrets(rounds);
     std::vector<double> qbl_regrets(rounds);
     for (int i = 0; i < averages; i++) {
 
@@ -114,7 +116,9 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         Uniformbandit uni(k);
         DepRoundALIASStrategy a;
         Exp3m b(m, k, 0.1, a);
+        Exp3m_heap b_heap(m, k, 0.1);
         QBL qbl(k, 0.9);
+
 
         /*Exp3m b(m, k, 0.1, a);
 
@@ -166,6 +170,11 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         //std::thread t2(exp3m_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, k, m,
         //               std::ref(exp3m_run));
 
+        std::vector<double> exp3m_heap_run;
+        exp3m_runner<Exp3m_heap>( std::ref(b_heap), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_heap_run));
+        //std::thread t2(exp3m_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, k, m,
+        //               std::ref(exp3m_run));
+
         std::vector<double> qbl_run;
         //top_k_runner<QBL>( std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
         std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
@@ -177,16 +186,19 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         for (int round = 0; round < rounds; round++) {
             uniform_regrets[round] += uniform_run[round];
             exp3m_regrets[round] += exp3m_run[round];
+            exp3m_heap_regrets[round] += exp3m_heap_run[round];
             qbl_regrets[round] += qbl_run[round];
         }
     }
     for (auto &v: uniform_regrets) v /= averages;
     for (auto &v: exp3m_regrets) v /= averages;
+    for (auto &v: exp3m_heap_regrets) v /= averages;
     for (auto &v: qbl_regrets) v /= averages;
 
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
     result_matrix.push_back(exp3m_regrets);
+    result_matrix.push_back(exp3m_heap_regrets);
     result_matrix.push_back(qbl_regrets);
 
     // MUST CONTAIN ENDING COMMA
@@ -197,11 +209,12 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
             + std::to_string(m) + ","
-            + "Uniform,Exp3m,QBL";
+            + "Uniform,Exp3m,Exp3m_heap,QBL";
             //+ "Uniform,QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
         "Exp3m",
+        "Exp3m_heap",
         "QBL"
     };
     write_results(result_matrix, metadata, descriptions, out_path);
