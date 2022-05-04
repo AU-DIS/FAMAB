@@ -10,35 +10,33 @@ add_subdirectory(benchmark)
 SET(DBENCHMARK_ENABLE_GTEST_TESTS OFF)
 
 add_executable(efficient_multi_armed_bandits main.cpp
-        algorithms/FPL/FPL.h
-        utilities/weight_exporter.cpp
-        datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
-        datasets/debug/debug_simple_stochastic.cpp datasets/debug/debug_simple_stochastic.h datasets/debug/debug_simple_adversarial.cpp
-        datasets/debug/debug_simple_adversarial.h algorithms/DEXP/DExp3.cpp algorithms/DEXP/DExp3.h algorithms/Exp3m/Exp3m.h
-        utilities/argsort.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
-        algorithms/Exp3m/DepRoundALIASStrategy.h algorithms/Exp3m/Exp31m.h algorithms/Tsallis-INF/TsallisINF.h
-        algorithms/Exp3Bandit/Exp3.h algorithms/Exp3Bandit/Exp3.cpp
-        algorithms/Exp3Bandit/Exp31.h algorithms/Exp3Bandit/Exp31.cpp
+        algorithms/Exp3m/Exp3m.h
+        algorithms/Exp3m/DepRoundALIASStrategy.cpp
+        algorithms/Exp3m/DepRoundALIASStrategy.h
+        algorithms/Exp3Bandit/Exp3.h
+        algorithms/Exp3Bandit/Exp3.cpp
+        algorithms/Exp3Bandit/Exp31.h
+        algorithms/Exp3Bandit/Exp31.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
-        algorithms/UCB/UCB1.h algorithms/RBA/RBA.h algorithms/RBA/IBA.h utilities/random_gen.h utilities/exec_command.h runner.h utilities/result_writer.h
-        datasets/dataset_simple_stochastic.h experiments/TheoreticalBoundRunner.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h datasets/dataset.h)
+        )
 
 add_executable(benchmark_bandits benchmark.cpp
-        algorithms/FPL/FPL.h
-        utilities/weight_exporter.cpp
-        datasets/dataloaders.h datasets/Dataset_movielens.h algorithms/Exp3Bandit/Exp3.h
-        datasets/debug/debug_simple_stochastic.cpp datasets/debug/debug_simple_stochastic.h datasets/debug/debug_simple_adversarial.cpp
-        datasets/debug/debug_simple_adversarial.h algorithms/DEXP/DExp3.cpp algorithms/DEXP/DExp3.h algorithms/Exp3m/Exp3m.h
-        utilities/argsort.h algorithms/Exp3m/DepRoundALIASStrategy.cpp
-        algorithms/Exp3m/DepRoundALIASStrategy.h algorithms/Exp3m/Exp31m.h algorithms/Tsallis-INF/TsallisINF.h
-        algorithms/Exp3Bandit/Exp3.h algorithms/Exp3Bandit/Exp3.cpp
-        algorithms/Exp3Bandit/Exp31.h algorithms/Exp3Bandit/Exp31.cpp
+        algorithms/Exp3m/Exp3m.h
+        algorithms/Exp3m/DepRoundALIASStrategy.cpp
+        algorithms/Exp3m/DepRoundALIASStrategy.h
+        algorithms/Exp3Bandit/Exp3.h
+        algorithms/Exp3Bandit/Exp3.cpp
+        algorithms/Exp3Bandit/Exp31.h
+        algorithms/Exp3Bandit/Exp31.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
-        algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
-        experiments/TheoreticalBoundRunner.h
-        algorithms/UCB/UCB1.h algorithms/RBA/RBA.h algorithms/RBA/IBA.h utilities/random_gen.h utilities/exec_command.h runner.h utilities/result_writer.h
-        datasets/dataset_simple_stochastic.h experiments/GenericBanditRunner.h datasets/dataset_simple_adversarial.h algorithms/Uniformbandit.h algorithms/FPL/FPL_hash.h experiments/FPLComparisonRunner.h datasets/data_generators.h utilities/updateable_priority_queue.h algorithms/FPL/QBL.h experiments/TsallisComparisonRunner.h algorithms/Tsallis-INF/Tsallis_IW.h algorithms/Tsallis-INF/Tsallis_RV.h datasets/dataset.h)
+        algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp        
+)
+
+add_executable(optimal_parameter_finder optimal_parameter_finder.cpp
+algorithms/Exp3Bandit/Exp3.h
+algorithms/Exp3Bandit/Exp3.cpp
+)
 
 target_link_libraries(efficient_multi_armed_bandits csv)
 target_link_libraries(benchmark_bandits benchmark::benchmark)

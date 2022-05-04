@@ -25,24 +25,17 @@ public:
     {
         _k = k;
         _cumulative_losses = std::vector<double>(k, 1);
-        _number_chosen = std::vector<double>(k, 0);
-        _probabilities = std::vector<double>(k, 1 / k);
-
         _distribution = Incremental_sum_heap(_cumulative_losses);
-        update_interval = (int)k * log2(k);
-        current_round = 1;
     }
     int choose()
     {
-        current_round += 1;
         int c = _distribution.heap_sample();
-        _number_chosen[c] += 1;
         return c;
     }
 
     void give_reward(size_t index, double feedback)
     {
-        _cumulative_losses[index] += feedback == 1 ? 0.1 : -0.3;
+        _cumulative_losses[index] += feedback == 1 ? 1 : -1;
         _distribution.update(index, _cumulative_losses[index]);
     }
 };
