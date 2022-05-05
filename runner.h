@@ -24,6 +24,23 @@ void basic_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix,
     }
 }
 
+
+template <typename Bandit>
+void basic_runner_returning_reward(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds, std::vector<double> &regrets){
+    regrets.reserve(rounds);
+    for (int round = 0; round < rounds; round++) {
+        auto choice = bandit.choose();
+        auto reward = data_matrix[choice][round];
+        double max_element = 0;
+        for (auto & arm : data_matrix) {
+            if (arm[round] >= max_element) max_element = arm[round];
+        }
+        double regret = max_element - reward;
+        bandit.give_reward(choice, reward);
+        regrets.push_back(reward);
+    }
+}
+
 template <typename Bandit>
 void single_top_k_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds, int k, int m, std::vector<double> &regrets){
     regrets.reserve(rounds);
