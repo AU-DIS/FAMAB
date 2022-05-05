@@ -25,6 +25,7 @@ K = int(metadata[4])
 colormap = {
     "Uniform": "red",
     "Exp3m": "blue",
+    "Exp31m": "orange",
     "Exp3m_heap": "green",
     "QBL": "Magenta"
 }

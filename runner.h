@@ -68,8 +68,6 @@ void top_k_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix,
     regrets.reserve(rounds);
     for (int round = 0; round < rounds; round++) {
         double round_regret = 0;
-        std::set<int> taken;
-
         double max_regret = 0;
         double round_reward = 0;
         double max_choice = 0;

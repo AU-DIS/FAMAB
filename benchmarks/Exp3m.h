@@ -7,8 +7,7 @@ static void benchmark_exp3m_1(benchmark::State &state)
     int k = 1;
     std::vector<double> reward(k, 1);
     std::vector<int> index(k, 1);
-    DepRoundALIASStrategy a;
-    Exp3m b(m, k, 0.1, a);
+    Exp3m b(m, k, 0.1);
 
     for (auto _ : state)
     {
@@ -27,8 +26,7 @@ static void benchmark_exp3m_1_sample(benchmark::State &state)
     int k = 1;
     std::vector<double> reward(k, 1);
     std::vector<int> index(k, 1);
-    DepRoundALIASStrategy a;
-    Exp3m b(m, k, 0.1, a);
+    Exp3m b(m, k, 0.1);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)
@@ -45,8 +43,7 @@ static void benchmark_exp3m_1_update(benchmark::State &state)
     int k = 1;
     std::vector<double> reward(k, 0);
     std::vector<int> index(k, 0);
-    DepRoundALIASStrategy a;
-    Exp3m b(k, k, 0.1, a);
+    Exp3m b(k, k, 0.1);
     b.choose(m);
     for (auto _ : state)
     {

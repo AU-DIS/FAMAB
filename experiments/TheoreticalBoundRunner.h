@@ -190,8 +190,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_m(int averages=50, const std
         Mod2Dataset d(k, T, 3.2);
         for (int run = 0; run < averages; run++) {
             double gamma = min(1.0, sqrt(k*log(k/m)/((exp(1)-1)*m*T)));
-            DepRoundALIASStrategy ALIAS;
-            Exp3m exp3m(m, k, gamma, ALIAS);
+            Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             top_k_runner(exp3m, data, T,k, m, regrets);
@@ -219,8 +218,7 @@ void run_theoretical_bound_experiment_Exp3m_k(int averages=50, const std::string
         Mod2Dataset d(k, T, 3.2);
         for (int run = 0; run < averages; run++) {
             double gamma = min(1.0, sqrt(k*log(k/m)/((exp(1)-1)*m*T)));
-            DepRoundALIASStrategy ALIAS;
-            Exp3m exp3m(m, k, gamma, ALIAS);
+            Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             top_k_runner(exp3m, data, T, k, m, regrets);
@@ -248,8 +246,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_T(int averages=50, const std
         Mod2Dataset d(k, T, 3.2);
         for (int run = 0; run < averages; run++) {
             double gamma = min(1.0, sqrt(k*log(k/m)/((exp(1)-1)*m*T)));
-            DepRoundALIASStrategy ALIAS;
-            Exp3m exp3m(m, k, gamma, ALIAS);
+            Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             top_k_runner(exp3m, data, T, k, m, regrets);

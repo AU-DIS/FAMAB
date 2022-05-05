@@ -34,7 +34,7 @@ double find_optimal_parameter(Dataset &d, Bandit &prototype, double initial_para
         parameter = parameter * 0.98;
         auto dataset = d.generate();
         auto b = Bandit(prototype);
-        b.set_parameter(parameter);
+        //b.set_parameter(parameter);
         double r1 = run_with_parameter(b, dataset, number_of_rounds);
         r1 /= number_of_rounds;
         if (r1 < r)

@@ -14,7 +14,7 @@ fi
 
 name=exp3m
 
-rounds=100000
+rounds=10000000
 averages=1
 delta=0.9
 

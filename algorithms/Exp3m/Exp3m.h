@@ -10,14 +10,15 @@
 #include "algorithm"
 #include "iostream"
 #include "../../utilities/argsort.h"
+#include "DepRoundALIASStrategy.h"
 
 #include "cmath"
-template<typename ALIASStrategy>
+
 class Exp3m {
 private:
     int _k;
     int _m;
-    ALIASStrategy &_ALIASStrategy;
+    DepRoundALIASStrategy _sampling;
     double get_alpha(double rhs, std::vector<size_t> &argsorted) {
         double weight_sum = 0;
         for (auto v : _weights) weight_sum += v;
@@ -35,7 +36,8 @@ public:
     std::vector<double> _last_probabilities;
     std::vector<double> _weights;
 
-    Exp3m(int m, int k, double gamma, ALIASStrategy &as) : _m(m), _k(k), _gamma(gamma), _ALIASStrategy(as) {
+    Exp3m(int m, int k, double gamma) : _m(m), _k(k), _gamma(gamma) {
+        _sampling = DepRoundALIASStrategy();
         for (int i = 0; i < _k; i++) {
             _weights.push_back(1.0/_k);
         }
@@ -73,7 +75,7 @@ public:
             probabilities.push_back(p);
         }
         _last_probabilities = probabilities;
-        return _ALIASStrategy.dependent_weighted_choices(probabilities, _m);
+        return _sampling.dependent_weighted_choices(probabilities, _m);
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
         for (int i = 0; i < indices.size(); i++) {

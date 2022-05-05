@@ -8,6 +8,7 @@
 
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/Exp3m/Exp3m.h"
+#include "../algorithms/Exp3m/Exp31m.h"
 #include "../algorithms/Exp3m/Exp3m_heap.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
@@ -108,16 +109,17 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
     std::vector<double> uniform_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
     std::vector<double> exp3m_heap_regrets(rounds);
+    std::vector<double> exp31m_regrets(rounds);
     std::vector<double> qbl_regrets(rounds);
     for (int i = 0; i < averages; i++) {
 
         std::vector<std::vector<double>> data_matrix = d.generate();
 
         Uniformbandit uni(k);
-        DepRoundALIASStrategy a;
-        Exp3m b(m, k, 0.1, a);
+        Exp3m b(m, k, 0.1);
+        Exp31m b1(m, k, b);
         Exp3m_heap b_heap(m, k, 0.1);
-        QBL qbl(k, 0.9);
+        QBL qbl(k, 10);
 
 
         /*Exp3m b(m, k, 0.1, a);
@@ -166,9 +168,13 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         std::thread t1(single_top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, k, m, std::ref(uniform_run));
 
         std::vector<double> exp3m_run;
-        exp3m_runner<Exp3m<DepRoundALIASStrategy>>( std::ref(b), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_run));
+        exp3m_runner<Exp3m>( std::ref(b), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_run));
         //std::thread t2(exp3m_runner<Exp3m<DepRoundALIASStrategy>>, std::ref(b), std::ref(data_matrix), rounds, k, m,
         //               std::ref(exp3m_run));
+
+        std::vector<double> exp31m_run;
+        exp3m_runner<Exp31m>( std::ref(b1), std::ref(data_matrix), rounds, k, m, std::ref(exp31m_run));
+
 
         std::vector<double> exp3m_heap_run;
         exp3m_runner<Exp3m_heap>( std::ref(b_heap), std::ref(data_matrix), rounds, k, m, std::ref(exp3m_heap_run));
@@ -176,28 +182,31 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         //               std::ref(exp3m_run));
 
         std::vector<double> qbl_run;
-        //top_k_runner<QBL>( std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
-        std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
+        top_k_runner<QBL>( std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
+        //std::thread t3(top_k_runner<QBL>, std::ref(qbl), std::ref(data_matrix), rounds, k, m, std::ref(qbl_run));
 
         t1.join();
         //t2.join();
-        t3.join();
+        //t3.join();
 
         for (int round = 0; round < rounds; round++) {
             uniform_regrets[round] += uniform_run[round];
             exp3m_regrets[round] += exp3m_run[round];
+            exp31m_regrets[round] += exp31m_run[round];
             exp3m_heap_regrets[round] += exp3m_heap_run[round];
             qbl_regrets[round] += qbl_run[round];
         }
     }
     for (auto &v: uniform_regrets) v /= averages;
     for (auto &v: exp3m_regrets) v /= averages;
+    for (auto &v: exp31m_regrets) v /= averages;
     for (auto &v: exp3m_heap_regrets) v /= averages;
     for (auto &v: qbl_regrets) v /= averages;
 
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
     result_matrix.push_back(exp3m_regrets);
+    result_matrix.push_back(exp31m_regrets);
     result_matrix.push_back(exp3m_heap_regrets);
     result_matrix.push_back(qbl_regrets);
 
@@ -209,11 +218,12 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             + std::to_string(rounds) + ","
             + std::to_string(gap) + ","
             + std::to_string(m) + ","
-            + "Uniform,Exp3m,Exp3m_heap,QBL";
+            + "Uniform,Exp3m,Exp31m,Exp3m_heap,QBL";
             //+ "Uniform,QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
         "Exp3m",
+        "Exp31m",
         "Exp3m_heap",
         "QBL"
     };
