@@ -27,9 +27,8 @@ private:
 public:
     Exp31m(int m, int k, Exp3m &b) : _k(k), _m(m), _exp3m(b) {
         accumulated_rewards = std::vector<double>(k, 0);
-        _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
-        _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
-        DepRoundALIASStrategy a;
+        _g_r = (_k * log((double)_k/(double)_m)) / (exp(1) - 1) * _m * pow(4, _r);
+        _gamma = std::min(1.0, sqrt(_k * log((double)_k/(double)_m) / ((exp(1) - 1)* _m * _g_r)));
         _exp3m = Exp3m(_m, _k, _gamma);
         _r = 0;
         round = 0;
@@ -38,15 +37,13 @@ public:
     };
 
     std::vector<int> choose(int m) {
-        double f_term = _k * log(_k);
-        double s_term = exp(1.0) - 1.0;
 
         auto g_max = *std::max_element(accumulated_rewards.begin(), accumulated_rewards.end());
         if (g_max > (_g_r - _k / _gamma))
         {
             _r += 1;
-            _g_r = (f_term / s_term) * pow(4, _r);
-            _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1) * _g_r)));
+            _g_r = (_k * log((double)_k/(double)_m)) / (exp(1) - 1) * _m * pow(4, _r);
+            _gamma = std::min(1.0, sqrt(_k * log((double)_k/(double)_m) / ((exp(1) - 1)* _m * _g_r)));
             _exp3m = Exp3m(_m, _k, _gamma);
         }
         round += 1;

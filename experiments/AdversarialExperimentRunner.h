@@ -9,6 +9,7 @@
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/Exp3m/Exp3m.h"
 #include "../algorithms/Exp3m/Exp31m.h"
+#include "../algorithms/Exp3m/Exp31m_2.h"
 #include "../algorithms/Exp3m/Exp3m_heap.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
@@ -110,6 +111,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
     std::vector<double> exp3m_regrets(rounds);
     std::vector<double> exp3m_heap_regrets(rounds);
     std::vector<double> exp31m_regrets(rounds);
+    std::vector<double> exp31m_2_regrets(rounds);
     std::vector<double> qbl_regrets(rounds);
     for (int i = 0; i < averages; i++) {
 
@@ -117,6 +119,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
         Uniformbandit uni(k);
         Exp3m b(m, k, 0.1);
         Exp31m b1(m, k, b);
+        Exp31m_2 b1_2(m, k, b);
         Exp3m_heap b_heap(m, k, 0.1);
         QBL qbl(k, 10);
 
@@ -135,6 +138,9 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
 
         std::vector<double> exp31m_run;
         exp3m_runner<Exp31m>( std::ref(b1), std::ref(data_matrix), rounds, k, m, std::ref(exp31m_run));
+
+        std::vector<double> exp31m_2_run;
+        exp3m_runner<Exp31m_2>( std::ref(b1_2), std::ref(data_matrix), rounds, k, m, std::ref(exp31m_2_run));
 
 
         std::vector<double> exp3m_heap_run;
@@ -155,6 +161,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             uniform_regrets[round] += uniform_run[round];
             exp3m_regrets[round] += exp3m_run[round];
             exp31m_regrets[round] += exp31m_run[round];
+            exp31m_2_regrets[round] += exp31m_2_run[round];
             exp3m_heap_regrets[round] += exp3m_heap_run[round];
             qbl_regrets[round] += qbl_run[round];
         }
@@ -162,6 +169,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
     for (auto &v: uniform_regrets) v /= averages;
     for (auto &v: exp3m_regrets) v /= averages;
     for (auto &v: exp31m_regrets) v /= averages;
+    for (auto &v: exp31m_2_regrets) v /= averages;
     for (auto &v: exp3m_heap_regrets) v /= averages;
     for (auto &v: qbl_regrets) v /= averages;
 
@@ -169,6 +177,7 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
     result_matrix.push_back(uniform_regrets);
     result_matrix.push_back(exp3m_regrets);
     result_matrix.push_back(exp31m_regrets);
+    result_matrix.push_back(exp31m_2_regrets);
     result_matrix.push_back(exp3m_heap_regrets);
     result_matrix.push_back(qbl_regrets);
 
@@ -183,12 +192,14 @@ void run_adversarial_exp3m_experiment(Dataset& d, int m, int k, int rounds, int 
             + "Uniform,"
             + "Exp3m,"
             + "Exp31m,"
+            +  "Exp31m_2,"
             +  "Exp3m_heap,"
             +   "QBL";
     auto descriptions = std::vector<string>{
         "Uniform",
         "Exp3m",
         "Exp31m",
+        "Exp31m_2",
         "Exp3m_heap",
         "QBL"
     };

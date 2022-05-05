@@ -26,6 +26,7 @@ colormap = {
     "Uniform": "red",
     "Exp3m": "blue",
     "Exp31m": "orange",
+    "Exp31m_2": "cyan",
     "Exp3m_heap": "green",
     "QBL": "Magenta"
 }

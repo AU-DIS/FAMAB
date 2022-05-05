@@ -31,7 +31,7 @@ add_executable(benchmark_bandits benchmark.cpp
         algorithms/Exp3Bandit/Exp31.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
-        algorithms/Exp3m/Exp3m_heap.h)
+        algorithms/Exp3m/Exp3m_heap.h algorithms/Exp3m/Exp31m_2.h)
 
 add_executable(optimal_parameter_finder optimal_parameter_finder.cpp
 algorithms/Exp3Bandit/Exp3.h
