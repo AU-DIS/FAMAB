@@ -30,7 +30,8 @@ public:
         _k = k;
         current_round = 0;
         _eta = eta;
-        update_interval = (int)k * log2(k);
+        // update_interval = (int)k * log2(k);
+        update_interval = k;
     }
 
     void give_reward(size_t choice, double feedback)
