@@ -48,7 +48,6 @@ public:
         double sum_weights = 0;
         for (double v: _weights) sum_weights += v;
 
-
         double threshold = (1.0/_m-_gamma/_k)*sum_weights/(1-_gamma);
         std::vector<double> weights_prime;
         //std::cout << "back" << sorted_weight_indices.back() << std::endl;

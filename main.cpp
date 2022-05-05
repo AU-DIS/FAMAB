@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     {
         // Handle variables
         // This is ugly but so are you
-        int rounds, k, K, averages;
+        int rounds, k, m, averages;
         double gap, delta, optimal_proportion, optimal_probability;
         std::string dataset, regret_out, plot_out, algorithm, out_path;
         std::string runner(row["runner"].get());
@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
                 rounds = row[var_name].get<int>();
             else if (var_name == "k")
                 k = row[var_name].get<int>();
-            else if (var_name == "K")
-                K = row[var_name].get<int>();
+            else if (var_name == "m")
+                m = row[var_name].get<int>();
             else if (var_name == "averages")
                 averages = row[var_name].get<int>();
             else if (var_name == "gap")
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
                 run_tsallis_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
             break;
         case adversarial_exp3m:
-            run_adversarial_exp3m_experiment(*d, k, K, rounds, averages, gap, out_path);
+            run_adversarial_exp3m_experiment(*d, m, k, rounds, averages, gap, out_path);
             break;
         case explore_no_more:
             run_explore_no_more_experiment();

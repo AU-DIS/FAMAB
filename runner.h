@@ -105,6 +105,7 @@ void exp3m_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix,
         std::vector<double> round_uniform_regrets(k, 0);
         std::vector<double> round_exp3m_regrets(k, 0);
 
+
         auto choices = bandit.choose(m);
         double uniform_regret = 0;
         double uniform_reward = 0;
