@@ -39,23 +39,18 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded()
-{
-    std::thread t1(run_theoretical_bound_experiment_Exp3_varying_k, 50, "/tmp");
-    std::thread t2(run_theoretical_bound_experiment_Exp3_varying_T, 50, "/tmp");
-    std::thread t3(run_theoretical_bound_experiment_Exp3ix_varying_k, 50, "/tmp");
-    std::thread t4(run_theoretical_bound_experiment_Exp3ix_varying_T, 50, "/tmp");
-    std::thread t5(run_theoretical_bound_experiment_FPL_varying_k, 50, "/tmp");
-    std::thread t6(run_theoretical_bound_experiment_FPL_varying_T, 50, "/tmp");
+static void run_theoretical_bound_experiment_threaded() {
+    // run_theoretical_bound_experiment_Exp3Eta_varying_k();
+    // run_theoretical_bound_experiment_Exp3Eta_varying_T();
+    // run_theoretical_bound_experiment_Exp3Gamma_varying_k();
+    // run_theoretical_bound_experiment_Exp3Gamma_varying_T();
+    // run_theoretical_bound_experiment_Exp3ix_varying_k();
+    // run_theoretical_bound_experiment_Exp3ix_varying_T();
+    // run_theoretical_bound_experiment_FPL_varying_k();
+    // run_theoretical_bound_experiment_FPL_varying_T();
     // run_theoretical_bound_experiment_Exp3m_varying_small_k();
     // run_theoretical_bound_experiment_Exp3m_varying_big_k();
     // run_theoretical_bound_experiment_Exp3m_varying_T();
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
-    t5.join();
-    t6.join();
 }
 
 int main(int argc, char *argv[])
