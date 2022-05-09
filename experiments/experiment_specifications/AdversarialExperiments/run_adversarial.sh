@@ -10,7 +10,7 @@ name=adversarial
 
 rounds=100000
 #rounds=10000
-averages=100
+averages=25
 delta=0.9
 
 run_experiment() {

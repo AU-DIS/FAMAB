@@ -36,8 +36,15 @@ static double random_chaos_seed()
 static double nonrandom_chaos_seed()
 {
     double millisec_since_epoch = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    
+
     double v = millisec_since_epoch / 1000;
+    v = std::fmod(v, 0.9);
+    return v;
+}
+static double nonrandom_chaos_seed(double previous)
+{
+    double v = nonrandom_chaos_seed();
+    v = v + previous;
     v = std::fmod(v, 0.9);
     return v;
 }

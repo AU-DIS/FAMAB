@@ -26,7 +26,7 @@ void run_exp3_adversarial_experiment(Dataset &d, int k, int rounds, int averages
         // Exp3_average exp3_compare(k, 0.2, 0.8);
         // Exp3_deferred exp3_compare(k, 0.2, 128);
         // Exp31 exp3_compare(k);
-        double gamma = 66778.041822;
+        double gamma = 0.1;
         Exp31_optimized exp3_compare(k);
         Exp3 exp3(k, gamma);
         Uniformbandit uni(k);

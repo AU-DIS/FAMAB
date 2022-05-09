@@ -361,9 +361,6 @@ private:
     int _k{};
     int _rounds{};
     double _gap{};
-    double _optimal_probability{};
-    double _optimal_proportion{};
-    double _delta{};
 
 public:
     TentMapDataset() = default;
@@ -387,21 +384,6 @@ public:
         int optimal_arm = (int)(v * _k);
         v = tent_map(v);
         auto suboptimal_distribution = std::discrete_distribution<int>({0.9, 0.1});
-        /*
-        data_matrix.reserve(k);
-        std::vector<std::discrete_distribution<int>> arm_distributions(k);
-        std::vector<double> seeds(k, 0);
-        for (int i = 0; i < k; i++)
-        {
-
-            auto seed = random_chaos_seed();
-            seed = tent_map(seed);
-            auto probability = i == optimal_arm ? 1. : 0.;
-            auto dist = std::discrete_distribution<int>({1 - probability, probability});
-            arm_distributions[i] = dist;
-            seeds[i] = seed;
-        }
-        */
 
         for (int i = 0; i < k; i++)
         {
@@ -413,39 +395,19 @@ public:
         for (int i = 0; i < rounds; i++)
         {
             double threshold = pow(gap, multiple);
+            if (i % 10 == 0) v = nonrandom_chaos_seed(v);
+
             if (i > threshold)
             {
                 optimal_arm = (int)(v * _k);
-
-                // std::cout << std::to_string(optimal_arm) + "\n";
                 v = tent_map(v);
-                /*
-                for (int arm = 0; arm < _k; arm++)
-                {
-                    auto seed = seeds[arm];
-                    seed = tent_map(seed);
-                    double probability = arm == optimal_arm ? 1 : 0;
-                    auto dist = std::discrete_distribution<int>({1 - probability, probability});
-                    arm_distributions[arm] = dist;
-                    seeds[arm] = seed;
-                    // std::cout << std::to_string(probability) + "\n";
-                }
-                */
-
                 multiple++;
             }
             auto one_triggered = false;
             for (int arm = 0; arm < k; arm++)
             {
-                /*
-                auto distribution = arm_distributions[arm];
-                auto r = distribution(gen);
-                one_triggered = r == 1 ? true : false;
-                data_matrix[arm][i] = r;
-                */
                 data_matrix[arm][i] = arm == optimal_arm ? 1 : (suboptimal_distribution(gen));
             }
-            // data_matrix[i % _k][i] += one_triggered ? 0 : 1;
         }
         return data_matrix;
     }
