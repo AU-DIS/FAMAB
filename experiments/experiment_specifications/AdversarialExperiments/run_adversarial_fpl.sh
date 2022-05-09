@@ -28,17 +28,20 @@ run_experiment() {
     out_stochastic=$tmp_dir/stochastic_$name$1.out
     plt_out_stochastic=$tmp_dir/stochastic_$name$1.png
 
-    rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2>/dev/null
+    out_tent=$tmp_dir/$name$1_tent.out
+    plt_out_tent=$tmp_dir/$name$1_tent.png
+
+    rm $header $out $plt_out $out_mod2 $plt_out_mod2 $out_stochastic $plt_out_stochastic $out_tent $plt_out_tent 2>/dev/null
 
     echo "runner,dataset,gap,k,rounds,averages,delta,output_path,optimal_probability,optimal_proportion" >>$header
-    #echo "fpl_adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out,0.8,0.3" >> $header
-    #echo "fpl_adversarial,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2,0.9,0.2" >> $header
+    echo "fpl_adversarial,stochastically_constrained_adversarial,3.2,$1,$rounds,$averages,$delta,$out,0.8,0.3" >> $header
+    echo "fpl_adversarial,mod2,3.2,$1,$rounds,$averages,$delta,$out_mod2,0.9,0.2" >> $header
     echo "fpl_adversarial,TentMapDataset,3.2,$1,$rounds,$averages,$delta,$out_stochastic,0.9,0.2" >> $header
 
     ./$make_dir/efficient_multi_armed_bandits $header
-    #python3 plotting/plot_compare.py $out $plt_ou
-    #python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
-    python3 plotting/plot_compare.py $out_stochastic $plt_out_stochastic
+    python3 plotting/plot_compare.py $out $plt_ou
+    python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
+    python3 plotting/plot_compare.py $out_tent $plt_out_tent
 
 }
 

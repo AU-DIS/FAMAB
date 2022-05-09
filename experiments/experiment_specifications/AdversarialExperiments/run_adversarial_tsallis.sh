@@ -27,21 +27,24 @@ run_experiment() {
     out_stochastic=$tmp_dir/$name$1_stochastic.out
     plt_out_stochastic=$tmp_dir/$name$1_stochastic.png
 
-    rm $header $out $plt_out $out_mod2 $plt_out_mod2 out_stochastic plt_out_stochastic 2>/dev/null
+    out_tent=$tmp_dir/$name$1_tent.out
+    plt_out_tent=$tmp_dir/$name$1_tent.png
+
+    rm -f $header $out $plt_out $out_mod2 $plt_out_mod2 $out_stochastic $plt_out_stochastic $out_tent $plt_out_tent 2>/dev/null
+    rm -f $tmp_dir/*header* 2>/dev/null
+    rm -f $tmp_dir/*.out* 2>/dev/null
 
     echo "runner,dataset,gap,k,rounds,averages,delta,output_path" >>$header
-    #echo "tsallis_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out" >>$header
-    #echo "tsallis_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2" >>$header
+    echo "tsallis_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out" >>$header
+    echo "tsallis_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2" >>$header
     echo "tsallis_adversarial,TentMapDataset,$gap,$1,$rounds,$averages,$delta,$out_stochastic" >>$header
 
-    #echo "tsallis_variance,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out" >> $header
-    #echo "tsallis_variance,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2" >> $header
-    #echo "tsallis_variance,stochastic,$gap,$1,$rounds,$averages,$delta,$out_stochastic" >> $header
 
     ./$make_dir/efficient_multi_armed_bandits $header
-    #python3 plotting/plot_compare.py $out $plt_out
-    #python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
-    python3 plotting/plot_compare.py $out_stochastic $plt_out_stochastic
+
+    python3 plotting/plot_compare.py $out $plt_out
+    python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
+    python3 plotting/plot_compare.py $out_tent $plt_out_tent
 
 }
 
