@@ -39,23 +39,18 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded()
-{
-    std::thread t1(run_theoretical_bound_experiment_Exp3_varying_k, 50, "/tmp");
-    std::thread t2(run_theoretical_bound_experiment_Exp3_varying_T, 50, "/tmp");
-    std::thread t3(run_theoretical_bound_experiment_Exp3ix_varying_k, 50, "/tmp");
-    std::thread t4(run_theoretical_bound_experiment_Exp3ix_varying_T, 50, "/tmp");
-    std::thread t5(run_theoretical_bound_experiment_FPL_varying_k, 50, "/tmp");
-    std::thread t6(run_theoretical_bound_experiment_FPL_varying_T, 50, "/tmp");
+static void run_theoretical_bound_experiment_threaded() {
+    // run_theoretical_bound_experiment_Exp3Eta_varying_k();
+    // run_theoretical_bound_experiment_Exp3Eta_varying_T();
+    // run_theoretical_bound_experiment_Exp3Gamma_varying_k();
+    // run_theoretical_bound_experiment_Exp3Gamma_varying_T();
+    // run_theoretical_bound_experiment_Exp3ix_varying_k();
+    // run_theoretical_bound_experiment_Exp3ix_varying_T();
+    // run_theoretical_bound_experiment_FPL_varying_k();
+    // run_theoretical_bound_experiment_FPL_varying_T();
     // run_theoretical_bound_experiment_Exp3m_varying_small_k();
     // run_theoretical_bound_experiment_Exp3m_varying_big_k();
     // run_theoretical_bound_experiment_Exp3m_varying_T();
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
-    t5.join();
-    t6.join();
 }
 
 int main(int argc, char *argv[])
@@ -67,7 +62,7 @@ int main(int argc, char *argv[])
     {
         // Handle variables
         // This is ugly but so are you
-        int rounds, k, K, averages;
+        int rounds, k, m, averages;
         double gap, delta, optimal_proportion, optimal_probability;
         std::string dataset, regret_out, plot_out, algorithm, out_path;
         std::string runner(row["runner"].get());
@@ -78,8 +73,8 @@ int main(int argc, char *argv[])
                 rounds = row[var_name].get<int>();
             else if (var_name == "k")
                 k = row[var_name].get<int>();
-            else if (var_name == "K")
-                K = row[var_name].get<int>();
+            else if (var_name == "m")
+                m = row[var_name].get<int>();
             else if (var_name == "averages")
                 averages = row[var_name].get<int>();
             else if (var_name == "gap")
@@ -153,7 +148,7 @@ int main(int argc, char *argv[])
                 run_tsallis_adversarial_experiment(*d, k, rounds, averages, gap, out_path);
             break;
         case adversarial_exp3m:
-            run_adversarial_exp3m_experiment(*d, k, K, rounds, averages, gap, out_path);
+            run_adversarial_exp3m_experiment(*d, m, k, rounds, averages, gap, out_path);
             break;
         case explore_no_more:
             run_explore_no_more_experiment();

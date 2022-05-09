@@ -43,6 +43,12 @@ public:
 
 
     std::vector<int> choose(int m) {
+        for (int i = 0; i < _log_k; i++) {
+            int priority_delta = (int) _exponential_distribution(_gen);
+            _priorities[i] = min(_k, _priorities[i] + priority_delta);
+            _q.update(i, _priorities[i]);
+            _counter++;
+        }
         std::vector<int> choices(m, 0);
         for (int i = 0; i < m; i++) {
             choices[i] = _q.top().key;
