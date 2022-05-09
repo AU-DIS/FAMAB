@@ -108,11 +108,17 @@ int main(int argc, char *argv[])
         StochasticallyConstrainedDataset sCD;
         StochasticDataset stochasticDataset;
         BernoulliOptimalDataset bernoulliDS;
+        TentMapDataset tentDS;
 
         if (dataset == "BernoulliOptimalDataset")
         {
             bernoulliDS = BernoulliOptimalDataset(k, rounds, gap, optimal_probability, optimal_proportion, delta);
             d = &bernoulliDS;
+        }
+        if (dataset == "TentMapDataset")
+        {
+            tentDS = TentMapDataset(k, rounds, gap);
+            d = &tentDS;
         }
         if (dataset == "stochastically_constrained_adversarial")
         {

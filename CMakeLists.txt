@@ -21,6 +21,7 @@ add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
         )
 
+        
 add_executable(benchmark_bandits benchmark.cpp
         algorithms/Exp3m/Exp3m.h
         algorithms/Exp3m/DepRoundALIASStrategy.cpp
