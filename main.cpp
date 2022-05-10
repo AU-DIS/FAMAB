@@ -39,18 +39,36 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded() {
-    // run_theoretical_bound_experiment_Exp3Eta_varying_k();
-    // run_theoretical_bound_experiment_Exp3Eta_varying_T();
-    // run_theoretical_bound_experiment_Exp3Gamma_varying_k();
-    // run_theoretical_bound_experiment_Exp3Gamma_varying_T();
-    // run_theoretical_bound_experiment_Exp3ix_varying_k();
-    // run_theoretical_bound_experiment_Exp3ix_varying_T();
-    // run_theoretical_bound_experiment_FPL_varying_k();
-    // run_theoretical_bound_experiment_FPL_varying_T();
-    // run_theoretical_bound_experiment_Exp3m_varying_small_k();
-    // run_theoretical_bound_experiment_Exp3m_varying_big_k();
-    // run_theoretical_bound_experiment_Exp3m_varying_T();
+static void run_theoretical_bound_experiment_threaded(std::string& algorithm) {
+    if (algorithm == "Exp3Eta") {
+        run_theoretical_bound_experiment_Exp3Eta_varying_k();
+        run_theoretical_bound_experiment_Exp3Eta_varying_T();
+    }
+    else if(algorithm == "Exp3Gamma") {
+        run_theoretical_bound_experiment_Exp3Gamma_varying_k();
+        run_theoretical_bound_experiment_Exp3Gamma_varying_T();
+    }
+    else if(algorithm == "Exp31") {
+        run_theoretical_bound_experiment_Exp31_varying_k();
+        run_theoretical_bound_experiment_Exp31_varying_T();
+    }
+    else if(algorithm == "Exp3IX") {
+        run_theoretical_bound_experiment_Exp3ix_varying_k();
+        run_theoretical_bound_experiment_Exp3ix_varying_T();
+    }
+    else if(algorithm == "FPL") {
+        run_theoretical_bound_experiment_FPL_varying_k();
+        run_theoretical_bound_experiment_FPL_varying_T();
+    }
+    else if(algorithm == "QBL") {
+        run_theoretical_bound_experiment_QBL_varying_k();
+        run_theoretical_bound_experiment_QBL_varying_T();
+    }
+    else if(algorithm == "Exp3M") {
+        run_theoretical_bound_experiment_Exp3m_varying_m();
+        run_theoretical_bound_experiment_Exp3m_varying_k();
+        run_theoretical_bound_experiment_Exp3m_varying_T();
+    }
 }
 
 int main(int argc, char *argv[])
@@ -61,7 +79,7 @@ int main(int argc, char *argv[])
     for (auto &row : reader)
     {
         // Handle variables
-        // This is ugly but so are you
+        // This is græm but so are you
         int rounds, k, m, averages;
         double gap, delta, optimal_proportion, optimal_probability;
         std::string dataset, regret_out, plot_out, algorithm, out_path;
@@ -167,7 +185,7 @@ int main(int argc, char *argv[])
             }
             break;
         case theoretical:
-            run_theoretical_bound_experiment_threaded();
+            run_theoretical_bound_experiment_threaded(algorithm);
             break;
         default:
             std::cout << "The Requested runner was not found" << std::endl;
