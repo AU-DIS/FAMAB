@@ -154,7 +154,7 @@ void run_theoretical_bound_experiment_Exp31_varying_k(int averages=50, const std
         int T = 10000;
         double average_strong_regret = 0;
         double promise = 0;
-        auto F1 = [](double K) { return 10.5*(K*log(K)); };
+        auto F1 = [](double K) { return 10.5*sqrt(K*log(K)); };
         auto F2 = [](double K) { return 13.8 + 2*K*log(K); };
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
@@ -205,7 +205,7 @@ void run_theoretical_bound_experiment_Exp31_varying_T(int averages=50, const std
         int T = pow(10, i);
         double average_strong_regret = 0;
         double promise = 0;
-        auto F1 = [](double K) { return 10.5*(K*log(K)); };
+        auto F1 = [](double K) { return 10.5*sqrt(K*log(K)); };
         auto F2 = [](double K) { return 13.8 + 2*K*log(K); };
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
@@ -441,7 +441,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_m(int averages=50, const std
         }
         // The divided part is the O-time that we are promised so we would expect these different averages to be the
         // same i.e. a flat line when plotted
-        double promise = sqrt((double)m*(double)T*(double)k*log((double)k/(double)m));
+        double promise = 2*sqrt(exp(1)-1)*sqrt((double)m*(double)T*(double)k*log((double)k/(double)m));
         double average_divided_by_promise = average_strong_regret / promise;
         vector<double> run {(double)k, (double)m, (double)T, average_strong_regret, promise, average_divided_by_promise, (double)averages, gamma };
         data_matrix.push_back(run);
