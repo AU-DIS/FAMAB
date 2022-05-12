@@ -39,7 +39,8 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded() {
+static void run_theoretical_bound_experiment_threaded()
+{
     // run_theoretical_bound_experiment_Exp3Eta_varying_k();
     // run_theoretical_bound_experiment_Exp3Eta_varying_T();
     // run_theoretical_bound_experiment_Exp3Gamma_varying_k();
@@ -103,12 +104,40 @@ int main(int argc, char *argv[])
         StochasticallyConstrainedDataset sCD;
         StochasticDataset stochasticDataset;
         BernoulliOptimalDataset bernoulliDS;
+        SinusDataset sDS;
         TentMapDataset tentDS;
+
+        if (dataset == "DuellingDataset")
+        {
+            if (runner.find("exp3") != std::string::npos)
+            {
+                auto b = Exp3(k, 0.1);
+                auto Dds = DuellingDataset<Exp3>(b, k, rounds);
+                d = &Dds;
+            }
+            if (runner.find("fpl") != std::string::npos)
+            {
+                auto b = FPL(k, 10);
+                auto Dds = DuellingDataset<FPL>(b, k, rounds);
+                d = &Dds;
+            }
+            if (runner.find("tsallis") != std::string::npos)
+            {
+                auto b = Tsallis_IW(k);
+                auto Dds = DuellingDataset<Tsallis_IW>(b, k, rounds);
+                d = &Dds;
+            }
+        }
 
         if (dataset == "BernoulliOptimalDataset")
         {
             bernoulliDS = BernoulliOptimalDataset(k, rounds, gap, optimal_probability, optimal_proportion, delta);
             d = &bernoulliDS;
+        }
+        if (dataset == "SinusDataset")
+        {
+            sDS = SinusDataset(k, rounds);
+            d = &sDS;
         }
         if (dataset == "TentMapDataset")
         {

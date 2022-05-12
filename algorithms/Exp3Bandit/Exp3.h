@@ -27,7 +27,7 @@ public:
     int choose();
     void give_reward(int index, double feedback);
     void set_parameter(double gamma);
-    std::vector<double> get_weights();
+    std::vector<double>* get_weights();
     std::vector<double> _weights;
 };
 

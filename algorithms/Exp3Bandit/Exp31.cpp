@@ -44,4 +44,9 @@ void Exp31::give_reward(int index, double feedback)
     _exp3.give_reward(index, feedback);
 }
 
+std::vector<double> *Exp31::get_weights()
+    {
+        return _exp3.get_weights();
+    }
+
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP31_CPP

@@ -7,6 +7,7 @@
 #include <vector>
 #include <random>
 #include "../../utilities/random_gen.h"
+#include "iostream"
 
 class FPL
 {
@@ -19,6 +20,7 @@ private:
     double _eta;
 
 public:
+    FPL() = default;
     FPL(int k, double eta)
     {
         _weights = std::vector<double>(k, 1);
@@ -27,6 +29,15 @@ public:
         _k = k;
         current_round = 0;
         _eta = eta;
+    }
+    FPL(FPL &b)
+    {
+        _weights = std::vector<double>(b._k, 1);
+        _gen = random_gen();
+        _exponential_distribution = std::exponential_distribution<double>(b._eta);
+        _k = b._k;
+        current_round = 0;
+        _eta = b._eta;
     }
 
     void set_parameter(double eta)
@@ -39,9 +50,9 @@ public:
     {
         _weights[choice] += feedback;
     }
-    std::vector<double> &get_weights()
+    std::vector<double>* get_weights()
     {
-        return _weights;
+        return &_weights;
     }
 
     int choose()

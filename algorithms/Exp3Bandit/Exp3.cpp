@@ -24,8 +24,8 @@ Exp3::Exp3(const Exp3 &prototype)
 {
     _k = prototype._k;
     _gamma = prototype._gamma;
-    _probabilities = std::vector<double>(_k, 0.0);
-    _weights = std::vector<double>(_k, 1.0);
+    _probabilities = std::vector<double>(prototype._k, 0.0);
+    _weights = std::vector<double>(prototype._k, 1.0);
     _random_gen = random_gen();
 }
 
@@ -64,9 +64,9 @@ void Exp3::give_reward(int index, double feedback)
     _weights[index] = new_weight;
 }
 
-std::vector<double> Exp3::get_weights()
-{
-    return _weights;
-}
+    std::vector<double> *Exp3::get_weights()
+    {
+        return &_weights;
+    }
 
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP3_CPP

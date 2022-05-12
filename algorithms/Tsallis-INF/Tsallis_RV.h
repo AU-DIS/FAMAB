@@ -67,6 +67,10 @@ public:
         _t += 1;
         return s;
     }
+        std::vector<double> *get_weights()
+    {
+        return &_weights;
+    }
 
     void give_reward(size_t index, double feedback) {
         for (size_t i = 0; i < _k; i++) {

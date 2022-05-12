@@ -11,7 +11,8 @@
 #include "../../utilities/random_gen.h"
 #include <queue>
 
-class Exp3_average {
+class Exp3_average
+{
 private:
     int _k;
     double _gamma;
@@ -26,17 +27,20 @@ private:
     std::vector<double> _probabilities;
     std::mt19937 _random_gen;
 
-
-    int sample() {
+    int sample()
+    {
         recompute_average();
 
-        if (_running_avg >= _avg_threshold) {
+        if (_running_avg >= _avg_threshold)
+        {
             double sum_reduced_power_weights = 0;
             double m = *max_element(_weights.begin(), _weights.end());
-            for (int i = 0; i < _k; i++) {
+            for (int i = 0; i < _k; i++)
+            {
                 sum_reduced_power_weights += exp(_gamma / _k * (_weights[i] - m));
             }
-            for (int i = 0; i < _k; i++) {
+            for (int i = 0; i < _k; i++)
+            {
                 _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
             }
             d = std::discrete_distribution<int>(_probabilities.begin(), _probabilities.end());
@@ -45,10 +49,12 @@ private:
         return s;
     }
 
-    void recompute_average() {
-        for (auto v : _running_observations) _running_avg += v;
+    void recompute_average()
+    {
+        for (auto v : _running_observations)
+            _running_avg += v;
         _running_avg /= _no_avg;
-        //std::cout << _running_avg << std::endl;
+        // std::cout << _running_avg << std::endl;
     }
 
     std::discrete_distribution<int> d;
@@ -56,7 +62,10 @@ private:
 public:
     std::vector<double> _weights;
 
-    Exp3_average(int k, double gamma, double avg_threshold) {
+
+
+    Exp3_average(int k, double gamma, double avg_threshold)
+    {
         _k = k;
         _gamma = gamma;
         _avg_threshold = avg_threshold;
@@ -68,34 +77,33 @@ public:
 
         recompute_average();
 
-
         _probabilities = std::vector<double>(k, 0);
         _weights = std::vector<double>(k, 1.0);
 
         _random_gen = random_gen();
 
         choose();
-
     }
-    int choose() {
+    int choose()
+    {
         int choice = sample();
         _last_drawn_probability = _probabilities[choice];
         _last_drawn_weight = _weights[choice];
 
         return choice;
-
     }
-    void give_reward(int index, double feedback) {
+    void give_reward(int index, double feedback)
+    {
         double est_reward = feedback / _last_drawn_probability;
         double new_weight = _last_drawn_weight + est_reward;
         _weights[index] = new_weight;
         _running_observations[_round_counter % _no_avg] = 1 - feedback;
         _round_counter++;
     }
-    std::vector<double> get_weights() {
-        return _weights;
+    std::vector<double>* get_weights()
+    {
+        return &_weights;
     }
-
 };
 
-#endif //EFFICIENT_MULTI_ARMED_BANDITS_EXP3_AVERAGE_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP3_AVERAGE_H

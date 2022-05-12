@@ -60,6 +60,12 @@ public:
     std::vector<double> _weights;
     std::vector<double> _cumulative_losses;
 
+    std::vector<double> *get_weights()
+    {
+        return &_weights;
+    }
+
+    Tsallis_IW() = default;
     explicit Tsallis_IW(int k)
     {
         _cumulative_losses = std::vector<double>(k, 0);

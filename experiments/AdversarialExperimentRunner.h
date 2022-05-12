@@ -53,7 +53,7 @@ void run_adversarial_weight_experiment(Dataset& d, int k, int rounds, double gap
         for (int round = 0; round < rounds; round++) {
             double threshold = pow(gap, multiple);
             if (round > threshold) {
-                auto w = fpl.get_weights();
+                auto w = *fpl.get_weights();
                 for (int j = 0; j < k; j++) {
                     weights_at_r[interval][j] += (w[j] / averages);
                 }

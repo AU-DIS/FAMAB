@@ -70,8 +70,9 @@ public:
         double new_weight = _last_drawn_weight + est_reward;
         _weights[index] = new_weight;
     }
-    std::vector<double> get_weights() {
-        return _weights;
+    std::vector<double> *get_weights()
+    {
+        return &_weights;
     }
 
 };

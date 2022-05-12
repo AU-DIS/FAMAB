@@ -35,6 +35,10 @@ public:
         max_acc = 0;
         max_index = 0;
     }
+        std::vector<double> *get_weights()
+    {
+        return _exp3.get_weights();
+    }
     int choose()
     {
         double f_term = _k * log(_k);

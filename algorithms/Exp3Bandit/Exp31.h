@@ -24,6 +24,7 @@ public:
     explicit Exp31(int k);
     int choose();
     void give_reward(int index, double feedback);
+    std::vector<double>* get_weights();
 };
 
 

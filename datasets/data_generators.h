@@ -6,6 +6,7 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_DATA_GENERATORS_H
 #include "dataset.h"
 #include "../utilities/chaosmaps.h"
+#include "../experiments/DuelArena.h"
 #include "iostream"
 
 std::vector<std::discrete_distribution<int>> create_distributions(int k)
@@ -135,6 +136,53 @@ std::vector<std::vector<double>> stochastically_constrained_adversarial(int k, d
     }
     return data_matrix;
 }
+
+class SinusDataset : public Dataset
+{
+private:
+    int _k{};
+    int _rounds{};
+    std::mt19937 _gen;
+
+public:
+    SinusDataset() = default;
+    SinusDataset(int k, int rounds)
+    {
+        _k = k;
+        _rounds = rounds;
+    }
+    std::vector<std::vector<double>> generate()
+    {
+        // Fill the vector with uniformly distributed values
+        std::vector<int> optimal_at_r(_rounds, 0);
+        for (int i = 0; i < _rounds; i++)
+        {
+            optimal_at_r[i] = i % _k;
+        }
+        // Chosen arbitrarily
+        int optimal_arm = 1;
+        auto rng = random_gen();
+        int number_of_optimal = _k * 2;
+        std::shuffle(std::begin(optimal_at_r), std::end(optimal_at_r), rng);
+        for (int i = 0; i < number_of_optimal; i++)
+        {
+            optimal_at_r[i] = optimal_arm;
+        }
+        std::shuffle(std::begin(optimal_at_r), std::end(optimal_at_r), rng);
+
+        std::vector<std::vector<double>> data_matrix;
+        for (int arm = 0; arm < _k; arm++)
+        {
+            auto r = std::vector<double>(_rounds, 0);
+            for (int i = 0; i < _rounds; i++)
+            {
+                r[i] = optimal_at_r[i] == arm ? 1 : 0;
+            }
+            data_matrix.push_back(r);
+        }
+        return data_matrix;
+    }
+};
 
 class StochasticDataset : public Dataset
 {
@@ -355,6 +403,47 @@ public:
     }
 };
 
+template <typename Bandit>
+class DuellingDataset : public Dataset
+{
+private:
+    int _k{};
+    int _rounds{};
+    Bandit _b{};
+
+public:
+    DuellingDataset() = default;
+
+    DuellingDataset(Bandit &b, int k, int rounds)
+    {
+        _k = k;
+        _rounds = rounds;
+        _b = b;
+    }
+
+    std::vector<std::vector<double>> generate()
+    {
+        auto g = Bandit(_b);
+        auto q = Bandit(_b);
+        auto optimals = create_adversarial_dataset(q, g, _k, _rounds);
+        std::vector<std::vector<double>> data_matrix;
+        for (int arm = 0; arm < _k; arm++)
+        {
+            auto rewards = std::vector<double>(_rounds, 0);
+            // std::cout << std::to_string(optimals[arm]) + "\n";
+            data_matrix.push_back(rewards);
+        }
+        // Now loop over each optimals and set the arms reward to 1 in that round
+        for (int i = 0; i < _rounds; i++)
+        {
+            int optimal = optimals[i];
+            data_matrix[optimal][i] = 1;
+        }
+
+        return data_matrix;
+    }
+};
+
 class TentMapDataset : public Dataset
 {
 private:
@@ -395,7 +484,8 @@ public:
         for (int i = 0; i < rounds; i++)
         {
             double threshold = pow(gap, multiple);
-            if (i % 10 == 0) v = nonrandom_chaos_seed(v);
+            if (i % 10 == 0)
+                v = nonrandom_chaos_seed(v);
 
             if (i > threshold)
             {

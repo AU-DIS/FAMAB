@@ -39,5 +39,11 @@ algorithms/Exp3Bandit/Exp3.h
 algorithms/Exp3Bandit/Exp3.cpp
 )
 
+add_executable(duelling_bandits duelling_bandits.cpp
+algorithms/Exp3Bandit/Exp3.h
+algorithms/Exp3Bandit/Exp3.cpp
+)
+
+
 target_link_libraries(efficient_multi_armed_bandits csv)
 target_link_libraries(benchmark_bandits benchmark::benchmark)
