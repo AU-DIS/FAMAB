@@ -44,39 +44,24 @@ create_distributions(int k, int optimal_start, int optimal_end, double delta)
     std::vector<std::discrete_distribution<int>> distributions(k);
     auto gen = random_gen();
 
-    std::normal_distribution<double> suboptimal_distribution(1 - delta, 4);
     std::discrete_distribution<int> optimal_distribution({1 - delta, delta});
-
+    // std::uniform_real_distribution<double> suboptimal_distribution;
+    std::normal_distribution<double> suboptimal_distribution(1 - delta, 1);
     std::vector<double> probabilities(k);
-
-    std::vector<double *> suboptimal_probabilities;
 
     for (int i = 0; i < k; i++)
     {
         if (i >= optimal_start && i <= optimal_end)
         {
-            probabilities[i] = delta;
+            double p = delta;
+            probabilities[i] = p;
         }
         else
         {
             double p = suboptimal_distribution(gen);
+            p = abs(p);
             probabilities[i] = p;
-            suboptimal_probabilities.push_back(&p);
         }
-    }
-
-    double max_p = 0;
-    double min_p = k + 1;
-    for (double *p : suboptimal_probabilities)
-    {
-        if (*p < min_p)
-            min_p = *p;
-        else if (*p >= max_p)
-            max_p = *p;
-    }
-    for (double *p : suboptimal_probabilities)
-    {
-        *p /= (min_p + max_p);
     }
 
     for (int i = 0; i < k; i++)
@@ -424,8 +409,10 @@ public:
     std::vector<std::vector<double>> generate()
     {
         auto g = Bandit(_b);
-        auto q = Bandit(_b);
+        /*auto q = Bandit(_b);
         auto optimals = create_adversarial_dataset(q, g, _k, _rounds);
+        */
+        auto optimals = create_reflective_adversarial_dataset(g, _k, _rounds);
         std::vector<std::vector<double>> data_matrix;
         for (int arm = 0; arm < _k; arm++)
         {
