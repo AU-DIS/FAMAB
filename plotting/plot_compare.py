@@ -38,6 +38,7 @@ colormap = {
     "Tsallis (IW with optimisations)": "magenta",
     "Tsallis (RV with optimisations)": "magenta",
     "Exp3 (average)": "blue",
+    "Exp3.1": "blue",
     "Exp3 (defer with xi = 128)": "blue"
 }
 

@@ -7,6 +7,7 @@
 
 #include "iostream"
 #include "vector"
+#include "../utilities/argsort.h"
 
 template <typename Adversary, typename Bandit>
 std::vector<int> run_bandit_duel(Adversary &q, Bandit &g, int k, int rounds)
@@ -43,16 +44,61 @@ std::vector<int> run_bandit_duel(Adversary &q, Bandit &g, int k, int rounds)
     return choices;
 }
 
+template <typename Bandit>
+std::vector<int> run_reflective_duel(Bandit &bandit, int k, int rounds)
+{
+    auto w = bandit.get_weights();
+    std::vector<int> choices(rounds, 0);
+    for (int i = 0; i < rounds; i++)
+    {
+        int c = bandit.choose();
+        auto w_argsorted = argsort(*w);
+        // Pick the choice the algorithm favours the least, or the second least if it picked it by random chance
+        int adversarial_c = c == w_argsorted[0];
+        choices[i] = adversarial_c;
+        bandit.give_reward(c, c == w_argsorted[0] ? 1 : 0);
+    }
+    return choices;
+}
+
+template <typename Bandit>
+std::vector<int> create_reflective_adversarial_dataset(Bandit &b, int k, int rounds)
+{
+
+    double max_regret = 0;
+    auto best_choices = std::vector<int>(rounds, 0);
+
+    for (int i = 0; i < 10; i++)
+    {
+        // Duelling phase
+        auto bandit = Bandit(b);
+        auto proposed_choices = run_reflective_duel(bandit, k, rounds);
+        // Simulation phase
+        bandit = Bandit(b);
+        double regret = 0;
+        for (int r = 0; r < rounds; r++)
+        {
+            int c = bandit.choose();
+            regret += c == proposed_choices[r] ? 0 : 1;
+            bandit.give_reward(c, c == proposed_choices[r] ? 1 : 0);
+        }
+        if (regret > max_regret) {
+            best_choices = proposed_choices;
+            max_regret = regret;
+        }
+    }
+    return best_choices;
+}
+
 template <typename Adversary, typename Bandit>
 std::vector<int> create_adversarial_dataset(Adversary &q, Bandit &g, int k, int rounds)
 {
     double max_regret = 0;
     std::vector<int> worst_picks(k, 0);
 
-    
     for (int i = 0; i < 10; i++)
     {
-        
+
         double regret = 0;
         auto r_bandit = Bandit(g);
         // Duel phase
