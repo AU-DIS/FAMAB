@@ -4,7 +4,7 @@ static void benchmark_fpl_hashing(benchmark::State &state)
 {
     auto k = state.range(0);
     int rounds = 100;
-    FPL_hash b(k, 0.1, rounds);
+    FPL_hash b(k, 10, rounds);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)
@@ -19,7 +19,7 @@ static void benchmark_fpl_hashing_sample(benchmark::State &state)
 {
     auto k = state.range(0);
     int rounds = 100;
-    FPL_hash b(k, 0.1, rounds);
+    FPL_hash b(k, 10, rounds);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)
@@ -32,7 +32,7 @@ static void benchmark_fpl_hashing_update(benchmark::State &state)
 {
     auto k = state.range(0);
     int rounds = 100;
-    FPL_hash b(k, 0.1, rounds);
+    FPL_hash b(k, 10, rounds);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)

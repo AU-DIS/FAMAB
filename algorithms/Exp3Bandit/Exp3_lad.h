@@ -11,7 +11,7 @@
 #include "../../utilities/random_gen.h"
 #include <queue>
 
-class Exp3_average
+class Exp3_lad
 {
 private:
     int _k;
@@ -62,9 +62,7 @@ private:
 public:
     std::vector<double> _weights;
 
-
-
-    Exp3_average(int k, double gamma, double avg_threshold)
+    Exp3_lad(int k, double gamma, double avg_threshold)
     {
         _k = k;
         _gamma = gamma;
@@ -100,7 +98,7 @@ public:
         _running_observations[_round_counter % _no_avg] = 1 - feedback;
         _round_counter++;
     }
-    std::vector<double>* get_weights()
+    std::vector<double> *get_weights()
     {
         return &_weights;
     }

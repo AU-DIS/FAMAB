@@ -29,7 +29,7 @@ gap = float(metadata[3])
 algorithms = sorted(algorithms)
 
 
-plt.figure(0, figsize=(10, 5))
+plt.figure(0, figsize=(5, 5))
 for nr, algorithm in enumerate(algorithms):
     lines = np.array([float(x) for x in regrets[algorithm]])
     max_val = np.max(lines)

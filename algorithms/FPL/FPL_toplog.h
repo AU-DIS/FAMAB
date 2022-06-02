@@ -32,6 +32,7 @@ public:
         _eta = eta;
         // update_interval = (int)k * log2(k);
         update_interval = k;
+        current_round = 0;
     }
 
     void give_reward(size_t choice, double feedback)
@@ -46,6 +47,15 @@ public:
     int choose()
     {
 
+        current_round++;
+        if (current_round % (int)_eta == 0)
+        {
+            double sum = 0;
+            for (auto v : _weights)
+                sum += v;
+            for (auto &v : _weights)
+                v /= sum;
+        }
         if (current_round % update_interval == 0)
         {
             auto indices = argsort(_weights);

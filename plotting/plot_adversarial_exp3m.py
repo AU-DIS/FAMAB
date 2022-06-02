@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colors
 import itertools
+from colors import colormap
 
 regrets = {}
 styles = ['o', 'v', '^', '<', '>', 's', '8', 'p']
@@ -22,14 +23,7 @@ rounds = int(metadata[2])
 gap = float(metadata[3])
 K = int(metadata[4])
 
-colormap = {
-    "Uniform": "red",
-    "Exp3m": "blue",
-    "Exp31m": "orange",
-    "Exp31m_2": "cyan",
-    "Exp3m_heap": "green",
-    "QBL": "Magenta"
-}
+
 
 ys = []
 algorithms = sorted(algorithms)

@@ -6,8 +6,8 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3COMPARISONRUNNER_H
 
 #include <thread>
-#include "../algorithms/Exp3Bandit/Exp3_deferred.h"
-#include "../algorithms/Exp3Bandit/Exp3_average.h"
+#include "../algorithms/Exp3Bandit/Exp3_fid.h"
+#include "../algorithms/Exp3Bandit/Exp3_lad.h"
 #include "../algorithms/Exp3Bandit/Exp3.1_optimized.h"
 #include "../datasets/dataset.h"
 
@@ -27,12 +27,12 @@ void run_exp3_adversarial_experiment(Dataset &d, int k, int rounds, int averages
         // Exp3_deferred exp3_compare(k, 0.2, 128);
         // Exp31 exp3_compare(k);
         double gamma = 0.1;
-        Exp31_optimized exp3_compare(k);
         Exp3 exp3(k, gamma);
         Uniformbandit uni(k);
+        Exp3_fid lad(k, gamma, 512);
 
         std::vector<double> exp3_compare_run;
-        std::thread t1(basic_runner<Exp31_optimized>, std::ref(exp3_compare), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
+        std::thread t1(basic_runner<Exp3_fid>, std::ref(lad), std::ref(data_matrix), rounds, std::ref(exp3_compare_run));
 
         std::vector<double> exp3_run;
         std::thread t2(basic_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
@@ -66,9 +66,14 @@ void run_exp3_adversarial_experiment(Dataset &d, int k, int rounds, int averages
     auto description = ",";
     auto metadata =
         description +
-        std::to_string(k) + "," + std::to_string(rounds) + "," + std::to_string(gap) + "," + "Exp3 (average),Exp3,Uniform,";
+        std::to_string(k) + "," +
+        std::to_string(rounds) + "," +
+        std::to_string(gap) + "," +
+        //"Exp3 (average),
+        "Exp3 FID,Exp3,Uniform,";
     auto descriptions = std::vector<string>{
-        "Exp3 (average)",
+        //"Exp3 (average)",
+        "Exp3 FID",
         "Exp3",
         "Uniform"};
     write_results(result_matrix, metadata, descriptions, out_path);
