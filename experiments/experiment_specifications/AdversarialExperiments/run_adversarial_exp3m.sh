@@ -14,8 +14,8 @@ fi
 
 name=exp3m
 
-rounds=100000
-averages=1
+rounds=10000000
+averages=10
 delta=0.9
 
 run_experiment() {
