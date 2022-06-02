@@ -50,7 +50,6 @@ public:
         return _exp3m.choose(m);
     };
 
-
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
         for (int i = 0; i < indices.size(); i++ ) {
             int index = indices[i];

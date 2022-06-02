@@ -19,7 +19,7 @@ private:
     int _k;
     int _m;
     DepRoundALIASStrategy _sampling;
-    double get_alpha(double rhs, std::vector<size_t> &argsorted) {
+    /*double get_alpha(double rhs, std::vector<size_t> &argsorted) {
         double weight_sum = 0;
         for (auto v : _weights) weight_sum += v;
         for (size_t i = 0; i < _k; i++) {
@@ -30,7 +30,7 @@ private:
             weight_sum -= current_value;
         }
         abort();
-    };
+    };*/
 public:
     double _gamma;
     std::vector<double> _last_probabilities;
@@ -48,11 +48,11 @@ public:
         double sum_weights = 0;
         for (double v: _weights) sum_weights += v;
 
-        double threshold = (1.0/_m-_gamma/_k)*sum_weights/(1-_gamma);
-        std::vector<double> weights_prime;
+        //double threshold = (1.0/_m-_gamma/_k)*sum_weights/(1-_gamma);
+        //std::vector<double> weights_prime;
         //std::cout << "back" << sorted_weight_indices.back() << std::endl;
         //std::cout << "front" << sorted_weight_indices.front() << std::endl;
-        if (_weights[sorted_weight_indices.back()] >= threshold) {
+       /* if (_weights[sorted_weight_indices.back()] >= threshold) {
             double rhs =  (1.0/_m-_gamma/_k)/(1-_gamma);
             double alpha_t = get_alpha(rhs, sorted_weight_indices);
             for (size_t i = 0; i < _k; i++) {
@@ -65,27 +65,26 @@ public:
             }
         }
         double w_sum = 0;
-        for (auto v: weights_prime) w_sum += v;
+        for (auto v: weights_prime) w_sum += v;*/
         std::vector<double> probabilities;
         probabilities.reserve(_k);
 
         for (int i = 0; i < _k; i++) {
-            double p = _m * ( (1-_gamma)*weights_prime[i]/w_sum + _gamma/_k);
+            double p = _m * ( (1-_gamma)*_weights[i]/sum_weights + _gamma/_k);
             probabilities.push_back(p);
         }
         _last_probabilities = probabilities;
         return _sampling.dependent_weighted_choices(probabilities, _m);
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
-        for (int i = 0; i < indices.size(); i++) {
-            int k = indices[i];
-            double r = rewards[k];
-            _weights[k] *= exp(_m*_gamma*(r/_last_probabilities[k])/_k);
+        for (int i : indices) {
+            double r = rewards[i];
+            _weights[i] *= exp(_m*_gamma*(r/_last_probabilities[i])/_k);
         }
         double sum_weights = 0;
         for (double v: _weights) sum_weights += v;
-        for (int j = 0; j < _weights.size(); j++) {
-            _weights[j] = _weights[j]/sum_weights;
+        for (double & _weight : _weights) {
+            _weight = _weight/sum_weights;
         }
 
     };
