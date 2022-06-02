@@ -11,7 +11,7 @@
 #include <random>
 #include "../../utilities/random_gen.h"
 
-class Exp3_deferred {
+class Exp3_fid {
 private:
     int _k;
     double _gamma;
@@ -43,7 +43,7 @@ private:
 public:
     std::vector<double> _weights;
 
-    Exp3_deferred(int k, double gamma, int xi=2) {
+    Exp3_fid(int k, double gamma, int xi=2) {
         _k = k;
         _gamma = gamma;
         _xi = xi;

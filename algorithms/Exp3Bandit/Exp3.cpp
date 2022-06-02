@@ -26,6 +26,8 @@ Exp3::Exp3(const Exp3 &prototype)
     _gamma = prototype._gamma;
     _probabilities = std::vector<double>(prototype._k, 0.0);
     _weights = std::vector<double>(prototype._k, 1.0);
+
+    
     _random_gen = random_gen();
 }
 
