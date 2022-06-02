@@ -14,12 +14,12 @@ fi
 
 name=exp3m
 
-rounds=10000000
-averages=10
+rounds=10000
+averages=100
 delta=0.9
 
 run_experiment() {
-  for m in 4 8 12 18
+  for m in 2
   do
 
       echo $1
@@ -52,7 +52,7 @@ run_experiment() {
       done
 }
 
-for k in 20
+for k in 2000
   do
     run_experiment $k
 done

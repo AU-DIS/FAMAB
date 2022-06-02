@@ -175,7 +175,7 @@ void exp3m_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix,
         }
         bandit.give_reward(choices, exp3m_rewards);
         exp3m_regret = ((max_choice) - exp3m_reward);
-        regrets[round] += exp3m_regret;
+        regrets[round] = exp3m_regret;
 
     }
 }

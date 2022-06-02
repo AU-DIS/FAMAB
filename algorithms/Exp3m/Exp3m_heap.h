@@ -31,27 +31,23 @@ public:
     {
         _weights = std::vector<double>(k, 1.0 / k);
         _distribution = Incremental_sum_heap(_weights);
-        std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0 / k)) - (1.0 / k)));
-        _power_weights = Incremental_sum_heap(power_weights);
+        //std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0 / k)) - (1.0 / k)));
+        //_power_weights = Incremental_sum_heap(power_weights);
 
-        max_weight = 1.0 / k;
+        //max_weight = 1.0 / k;
     };
     std::vector<int> choose(int m)
     {
-        std::vector<double> weights_prime;
-        for (size_t i = 0; i < _k; i++)
-        {
-            weights_prime.push_back(_weights[i]);
-        }
-        double w_sum = 0;
-        for (auto v : weights_prime)
-            w_sum += v;
+
+        /*double w_sum = 0;
+        for (auto v : _weights)
+            w_sum += v;*/
         std::vector<double> probabilities;
         probabilities.reserve(_k);
 
         for (int i = 0; i < _k; i++)
         {
-            double p = _m * ((1 - _gamma) * weights_prime[i] / w_sum + _gamma / _k);
+            double p = _m * ((1 - _gamma) * _weights[i] / _distribution.max_element() + _gamma / _k);
             probabilities.push_back(p);
         }
         _last_probabilities = probabilities;
@@ -65,12 +61,12 @@ public:
             double r = rewards[k];
             _weights[k] *= exp(_m * _gamma * (r / _last_probabilities[k]) / _k);
         }
-        double sum_weights = 0;
+        /*double sum_weights = 0;
         for (double v : _weights)
-            sum_weights += v;
+            sum_weights += v;*/
         for (int j = 0; j < _weights.size(); j++)
         {
-            _weights[j] = _weights[j] / sum_weights;
+            _weights[j] = _weights[j] / _distribution.max_element();
             _distribution.update(j, _weights[j]);
         }
     };

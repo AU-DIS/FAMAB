@@ -76,12 +76,12 @@ public:
         return i - _d;
     }
 
-    std::vector<int> heap_sample(int k)
+    std::vector<int> heap_sample(int m)
     {
-        auto choices = std::vector<int>(k, 0);
-        auto priors = std::vector<double>(k, 0.);
-        auto z = std::vector<int>(k, 0);
-        for (int i = 0; i < k; i++)
+        auto choices = std::vector<int>(m, 0);
+        auto priors = std::vector<double>(m, 0.);
+        auto z = std::vector<int>(m, 0);
+        for (int i = 0; i < m; i++)
         {
             int v = heap_sample();
             choices[i] = v;
@@ -89,7 +89,7 @@ public:
             z[i] = v;
             update(v, 0);
         }
-        for (int i = 0; i < k; i++)
+        for (int i = 0; i < m; i++)
         {
             update(choices[i], priors[i]);
         }
