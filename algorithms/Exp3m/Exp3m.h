@@ -43,10 +43,10 @@ public:
         }
     };
     std::vector<int> choose(int m) {
-        auto sorted_weight_indices = argsort(_weights);
+        //auto sorted_weight_indices = argsort(_weights);
 
-        double sum_weights = 0;
-        for (double v: _weights) sum_weights += v;
+        //double sum_weights = 0;
+        //for (double v: _weights) sum_weights += v;
 
         //double threshold = (1.0/_m-_gamma/_k)*sum_weights/(1-_gamma);
         //std::vector<double> weights_prime;
@@ -69,8 +69,16 @@ public:
         std::vector<double> probabilities;
         probabilities.reserve(_k);
 
+        double sum_reduced_power_weights = 0;
+        double mw = *max_element(_weights.begin(), _weights.end());
+        for (int i = 0; i < _k; i++)
+        {
+            sum_reduced_power_weights += exp((_weights[i] - mw));
+        }
+
+
         for (int i = 0; i < _k; i++) {
-            double p = _m * ( (1-_gamma)*_weights[i]/sum_weights + _gamma/_k);
+            double p = _m * ( (1-_gamma)*exp(_weights[i] - mw - log(sum_reduced_power_weights)) + _gamma/_k);
             probabilities.push_back(p);
         }
         _last_probabilities = probabilities;
@@ -78,14 +86,13 @@ public:
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
         for (int i : indices) {
-            double r = rewards[i];
-            _weights[i] *= exp(_m*_gamma*(r/_last_probabilities[i])/_k);
+            _weights[i] +=  log(exp(_m*_gamma*(rewards[i]/_last_probabilities[i])/_k));
         }
-        double sum_weights = 0;
+        /*double sum_weights = 0;
         for (double v: _weights) sum_weights += v;
         for (double & _weight : _weights) {
             _weight = _weight/sum_weights;
-        }
+        }*/
 
     };
 };
