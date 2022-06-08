@@ -13,11 +13,8 @@
 
 class Exp3_fid {
 private:
-    int _k;
-    double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;
-    int _xi;
     int rounds_distribution_used;
     std::vector<double> _probabilities;
     std::mt19937 _random_gen;
@@ -42,6 +39,9 @@ private:
 
 public:
     std::vector<double> _weights;
+    int _k;
+    double _gamma;
+    int _xi;
 
     Exp3_fid(int k, double gamma, int xi=2) {
         _k = k;
@@ -55,7 +55,20 @@ public:
         _random_gen = random_gen();
 
         choose();
+    }
 
+    Exp3_fid(const Exp3_fid &prototype) {
+        _k = prototype._k;
+        _gamma = prototype._gamma;
+        _xi = prototype._xi;
+
+        rounds_distribution_used = 0;
+        _probabilities = std::vector<double>(_k, 0);
+        _weights = std::vector<double>(_k, 1.0);
+
+        _random_gen = random_gen();
+
+        choose();
     }
     int choose() {
         int choice = sample();

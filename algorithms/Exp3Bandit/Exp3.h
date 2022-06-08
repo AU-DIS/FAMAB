@@ -12,8 +12,6 @@
 class Exp3
 {
 private:
-    int _k;
-    double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;
     std::vector<double> _probabilities;
@@ -29,6 +27,8 @@ public:
     void set_parameter(double gamma);
     std::vector<double>* get_weights();
     std::vector<double> _weights;
+    int _k;
+    double _gamma;
 };
 
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H

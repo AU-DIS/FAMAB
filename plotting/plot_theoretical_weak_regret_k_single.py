@@ -14,6 +14,6 @@ ax1.scatter(df['k'], df['average_divided_by_promise'], s=30)
 ax1.set_xlabel('k')
 ax1.set_xscale('log')
 ax1.set_ylabel('weak regret / expected regret bound')
-ax1.set_title(f"Exp3.M regret plot for m=10, T=10^5")
+ax1.set_title(f"Tsallis-INF (IW) regret plot for T=10^4")
 
 plt.show()

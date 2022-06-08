@@ -39,14 +39,28 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded(std::string& algorithm) {
-    if (algorithm == "Exp3Eta") {
-        run_theoretical_bound_experiment_Exp3Eta_varying_k();
-        run_theoretical_bound_experiment_Exp3Eta_varying_T();
-    }
-    else if(algorithm == "Exp3Gamma") {
-        run_theoretical_bound_experiment_Exp3Gamma_varying_k();
-        run_theoretical_bound_experiment_Exp3Gamma_varying_T();
+static void run_theoretical_bound_experiment_threaded(std::string& algorithm, std::string& variant, double theta, int lambda) {
+    if(algorithm == "Exp3Gamma") {
+        if (variant == "base") {
+            Exp3 exp3(1,1);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_base_k.csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_base_T.csv");
+        }
+        else if (variant == "heap") {
+            Exp3_heap exp3(1,1);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_heap_k.csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_heap_T.csv");
+        }
+        else if (variant == "fid") {
+            Exp3_fid exp3(1,1, lambda);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_fid_k_lambda_" + std::to_string(lambda) + ".csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_fid_T_lambda_" + std::to_string(lambda) + ".csv");
+        }
+        else if (variant == "lad") {
+            Exp3_lad exp3(1,1,theta);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_lad_k_theta_" + std::to_string(theta) + ".csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_lad_T_theta_" + std::to_string(theta) + ".csv");
+        }
     }
     else if(algorithm == "Exp31") {
         run_theoretical_bound_experiment_Exp31_varying_k();
@@ -69,6 +83,12 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm) {
         run_theoretical_bound_experiment_Exp3m_varying_k();
         run_theoretical_bound_experiment_Exp3m_varying_T();
     }
+    else if(algorithm == "Tsallis") {
+        if (variant == "RV") {
+            run_theoretical_bound_experiment_Tsallis_varying_k();
+            run_theoretical_bound_experiment_Tsallis_varying_T();
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -79,10 +99,10 @@ int main(int argc, char *argv[])
     for (auto &row : reader)
     {
         // Handle variables
-        // This is græm but so are you
-        int rounds, k, m, averages;
-        double gap, delta, optimal_proportion, optimal_probability;
-        std::string dataset, regret_out, plot_out, algorithm, out_path;
+        // This is Græm but so are you
+        int rounds, k, m, averages, lambda;
+        double gap, delta, optimal_proportion, optimal_probability, theta;
+        std::string dataset, regret_out, plot_out, algorithm, variant, out_path;
         std::string runner(row["runner"].get());
         for (auto &var_name : row.get_col_names())
         {
@@ -107,12 +127,18 @@ int main(int argc, char *argv[])
                 plot_out = row[var_name].get();
             else if (var_name == "algorithm")
                 algorithm = row[var_name].get();
+            else if (var_name == "variant")
+                variant = row[var_name].get();
             else if (var_name == "output_path")
                 out_path = row[var_name].get();
             else if (var_name == "optimal_probability")
                 optimal_probability = row[var_name].get<double>();
             else if (var_name == "optimal_proportion")
                 optimal_proportion = row[var_name].get<double>();
+            else if (var_name == "theta")
+                theta = row[var_name].get<double>();
+            else if (var_name == "lambda")
+                lambda = row[var_name].get<int>();
         }
 
         // Handle datasets
@@ -213,7 +239,7 @@ int main(int argc, char *argv[])
             }
             break;
         case theoretical:
-            run_theoretical_bound_experiment_threaded(algorithm);
+            run_theoretical_bound_experiment_threaded(algorithm, variant, theta, lambda);
             break;
         default:
             std::cout << "The Requested runner was not found" << std::endl;

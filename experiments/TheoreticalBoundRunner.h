@@ -12,65 +12,12 @@
 #include "../algorithms/Exp3m/DepRoundALIASStrategy.h"
 #include "../algorithms/FPL/FPL.h"
 #include "../algorithms/FPL/QBL.h"
-#include "../algorithms/UCB/UCB1.h"
+#include "../algorithms/Tsallis-INF/Tsallis_IW.h"
 #include "../runner.h"
 #include "math.h"
 
-void run_theoretical_bound_experiment_Exp3Eta_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
-    vector<vector<double>> data_matrix;
-    for (int i = 1; i < 10; i++) {
-        int k = pow(2, i);
-        int T = 1000000;
-        double average = 0;
-        Mod2Dataset d(k, T, 3.2);
-        for (int run = 0; run < averages; run++) {
-            double eta = sqrt(log(k) / ((double) T * (double) k));
-            Exp3Tor exp3(k, eta);
-            std::vector<std::vector<double>> data = d.generate();
-            std::vector<double> regrets;
-            basic_runner(exp3, data, T, regrets);
-            auto Rn = sum_of_range(regrets, 0, T);
-            average += Rn / (double) averages;
-        }
-        // The divided part is the O-time that we are promised so we would expect these different averages to be the
-        // same i.e. a flat line when plotted
-        double average_divided_by_promise = average / sqrt((double) T * (double) k * log((double) k));
-        vector<double> run{(double) k, (double) T, average, average_divided_by_promise, (double) averages};
-        data_matrix.push_back(run);
-    }
-    vector<string> comments{"#Theoretical Bound Experiment for Exp3 (eta) with varying K's"};
-    vector<string> header{"k", "T", "average", "average_divided_by_promise", "number_of_average_runs"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_Exp3Eta_with_varying_k.csv");
-}
-
-void run_theoretical_bound_experiment_Exp3Eta_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
-    vector<vector<double>> data_matrix;
-    for (int i = 1; i < 6; i++) {
-        int k = 1000;
-        int T = pow(10, i);
-        double average = 0;
-        Mod2Dataset d(k, T, 3.2);
-        for (int run = 0; run < averages; run++) {
-            double eta = sqrt(log(k) / ((double) T * (double) k));
-            Exp3Tor exp3(k, eta);
-            std::vector<std::vector<double>> data = d.generate();
-            std::vector<double> regrets;
-            basic_runner(exp3, data, T, regrets);
-            auto Rn = sum_of_range(regrets, 0, T);
-            average += Rn / (double) averages;
-        }
-        // The divided part is the O-time that we are promised so we would expect these different averages to be the
-        // same i.e. a flat line when plotted
-        double average_divided_by_promise = average / sqrt((double) T * (double) k * log((double) k));
-        vector<double> run{(double) k, (double) T, average, average_divided_by_promise, (double) averages};
-        data_matrix.push_back(run);
-    }
-    vector<string> comments{"#Theoretical Bound Experiment for Exp3 (eta) with varying T's"};
-    vector<string> header{"k", "T", "average", "average_divided_by_promise", "number_of_average_runs"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_Exp3Eta_with_varying_T.csv");
-}
-
-void run_theoretical_bound_experiment_Exp3Gamma_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_Exp3Gamma_varying_k(Bandit &bandit, int averages = 50, const std::string &out_path = "/tmp/") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 8; i++) {
         int k = pow(2, i);
@@ -80,7 +27,9 @@ void run_theoretical_bound_experiment_Exp3Gamma_varying_k(int averages = 50, con
         double average_weak_regret = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            Exp3 exp3(k, gamma);
+            bandit._k = k;
+            bandit._gamma = gamma;
+            Bandit exp3(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             basic_runner_returning_reward(exp3, data, T, regrets);
@@ -109,10 +58,11 @@ void run_theoretical_bound_experiment_Exp3Gamma_varying_k(int averages = 50, con
     vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs", "g", "gamma"};
     write_results(data_matrix, comments, header,
-                  out_path + "/Theoretical_Bound_Experiment_Exp3Gamma_with_varying_k.csv");
+                  out_path);
 }
 
-void run_theoretical_bound_experiment_Exp3Gamma_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_Exp3Gamma_varying_T(Bandit &bandit, int averages = 50, const std::string &out_path = "/tmp/") {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 7; i++) {
         int k = 10;
@@ -122,7 +72,9 @@ void run_theoretical_bound_experiment_Exp3Gamma_varying_T(int averages = 50, con
         double average_weak_regret = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            Exp3 exp3(k, gamma);
+            bandit._k = k;
+            bandit._gamma = gamma;
+            Bandit exp3(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             basic_runner_returning_reward(exp3, data, T, regrets);
@@ -151,7 +103,7 @@ void run_theoretical_bound_experiment_Exp3Gamma_varying_T(int averages = 50, con
     vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs", "g", "gamma"};
     write_results(data_matrix, comments, header,
-                  out_path + "/Theoretical_Bound_Experiment_Exp3Gamma_with_varying_T.csv");
+                  out_path);
 }
 
 void run_theoretical_bound_experiment_Exp31_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
@@ -266,7 +218,7 @@ void run_theoretical_bound_experiment_Exp3ix_varying_k(int averages = 50, const 
         int k = pow(2, i);
         int T = 1000000;
         double average = 0;
-        Mod2Dataset d(k, T, 3.2);
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             double eta = sqrt(log(k) / ((double) T * (double) k));
             double gamma = eta / 2;
@@ -294,7 +246,7 @@ void run_theoretical_bound_experiment_Exp3ix_varying_T(int averages = 50, const 
         int k = 10000;
         int T = pow(10, i);
         double average = 0;
-        Mod2Dataset d(k, T, 3.2);
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             double eta = sqrt(log(k) / ((double) T * (double) k));
             double gamma = eta / 2;
@@ -318,13 +270,14 @@ void run_theoretical_bound_experiment_Exp3ix_varying_T(int averages = 50, const 
 
 void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
     vector<vector<double>> data_matrix;
-    for (int i = 1; i < 8; i++) {
+    for (int i = 1; i < 7; i++) {
         int k = pow(2, i);
-        int T = 10000;
+        int T = 100;
         // We have not found the actual eta for the theoretical bounds, but we have found 10 to work for other experiments
         double eta = 10;
         double average_strong_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
+        double R = 0;
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             FPL fpl(k, eta);
             std::vector<std::vector<double>> data = d.generate();
@@ -332,10 +285,41 @@ void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std
             basic_runner(fpl, data, T, regrets);
             auto Rn = sum_of_range(regrets, 0, T);
             average_strong_regret += Rn / (double) averages;
+            double GMax = 0;
+            for (int arm = 0; arm < k; arm++) {
+                double local_best_GMax = 0;
+                for (int round = 0; round < T; round++) {
+                    local_best_GMax += data[arm][round];
+                }
+                if (local_best_GMax > GMax) {
+                    GMax = local_best_GMax;
+                }
+            }
+            double best_multichoice_reward = 0;
+            for (int round = 0; round < T; round++) {
+                double round_best_multichoice_reward = 0;
+                for (int arm = 0; arm < k; arm++) {
+                    if (data[arm][round] > round_best_multichoice_reward) {
+                        round_best_multichoice_reward = data[arm][round];
+                    }
+                }
+                best_multichoice_reward += round_best_multichoice_reward;
+            }
+            double worst_multichoice_reward = 0;
+            for (int round = 0; round < T; round++) {
+                double round_worst_multichoice_reward = 1;
+                for (int arm = 0; arm < k; arm++) {
+                    if (data[arm][round] < round_worst_multichoice_reward) {
+                        round_worst_multichoice_reward = data[arm][round];
+                    }
+                }
+                worst_multichoice_reward += round_worst_multichoice_reward;
+            }
+            R += (best_multichoice_reward - worst_multichoice_reward) / (double) averages;
         }
         // The divided part is the O-time that we are promised so we would expect these different averages to be the
         // same i.e. a flat line when plotted
-        double promise = sqrt((double) T * (double) k * log((double) k));
+        double promise = R * pow(k, 5.0 / 3.0) * pow(log((double) k), 1.0 / 3.0) * pow(T, 2.0 / 3.0);
         double average_divided_by_promise = average_strong_regret / promise;
         vector<double> run{(double) k, (double) T, average_strong_regret, promise, average_divided_by_promise,
                            (double) averages, eta};
@@ -349,13 +333,14 @@ void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std
 
 void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
     vector<vector<double>> data_matrix;
-    for (int i = 1; i < 8; i++) {
-        int k = 10;
+    for (int i = 1; i < 7; i++) {
+        int k = 3;
         int T = pow(10, i);
         // We have not found the actual eta for the theoretical bounds, but we have found 10 to work for other experiments
         double eta = 10;
         double average_strong_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
+        double R = 0;
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             FPL fpl(k, eta);
             std::vector<std::vector<double>> data = d.generate();
@@ -363,10 +348,41 @@ void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std
             basic_runner(fpl, data, T, regrets);
             auto Rn = sum_of_range(regrets, 0, T);
             average_strong_regret += Rn / (double) averages;
+            double GMax = 0;
+            for (int arm = 0; arm < k; arm++) {
+                double local_best_GMax = 0;
+                for (int round = 0; round < T; round++) {
+                    local_best_GMax += data[arm][round];
+                }
+                if (local_best_GMax > GMax) {
+                    GMax = local_best_GMax;
+                }
+            }
+            double best_multichoice_reward = 0;
+            for (int round = 0; round < T; round++) {
+                double round_best_multichoice_reward = 0;
+                for (int arm = 0; arm < k; arm++) {
+                    if (data[arm][round] > round_best_multichoice_reward) {
+                        round_best_multichoice_reward = data[arm][round];
+                    }
+                }
+                best_multichoice_reward += round_best_multichoice_reward;
+            }
+            double worst_multichoice_reward = 0;
+            for (int round = 0; round < T; round++) {
+                double round_worst_multichoice_reward = 1;
+                for (int arm = 0; arm < k; arm++) {
+                    if (data[arm][round] < round_worst_multichoice_reward) {
+                        round_worst_multichoice_reward = data[arm][round];
+                    }
+                }
+                worst_multichoice_reward += round_worst_multichoice_reward;
+            }
+            R += (best_multichoice_reward - worst_multichoice_reward) / (double) averages;
         }
         // The divided part is the O-time that we are promised so we would expect these different averages to be the
         // same i.e. a flat line when plotted
-        double promise = sqrt((double) T * (double) k * log((double) k));
+        double promise = R * pow(k, 5.0 / 3.0) * pow(log((double) k), 1.0 / 3.0) * pow(T, 2.0 / 3.0);
         double average_divided_by_promise = average_strong_regret / promise;
         vector<double> run{(double) k, (double) T, average_strong_regret, promise, average_divided_by_promise,
                            (double) averages, eta};
@@ -375,7 +391,7 @@ void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std
     vector<string> comments{"#Theoretical Bound Experiment for FPL with varying T's"};
     vector<string> header{"k", "T", "average_strong_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs", "eta"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_FPL_with_varying_t.csv");
+    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_FPL_with_varying_T.csv");
 }
 
 
@@ -449,7 +465,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_m(int averages = 50, const s
         int T = 100000;
         double gamma = min(1.0, sqrt(k * log(k / m) / ((exp(1) - 1) * m * T)));
         double average_weak_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
@@ -491,7 +507,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_k(int averages = 50, const s
         int T = 100000;
         double gamma = min(1.0, sqrt(k * log(k / m) / ((exp(1) - 1) * m * T)));
         double average_weak_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
@@ -533,7 +549,7 @@ void run_theoretical_bound_experiment_Exp3m_varying_T(int averages = 50, const s
         int T = pow(10, i);
         double gamma = min(1.0, sqrt(k * log(k / m) / ((exp(1) - 1) * m * T)));
         double average_weak_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
             Exp3m exp3m(m, k, gamma);
             std::vector<std::vector<double>> data = d.generate();
@@ -567,5 +583,82 @@ void run_theoretical_bound_experiment_Exp3m_varying_T(int averages = 50, const s
     write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_Exp3M_with_varying_T.csv");
 }
 
+void run_theoretical_bound_experiment_Tsallis_IW_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
+    vector<vector<double>> data_matrix;
+    for (int i = 1; i < 8; i++) {
+        int k = pow(2, i);
+        int T = 10000;
+        double average_weak_regret = 0;
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
+        for (int run = 0; run < averages; run++) {
+            Tsallis_IW tsallisIw(k);
+            std::vector<std::vector<double>> data = d.generate();
+            std::vector<double> reward;
+            basic_runner_returning_reward(tsallisIw, data, T, reward);
+            double local_GMax = 0;
+            for (int arm = 0; arm < k; arm++) {
+                double local_best_GMax = 0;
+                for (int round = 0; round < T; round++) {
+                    local_best_GMax += data[arm][round];
+                }
+                if (local_best_GMax > local_GMax) {
+                    local_GMax = local_best_GMax;
+                }
+            }
+            average_weak_regret += (local_GMax - sum_of_range(reward, 0, T)) / (double) averages;
+        }
+        // The divided part is the O-time that we are promised so we would expect these different averages to be the
+        // same i.e. a flat line when plotted
+        double promise = 4 * sqrt((double) k * (double) T) + 1;
+        double average_divided_by_promise = average_weak_regret / promise;
+        vector<double> run{(double) k, (double) T, average_weak_regret, (double) promise, average_divided_by_promise,
+                           (double) averages};
+        data_matrix.push_back(run);
+    }
+    vector<string> comments{"#Theoretical Bound Experiment for Tsallis IW with varying k's"};
+    vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
+                          "number_of_average_runs"};
+    write_results(data_matrix, comments, header,
+                  out_path + "/Theoretical_Bound_Experiment_Tsallis_IW_with_varying_k.csv");
+}
+
+void run_theoretical_bound_experiment_Tsallis_IW_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
+    vector<vector<double>> data_matrix;
+    for (int i = 1; i < 7; i++) {
+        int k = 10;
+        int T = pow(10, i);
+        double average_weak_regret = 0;
+        StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
+        for (int run = 0; run < averages; run++) {
+            Tsallis_IW tsallisIw(k);
+            std::vector<std::vector<double>> data = d.generate();
+            std::vector<double> reward;
+            basic_runner_returning_reward(tsallisIw, data, T, reward);
+            double local_GMax = 0;
+            for (int arm = 0; arm < k; arm++) {
+                double local_best_GMax = 0;
+                for (int round = 0; round < T; round++) {
+                    local_best_GMax += data[arm][round];
+                }
+                if (local_best_GMax > local_GMax) {
+                    local_GMax = local_best_GMax;
+                }
+            }
+            average_weak_regret += (local_GMax - sum_of_range(reward, 0, T)) / (double) averages;
+        }
+        // The divided part is the O-time that we are promised so we would expect these different averages to be the
+        // same i.e. a flat line when plotted
+        double promise = 4 * sqrt((double) k * (double) T) + 1;
+        double average_divided_by_promise = average_weak_regret / promise;
+        vector<double> run{(double) k, (double) T, average_weak_regret, (double) promise, average_divided_by_promise,
+                           (double) averages};
+        data_matrix.push_back(run);
+    }
+    vector<string> comments{"#Theoretical Bound Experiment for Tsallis IW with varying k's"};
+    vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
+                          "number_of_average_runs"};
+    write_results(data_matrix, comments, header,
+                  out_path + "/Theoretical_Bound_Experiment_Tsallis_IW_with_varying_T.csv");
+}
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_THEORETICALBOUNDRUNNER_H
