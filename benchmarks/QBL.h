@@ -41,3 +41,58 @@ static void benchmark_qbl_update(benchmark::State &state)
         }
     }
 }
+
+static void benchmark_qbltopk(benchmark::State &state)
+{
+    int k = state.range(0);
+    int m = (int)k / 10;
+    int rounds = 100;
+
+    std::vector<double> reward(k, 1);
+    std::vector<int> index(k, 1);
+    QBL b(k, 10);
+
+    for (auto _ : state)
+    {
+        for (int i = 0; i < rounds; i++)
+        {
+            auto choices = b.choose(m);
+            b.give_reward(index, reward);
+        }
+    }
+}
+
+static void benchmark_qbltopk_sample(benchmark::State &state)
+{
+    int k = state.range(0);
+    int m = (int)k / 10;
+    int rounds = 100;
+    std::vector<double> reward(k, 1);
+    std::vector<int> index(k, 1);
+    QBL b(k, 10);
+    for (auto _ : state)
+    {
+        for (int i = 0; i < rounds; i++)
+        {
+            auto choices = b.choose(m);
+        }
+    }
+}
+
+static void benchmark_qbltopk_update(benchmark::State &state)
+{
+    int k = state.range(0);
+    int m = (int)k / 10;
+    int rounds = 100;
+    std::vector<double> reward(k, 0);
+    std::vector<int> index(k, 0);
+    QBL b(k, 10);
+    b.choose(m);
+    for (auto _ : state)
+    {
+        for (int i = 0; i < rounds; i++)
+        {
+            b.give_reward(index, reward);
+        }
+    }
+}

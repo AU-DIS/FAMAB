@@ -7,6 +7,7 @@
 #include <vector>
 #include <random>
 #include "../../utilities/random_gen.h"
+#include "../../utilities/argsort.h"
 #include "iostream"
 
 class FPL
@@ -50,7 +51,7 @@ public:
     {
         _weights[choice] += feedback;
     }
-    std::vector<double>* get_weights()
+    std::vector<double> *get_weights()
     {
         return &_weights;
     }
@@ -88,9 +89,28 @@ public:
         }
         return max_index;
     }
-    std::vector<int> choose(int K)
+    std::vector<int> choose(int m)
     {
-        return std::vector<int>(_k, 1);
+        current_round++;
+        if (current_round % (int)_eta == 0)
+        {
+            double sum = 0;
+            for (auto v : _weights)
+                sum += v;
+            for (auto &v : _weights)
+                v /= sum;
+        }
+
+        for (auto &v : _weights)
+            v += _exponential_distribution(_gen);
+
+        auto w = argsort(_weights);
+        auto r = std::vector<int>(m, 0);
+        for (int i = 0; i < m; i++)
+        {
+            r[i] = w[_k - 1 - i];
+        }
+        return r;
     }
     void give_reward(int choice, double feedback)
     {
@@ -99,6 +119,10 @@ public:
 
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
     {
+        for (int i = 0; i < indices.size(); i++)
+        {
+            _weights[indices[i]] += rewards[i];
+        }
     }
 };
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_FPL_H

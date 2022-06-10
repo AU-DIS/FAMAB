@@ -25,7 +25,7 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
 
     auto baseline = "FPL";
     auto uniform = "Uniform";
-    auto compared = "FPL (toplog)";
+    auto compared = "QBL";
     auto second_compare = "QBL";
 
     for (int i = 0; i < averages; i++)
@@ -34,9 +34,9 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         double eta = 10;
         FPL fpl(k, eta);
         // FPL_hash fpl_new(k, 0.9, rounds);
-        FPL_toplog fpl_new(k, eta);
+        // FPL_toplog fpl_new(k, eta);
 
-        // QBL fpl_second(k, eta);
+        QBL fpl_new(k, eta);
 
         Uniformbandit uni(k);
         // FPL_hash fpl_new(k, eta, rounds);
@@ -46,7 +46,7 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         std::thread t1(basic_runner<FPL>, std::ref(fpl), std::ref(data_matrix), rounds, std::ref(fpl_original_run));
 
         std::vector<double> fpl_new_run;
-        std::thread t2(basic_runner<FPL_toplog>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
+        std::thread t2(basic_runner<QBL>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
 
         std::vector<double> fpl_second_run;
         // std::thread t3(basic_runner<QBL>, std::ref(fpl_second), std::ref(data_matrix), rounds, std::ref(fpl_second_run));

@@ -50,7 +50,7 @@ static void benchmark_exp3_lad(benchmark::State &state)
     double delta = 0.9;
     auto dataset = StochasticallyConstrainedDataset(k, rounds, gap, delta);
     auto d = dataset.generate();
-    Exp3_lad b(k, 0.1, 1);
+    Exp3_lad b(k, 0.1, 0.8);
     for (auto _ : state)
     {
         for (int i = 0; i < rounds; i++)

@@ -39,32 +39,40 @@ static void Initialize()
     s_mapStringValues["Theoretical"] = theoretical;
 }
 
-static void run_theoretical_bound_experiment_threaded(std::string& algorithm) {
-    if (algorithm == "Exp3Eta") {
+static void run_theoretical_bound_experiment_threaded(std::string &algorithm)
+{
+    if (algorithm == "Exp3Eta")
+    {
         run_theoretical_bound_experiment_Exp3Eta_varying_k();
         run_theoretical_bound_experiment_Exp3Eta_varying_T();
     }
-    else if(algorithm == "Exp3Gamma") {
+    else if (algorithm == "Exp3Gamma")
+    {
         run_theoretical_bound_experiment_Exp3Gamma_varying_k();
         run_theoretical_bound_experiment_Exp3Gamma_varying_T();
     }
-    else if(algorithm == "Exp31") {
+    else if (algorithm == "Exp31")
+    {
         run_theoretical_bound_experiment_Exp31_varying_k();
         run_theoretical_bound_experiment_Exp31_varying_T();
     }
-    else if(algorithm == "Exp3IX") {
+    else if (algorithm == "Exp3IX")
+    {
         run_theoretical_bound_experiment_Exp3ix_varying_k();
         run_theoretical_bound_experiment_Exp3ix_varying_T();
     }
-    else if(algorithm == "FPL") {
+    else if (algorithm == "FPL")
+    {
         run_theoretical_bound_experiment_FPL_varying_k();
         run_theoretical_bound_experiment_FPL_varying_T();
     }
-    else if(algorithm == "QBL") {
+    else if (algorithm == "QBL")
+    {
         run_theoretical_bound_experiment_QBL_varying_k();
         run_theoretical_bound_experiment_QBL_varying_T();
     }
-    else if(algorithm == "Exp3M") {
+    else if (algorithm == "Exp3M")
+    {
         run_theoretical_bound_experiment_Exp3m_varying_m();
         run_theoretical_bound_experiment_Exp3m_varying_k();
         run_theoretical_bound_experiment_Exp3m_varying_T();
@@ -126,7 +134,13 @@ int main(int argc, char *argv[])
 
         if (dataset == "DuellingDataset")
         {
-            if (runner.find("exp3") != std::string::npos)
+            if (runner.find("exp3m") != std::string::npos)
+            {
+                auto b = Exp3m(m, k, 0.1);
+                auto Dds = DuellingDatasetTopk<Exp3m>(b, k, rounds, m);
+                d = &Dds;
+            }
+            else if (runner.find("exp3") != std::string::npos)
             {
                 auto b = Exp3(k, 0.1);
                 auto Dds = DuellingDataset<Exp3>(b, k, rounds);
@@ -135,6 +149,7 @@ int main(int argc, char *argv[])
             if (runner.find("fpl") != std::string::npos)
             {
                 auto b = FPL(k, 10);
+                // auto b = QBL(k, 10);
                 auto Dds = DuellingDataset<FPL>(b, k, rounds);
                 d = &Dds;
             }

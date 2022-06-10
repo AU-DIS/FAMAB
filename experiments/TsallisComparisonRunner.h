@@ -29,7 +29,7 @@ void run_tsallis_adversarial_experiment(Dataset &d, int k, int rounds, int avera
         Tsallis_RV rv(k);
         // Tsallis_LTU optimized(k);
         // Tsallis_Heap optimized(k);
-        Tsallis_approx_rv approx(k);
+        Tsallis_Heap approx(k);
         Uniformbandit uni(k);
 
         std::vector<double> tsallis_iw_run;
@@ -45,7 +45,7 @@ void run_tsallis_adversarial_experiment(Dataset &d, int k, int rounds, int avera
                        std::ref(uniform_run));
 
         std::vector<double> tsallis_optimized_run;
-        std::thread t4(basic_runner<Tsallis_approx_rv>, std::ref(approx), std::ref(data_matrix), rounds,
+        std::thread t4(basic_runner<Tsallis_Heap>, std::ref(approx), std::ref(data_matrix), rounds,
                        std::ref(tsallis_optimized_run));
 
         t1.join();
@@ -78,11 +78,11 @@ void run_tsallis_adversarial_experiment(Dataset &d, int k, int rounds, int avera
     auto description = ",";
     auto metadata =
         description +
-        std::to_string(k) + "," + std::to_string(rounds) + "," + std::to_string(gap) + "," + "Tsallis (IW),Tsallis (RV),Tsallis (RV approx),Uniform,";
+        std::to_string(k) + "," + std::to_string(rounds) + "," + std::to_string(gap) + "," + "Tsallis (IW),Tsallis (RV),Cumulative loss sampling,Uniform,";
     auto descriptions = std::vector<string>{
         "Tsallis (IW)",
         "Tsallis (RV)",
-        "Tsallis (RV approx)",
+        "Cumulative loss sampling",
         "Uniform"};
     write_results(result_matrix, metadata, descriptions, out_path);
 }

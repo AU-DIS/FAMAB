@@ -8,36 +8,38 @@
 #include "../../utilities/random_gen.h"
 #include <iterator>
 
-std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<double> probabilities, int m) {
-    std::mt19937 gen= random_gen();
+std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<double> probabilities, int m)
+{
+    std::mt19937 gen = random_gen();
     std::uniform_real_distribution<double> uniform(0, 1);
-
 
     std::vector<double> w = probabilities;
     std::uniform_real_distribution<double> dist(0, 1);
 
-    //Yoinked from stackoverflow: https://stackoverflow.com/questions/53632441/c-sampling-from-discrete-distribution-without-replacement
+    // Yoinked from stackoverflow: https://stackoverflow.com/questions/53632441/c-sampling-from-discrete-distribution-without-replacement
 
     std::vector<int> return_indices;
     return_indices.reserve(m);
     std::vector<double> vals;
-    std::generate_n(std::back_inserter(vals), w.size(), [&dist,&gen]() { return dist(gen); });
-    std::transform(vals.begin(), vals.end(), w.begin(), vals.begin(), [&](auto r, auto w) { return std::pow(r, 1. / w); });
+    std::generate_n(std::back_inserter(vals), w.size(), [&dist, &gen]()
+                    { return dist(gen); });
+    std::transform(vals.begin(), vals.end(), w.begin(), vals.begin(), [&](auto r, auto w)
+                   { return std::pow(r, 1. / w); });
     std::vector<std::pair<double, int>> valIndices;
     size_t index = 0;
-    std::transform(vals.begin(), vals.end(), std::back_inserter(valIndices), [&index](auto v) { return std::pair<double,size_t>(v,index++); });
-    std::sort(valIndices.begin(), valIndices.end(), [](auto x, auto y) { return x.first > y.first; });
+    std::transform(vals.begin(), vals.end(), std::back_inserter(valIndices), [&index](auto v)
+                   { return std::pair<double, size_t>(v, index++); });
+    std::sort(valIndices.begin(), valIndices.end(), [](auto x, auto y)
+              { return x.first > y.first; });
     std::vector<int> samples;
-    std::transform(valIndices.begin(), valIndices.end(), std::back_inserter(samples), [](auto v) { return v.second; });
+    std::transform(valIndices.begin(), valIndices.end(), std::back_inserter(samples), [](auto v)
+                   { return v.second; });
     return_indices = samples;
-
 
     /*for (auto iter : samples) {
         std::cout << iter << " ";
     }
     std::cout << std::endl;*/
-
-
 
     /*int K = probabilities.size();
 
