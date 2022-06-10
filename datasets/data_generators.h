@@ -431,6 +431,50 @@ public:
     }
 };
 
+template <typename Bandit>
+class DuellingDatasetTopk : public Dataset
+{
+private:
+    int _k{};
+    int _rounds{};
+    int _m{};
+    Bandit _b{};
+
+public:
+    DuellingDatasetTopk() = default;
+
+    DuellingDatasetTopk(Bandit &b, int k, int rounds, int m)
+    {
+        _k = k;
+        _rounds = rounds;
+        _b = b;
+        _m = m;
+
+    }
+    std::vector<std::vector<double>> generate()
+    {
+        auto g = Bandit(_b);
+        auto optimals = create_reflective_adversarial_dataset_topk(g, _k, _rounds, _m);
+        std::vector<std::vector<double>> data_matrix;
+        for (int arm = 0; arm < _k; arm++)
+        {
+            auto rewards = std::vector<double>(_rounds, 0);
+            // std::cout << std::to_string(optimals[arm]) + "\n";
+            data_matrix.push_back(rewards);
+        }
+        for (int i = 0; i < _rounds; i++)
+        {
+            for (auto optimal : optimals[i])
+            {
+                data_matrix[optimal][i] = 1;
+                //std::cout << std::to_string(optimal) + ", ";
+            }
+            //std::cout << std::endl;
+        }
+        return data_matrix;
+    }
+};
+
 class TentMapDataset : public Dataset
 {
 private:
