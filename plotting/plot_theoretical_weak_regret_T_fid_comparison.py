@@ -16,7 +16,7 @@ df_5000 = pd.read_csv(sys.argv[6], skiprows=1)
 fig1 = plt.figure()
 ax1 = fig1.add_subplot()
 
-ax1.plot(df_original['T'], df_original['average_divided_by_promise'], marker='o', color='b')
+ax1.plot(df_original['T'], df_original['average_divided_by_promise'], marker='o', color='magenta')
 ax1.plot(df_1000['T'], df_1000['average_divided_by_promise'], marker='o', color='#070')
 ax1.plot(df_2000['T'], df_2000['average_divided_by_promise'], marker='o', color='#292')
 ax1.plot(df_3000['T'], df_3000['average_divided_by_promise'], marker='o', color='#4B4')

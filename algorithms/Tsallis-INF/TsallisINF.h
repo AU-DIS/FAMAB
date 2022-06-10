@@ -15,7 +15,6 @@
 template<typename Estimator>
 class TsallisINF {
 private:
-    Estimator _estimator;
     int _t = 1;
     double _eta;
     std::mt19937 rg = random_gen();
@@ -23,13 +22,24 @@ private:
 
 
 public:
+    std::vector<double> _weights;
+    std::vector<double> cumulative_losses;
+    Estimator _estimator;
+    double _k;
+
     TsallisINF(int k, Estimator &estimator) {
+        _k = k;
         _estimator = estimator;
-        //double alpha = 0.5;
         cumulative_losses.reserve(k);
-        for (int i = 0; i < k; i++) cumulative_losses.push_back(0);
+        for (int i = 0; i < _k; i++) cumulative_losses.push_back(0);
     }
 
+    TsallisINF(const TsallisINF &prototype) {
+        _k = prototype._k;
+        _estimator = prototype._estimator;
+        cumulative_losses.reserve(prototype.k);
+        for (int i = 0; i < _k; i++) cumulative_losses.push_back(0);
+    }
 
     double compute_eta(int t) {
         _eta = 1 / sqrt(std::max(1, t));
@@ -79,10 +89,6 @@ public:
             cumulative_losses[i] += estimators[i];
         }
     }
-
-    std::vector<double> _weights;
-    std::vector<double> cumulative_losses;
-
 };
 
 

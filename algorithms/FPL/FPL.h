@@ -14,13 +14,16 @@ class FPL
 private:
     std::vector<double> _weights;
     std::mt19937 _gen;
-    int _k;
     std::exponential_distribution<double> _exponential_distribution;
     int current_round;
-    double _eta;
 
 public:
     FPL() = default;
+    int _k;
+    double _eta;
+    // Not used for anything just for theoretical runner generalization
+    int _number_to_presample;
+
     FPL(int k, double eta)
     {
         _weights = std::vector<double>(k, 1);
@@ -30,14 +33,14 @@ public:
         current_round = 0;
         _eta = eta;
     }
-    FPL(FPL &b)
+    FPL(FPL &prototype)
     {
-        _weights = std::vector<double>(b._k, 1);
+        _k = prototype._k;
+        _eta = prototype._eta;
+        _weights = std::vector<double>(_k, 1);
         _gen = random_gen();
-        _exponential_distribution = std::exponential_distribution<double>(b._eta);
-        _k = b._k;
+        _exponential_distribution = std::exponential_distribution<double>(prototype._eta);
         current_round = 0;
-        _eta = b._eta;
     }
 
     void set_parameter(double eta)

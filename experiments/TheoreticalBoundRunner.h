@@ -17,7 +17,7 @@
 #include "math.h"
 
 template <typename Bandit>
-void run_theoretical_bound_experiment_Exp3Gamma_varying_k(Bandit &bandit, int averages = 50, const std::string &out_path = "/tmp/") {
+void run_theoretical_bound_experiment_Exp3Gamma_varying_k(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 8; i++) {
         int k = pow(2, i);
@@ -62,7 +62,7 @@ void run_theoretical_bound_experiment_Exp3Gamma_varying_k(Bandit &bandit, int av
 }
 
 template <typename Bandit>
-void run_theoretical_bound_experiment_Exp3Gamma_varying_T(Bandit &bandit, int averages = 50, const std::string &out_path = "/tmp/") {
+void run_theoretical_bound_experiment_Exp3Gamma_varying_T(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 7; i++) {
         int k = 10;
@@ -268,7 +268,8 @@ void run_theoretical_bound_experiment_Exp3ix_varying_T(int averages = 50, const 
     write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_Exp3ix_with_varying_T.csv");
 }
 
-void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_FPL_varying_k(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 7; i++) {
         int k = pow(2, i);
@@ -279,7 +280,10 @@ void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std
         double R = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            FPL fpl(k, eta);
+            bandit._k = k;
+            bandit._eta = eta;
+            bandit._number_to_presample = T;
+            Bandit fpl(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             basic_runner(fpl, data, T, regrets);
@@ -328,10 +332,11 @@ void run_theoretical_bound_experiment_FPL_varying_k(int averages = 50, const std
     vector<string> comments{"#Theoretical Bound Experiment for FPL with varying K's"};
     vector<string> header{"k", "T", "average_strong_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs", "eta"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_FPL_with_varying_k.csv");
+    write_results(data_matrix, comments, header, out_path);
 }
 
-void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_FPL_varying_T(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 7; i++) {
         int k = 3;
@@ -342,7 +347,10 @@ void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std
         double R = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            FPL fpl(k, eta);
+            bandit._k = k;
+            bandit._eta = eta;
+            bandit._number_to_presample = T;
+            Bandit fpl(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> regrets;
             basic_runner(fpl, data, T, regrets);
@@ -391,70 +399,7 @@ void run_theoretical_bound_experiment_FPL_varying_T(int averages = 50, const std
     vector<string> comments{"#Theoretical Bound Experiment for FPL with varying T's"};
     vector<string> header{"k", "T", "average_strong_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs", "eta"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_FPL_with_varying_T.csv");
-}
-
-
-void run_theoretical_bound_experiment_QBL_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
-    vector<vector<double>> data_matrix;
-    for (int i = 1; i < 8; i++) {
-        int k = pow(2, i);
-        int T = 10000;
-        // We have not found the actual eta for the theoretical bounds, but we have found 10 to work for other experiments
-        double eta = 10;
-        double average_strong_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
-        for (int run = 0; run < averages; run++) {
-            QBL qbl(k, eta);
-            std::vector<std::vector<double>> data = d.generate();
-            std::vector<double> regrets;
-            basic_runner(qbl, data, T, regrets);
-            auto Rn = sum_of_range(regrets, 0, T);
-            average_strong_regret += Rn / (double) averages;
-        }
-        // The divided part is the O-time that we are promised so we would expect these different averages to be the
-        // same i.e. a flat line when plotted
-        double promise = sqrt((double) T * (double) k * log((double) k));
-        double average_divided_by_promise = average_strong_regret / promise;
-        vector<double> run{(double) k, (double) T, average_strong_regret, promise, average_divided_by_promise,
-                           (double) averages, eta};
-        data_matrix.push_back(run);
-    }
-    vector<string> comments{"#Theoretical Bound Experiment for QBL with varying K's"};
-    vector<string> header{"k", "T", "average_strong_regret", "promise", "average_divided_by_promise",
-                          "number_of_average_runs", "eta"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_QBL_with_varying_k.csv");
-}
-
-void run_theoretical_bound_experiment_QBL_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
-    vector<vector<double>> data_matrix;
-    for (int i = 1; i < 8; i++) {
-        int k = 10;
-        int T = pow(10, i);
-        // We have not found the actual eta for the theoretical bounds, but we have found 10 to work for other experiments
-        double eta = 10;
-        double average_strong_regret = 0;
-        Mod2Dataset d(k, T, 3.2);
-        for (int run = 0; run < averages; run++) {
-            QBL qbl(k, eta);
-            std::vector<std::vector<double>> data = d.generate();
-            std::vector<double> regrets;
-            basic_runner(qbl, data, T, regrets);
-            auto Rn = sum_of_range(regrets, 0, T);
-            average_strong_regret += Rn / (double) averages;
-        }
-        // The divided part is what we are promised so we would expect these different averages to be the
-        // same i.e. a flat line when plotted
-        double promise = sqrt((double) T * (double) k * log((double) k));
-        double average_divided_by_promise = average_strong_regret / promise;
-        vector<double> run{(double) k, (double) T, average_strong_regret, promise, average_divided_by_promise,
-                           (double) averages, eta};
-        data_matrix.push_back(run);
-    }
-    vector<string> comments{"#Theoretical Bound Experiment for QBL with varying T's"};
-    vector<string> header{"k", "T", "average_strong_regret", "promise", "average_divided_by_promise",
-                          "number_of_average_runs", "eta"};
-    write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_QBL_with_varying_t.csv");
+    write_results(data_matrix, comments, header, out_path);
 }
 
 void run_theoretical_bound_experiment_Exp3m_varying_m(int averages = 50, const std::string &out_path = "/tmp") {
@@ -583,7 +528,8 @@ void run_theoretical_bound_experiment_Exp3m_varying_T(int averages = 50, const s
     write_results(data_matrix, comments, header, out_path + "/Theoretical_Bound_Experiment_Exp3M_with_varying_T.csv");
 }
 
-void run_theoretical_bound_experiment_Tsallis_IW_varying_k(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_Tsallis_varying_k(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 8; i++) {
         int k = pow(2, i);
@@ -591,10 +537,11 @@ void run_theoretical_bound_experiment_Tsallis_IW_varying_k(int averages = 50, co
         double average_weak_regret = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            Tsallis_IW tsallisIw(k);
+            bandit._k = k;
+            Bandit tsallis(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> reward;
-            basic_runner_returning_reward(tsallisIw, data, T, reward);
+            basic_runner_returning_reward(tsallis, data, T, reward);
             double local_GMax = 0;
             for (int arm = 0; arm < k; arm++) {
                 double local_best_GMax = 0;
@@ -618,11 +565,11 @@ void run_theoretical_bound_experiment_Tsallis_IW_varying_k(int averages = 50, co
     vector<string> comments{"#Theoretical Bound Experiment for Tsallis IW with varying k's"};
     vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs"};
-    write_results(data_matrix, comments, header,
-                  out_path + "/Theoretical_Bound_Experiment_Tsallis_IW_with_varying_k.csv");
+    write_results(data_matrix, comments, header,out_path);
 }
 
-void run_theoretical_bound_experiment_Tsallis_IW_varying_T(int averages = 50, const std::string &out_path = "/tmp") {
+template <typename Bandit>
+void run_theoretical_bound_experiment_Tsallis_varying_T(Bandit &bandit, const std::string &out_path, int averages = 50) {
     vector<vector<double>> data_matrix;
     for (int i = 1; i < 7; i++) {
         int k = 10;
@@ -630,10 +577,11 @@ void run_theoretical_bound_experiment_Tsallis_IW_varying_T(int averages = 50, co
         double average_weak_regret = 0;
         StochasticallyConstrainedDataset d(k, T, 3.2, 0.9);
         for (int run = 0; run < averages; run++) {
-            Tsallis_IW tsallisIw(k);
+            bandit._k = k;
+            Bandit tsallis(bandit);
             std::vector<std::vector<double>> data = d.generate();
             std::vector<double> reward;
-            basic_runner_returning_reward(tsallisIw, data, T, reward);
+            basic_runner_returning_reward(tsallis, data, T, reward);
             double local_GMax = 0;
             for (int arm = 0; arm < k; arm++) {
                 double local_best_GMax = 0;
@@ -657,8 +605,7 @@ void run_theoretical_bound_experiment_Tsallis_IW_varying_T(int averages = 50, co
     vector<string> comments{"#Theoretical Bound Experiment for Tsallis IW with varying k's"};
     vector<string> header{"k", "T", "average_weak_regret", "promise", "average_divided_by_promise",
                           "number_of_average_runs"};
-    write_results(data_matrix, comments, header,
-                  out_path + "/Theoretical_Bound_Experiment_Tsallis_IW_with_varying_T.csv");
+    write_results(data_matrix, comments, header,out_path);
 }
 
 #endif //EFFICIENT_MULTI_ARMED_BANDITS_THEORETICALBOUNDRUNNER_H

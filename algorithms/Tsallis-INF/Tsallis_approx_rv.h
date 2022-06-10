@@ -15,7 +15,6 @@ private:
     double previous_eta;
     std::mt19937 _rg;
     double _x;
-    int _k;
     std::discrete_distribution<> _d;
     int last_choice;
     double last_feedback;
@@ -59,14 +58,26 @@ private:
 public:
     std::vector<double> _weights;
     std::vector<double> _cumulative_losses;
+    int _k;
 
     explicit Tsallis_approx_rv(int k)
     {
-        _cumulative_losses = std::vector<double>(k, 0);
+        _k = k;
+        _cumulative_losses = std::vector<double>(_k, 0);
         _rg = random_gen();
         _t = 0;
         _x = 1;
-        _k = k;
+        _eta = 1;
+        last_feedback = 0;
+        _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));
+    }
+
+    Tsallis_approx_rv(const Tsallis_approx_rv &prototype) {
+        _k = prototype._k;
+        _cumulative_losses = std::vector<double>(_k, 0);
+        _rg = random_gen();
+        _t = 0;
+        _x = 1;
         _eta = 1;
         last_feedback = 0;
         _weights = newtons_method_weights(_cumulative_losses, compute_eta(_t));

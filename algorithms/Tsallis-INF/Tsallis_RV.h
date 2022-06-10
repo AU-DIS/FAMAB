@@ -14,7 +14,6 @@ private:
     std::mt19937 _rg;
     double _x;
 
-    int _k;
     std::discrete_distribution<> _d;
 
     double compute_eta(int t) {
@@ -50,13 +49,23 @@ private:
 public:
     std::vector<double> _weights;
     std::vector<double> _cumulative_losses;
+    int _k;
 
     explicit Tsallis_RV(int k) {
-        _cumulative_losses = std::vector<double>(k, 0);
+        _k = k;
+        _cumulative_losses = std::vector<double>(_k, 0);
         _rg = random_gen();
         _t = 0;
         _x = 1;
-        _k = k;
+        _eta = 1;
+    }
+
+    Tsallis_RV(const Tsallis_RV &prototype) {
+        _k = prototype._k;
+        _cumulative_losses = std::vector<double>(_k, 0);
+        _rg = random_gen();
+        _t = 0;
+        _x = 1;
         _eta = 1;
     }
 

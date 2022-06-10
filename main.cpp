@@ -43,23 +43,23 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm, st
     if(algorithm == "Exp3Gamma") {
         if (variant == "base") {
             Exp3 exp3(1,1);
-            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_base_k.csv");
-            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_base_T.csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, "/tmp/Exp3_base_k.csv", 200);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, "/tmp/Exp3_base_T.csv", 200);
         }
         else if (variant == "heap") {
             Exp3_heap exp3(1,1);
-            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_heap_k.csv");
-            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_heap_T.csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, "/tmp/Exp3_heap_k.csv", 200);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, "/tmp/Exp3_heap_T.csv", 200);
         }
         else if (variant == "fid") {
             Exp3_fid exp3(1,1, lambda);
-            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_fid_k_lambda_" + std::to_string(lambda) + ".csv");
-            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_fid_T_lambda_" + std::to_string(lambda) + ".csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, "/tmp/Exp3_fid_k_lambda_" + std::to_string(lambda) + ".csv", 200);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, "/tmp/Exp3_fid_T_lambda_" + std::to_string(lambda) + ".csv", 200);
         }
         else if (variant == "lad") {
             Exp3_lad exp3(1,1,theta);
-            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, 200, "/tmp/Exp3_lad_k_theta_" + std::to_string(theta) + ".csv");
-            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, 200, "/tmp/Exp3_lad_T_theta_" + std::to_string(theta) + ".csv");
+            run_theoretical_bound_experiment_Exp3Gamma_varying_k(exp3, "/tmp/Exp3_lad_k_theta_" + std::to_string(theta) + ".csv", 200);
+            run_theoretical_bound_experiment_Exp3Gamma_varying_T(exp3, "/tmp/Exp3_lad_T_theta_" + std::to_string(theta) + ".csv", 200);
         }
     }
     else if(algorithm == "Exp31") {
@@ -71,12 +71,21 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm, st
         run_theoretical_bound_experiment_Exp3ix_varying_T();
     }
     else if(algorithm == "FPL") {
-        run_theoretical_bound_experiment_FPL_varying_k();
-        run_theoretical_bound_experiment_FPL_varying_T();
-    }
-    else if(algorithm == "QBL") {
-        run_theoretical_bound_experiment_QBL_varying_k();
-        run_theoretical_bound_experiment_QBL_varying_T();
+        if (variant == "base") {
+            FPL fpl(1,1);
+            run_theoretical_bound_experiment_FPL_varying_k(fpl, "/tmp/FPL_base_k.csv", 200);
+            run_theoretical_bound_experiment_FPL_varying_T(fpl, "/tmp/FPL_base_T.csv", 200);
+        }
+        else if (variant == "hash") {
+            FPL_hash fpl(1,1,1);
+            run_theoretical_bound_experiment_FPL_varying_k(fpl, "/tmp/FPL_hash_k.csv", 200);
+            run_theoretical_bound_experiment_FPL_varying_T(fpl, "/tmp/FPL_hash_T.csv", 200);
+        }
+        else if (variant == "QBL") {
+            QBL fpl(1,1);
+            run_theoretical_bound_experiment_FPL_varying_k(fpl, "/tmp/FPL_QBL_k.csv", 200);
+            run_theoretical_bound_experiment_FPL_varying_T(fpl, "/tmp/FPL_QBL_T.csv", 200);
+        }
     }
     else if(algorithm == "Exp3M") {
         run_theoretical_bound_experiment_Exp3m_varying_m();
@@ -85,8 +94,14 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm, st
     }
     else if(algorithm == "Tsallis") {
         if (variant == "RV") {
-            run_theoretical_bound_experiment_Tsallis_varying_k();
-            run_theoretical_bound_experiment_Tsallis_varying_T();
+            Tsallis_RV tsallis(1);
+            run_theoretical_bound_experiment_Tsallis_varying_k(tsallis, "/tmp/Tsallis_RV_k.csv", 200);
+            run_theoretical_bound_experiment_Tsallis_varying_T(tsallis, "/tmp/Tsallis_RV_T.csv", 200);
+        }
+        if (variant == "Approx_RV") {
+            Tsallis_approx_rv tsallis(1);
+            run_theoretical_bound_experiment_Tsallis_varying_k(tsallis, "/tmp/Tsallis_Approx_RV_k.csv", 200);
+            run_theoretical_bound_experiment_Tsallis_varying_T(tsallis, "/tmp/Tsallis_Approx_RV_T.csv", 200);
         }
     }
 }
