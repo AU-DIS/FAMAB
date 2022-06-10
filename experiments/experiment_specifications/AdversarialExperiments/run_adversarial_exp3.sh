@@ -1,4 +1,4 @@
-alias python3="/usr/bin/python3"
+alias python3="$(which python3)"
 
 tmp_dir=/mnt/ssd/bandits
 make_dir=cmake-build-heroicis
