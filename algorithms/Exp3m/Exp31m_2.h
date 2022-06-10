@@ -43,9 +43,9 @@ public:
             _r += 1;
             _g_r = (_k * log(_k)) / (exp(1) - 1) * pow(4, _r);
             _gamma = std::min(1.0, sqrt(_k * log(_k) / ((exp(1) - 1)* _g_r)));
-            old_w = std::vector<double>(_exp3m._weights.begin(), _exp3m._weights.end());
+            //old_w = std::vector<double>(_exp3m._weights.begin(), _exp3m._weights.end());
             _exp3m = Exp3m(_m, _k, _gamma);
-            _exp3m._weights = old_w;
+            //_exp3m._weights = old_w;
         }
         round += 1;
         return _exp3m.choose(m);

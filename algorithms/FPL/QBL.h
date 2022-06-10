@@ -10,10 +10,8 @@
 class QBL
 {
 private:
-    int _k;
     std::exponential_distribution<double> _exponential_distribution;
     std::mt19937 _gen;
-    double _eta;
     std::vector<int> _priorities;
     std::vector<double> cumulative_rewards;
     better_priority_queue::updatable_priority_queue<int, int> _q;
@@ -25,6 +23,10 @@ private:
 
 public:
     QBL() = default;
+    int _k;
+    double _eta;
+    // Not used for anything just for theoretical runner generalization
+    int _number_to_presample;
 
     std::vector<double> *get_weights()
     {
@@ -32,32 +34,6 @@ public:
         for (auto v : _priorities)
             ret->push_back(v);
         return ret;
-    }
-
-    QBL(const QBL &prototype)
-    {
-        _k = prototype._k;
-        _eta = prototype._eta;
-        _counter = 0;
-        _round = 0;
-        F = 0;
-
-        //_logk = (int) log2(k);
-        _logk = prototype._k;
-        //_logk = 2;
-
-        _exponential_distribution = std::exponential_distribution<double>(_eta);
-        _gen = random_gen();
-        _priorities = std::vector<int>();
-        cumulative_rewards = std::vector<double>(_k, 0);
-
-        _q = better_priority_queue::updatable_priority_queue<int, int>();
-        for (int i = 0; i < _k; i++)
-        {
-            _priorities.push_back(i);
-            _q.push(i, i);
-        }
-        rounds_leader_optimal = 0;
     }
 
     QBL(int k, double eta)
@@ -79,6 +55,30 @@ public:
 
         _q = better_priority_queue::updatable_priority_queue<int, int>();
         for (int i = 0; i < k; i++)
+        {
+            _priorities.push_back(i);
+            _q.push(i, i);
+        }
+        rounds_leader_optimal = 0;
+    }
+
+    QBL(const QBL &prototype)
+    {
+        _k = prototype._k;
+        _eta = prototype._eta;
+        _counter = 0;
+        _round = 0;
+
+        //_logk = (int) log2(k);
+        _logk = prototype._k;
+        //_logk = 2;
+
+        _exponential_distribution = std::exponential_distribution<double>(_eta);
+        _gen = random_gen();
+        _priorities = std::vector<int>();
+
+        _q = better_priority_queue::updatable_priority_queue<int, int>();
+        for (int i = 0; i < _k; i++)
         {
             _priorities.push_back(i);
             _q.push(i, i);

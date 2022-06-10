@@ -14,11 +14,8 @@
 class Exp3_lad
 {
 private:
-    int _k;
-    double _gamma;
     double _last_drawn_weight;
     double _last_drawn_probability;
-    double _avg_threshold;
     double _running_avg;
     int _round_counter;
     int _no_avg;
@@ -61,13 +58,16 @@ private:
 
 public:
     std::vector<double> _weights;
+    int _k;
+    double _gamma;
+    double _avg_threshold;
 
     Exp3_lad(int k, double gamma, double avg_threshold)
     {
         _k = k;
         _gamma = gamma;
-        _avg_threshold = avg_threshold;
         _running_avg = 0;
+        _avg_threshold = avg_threshold;
         _round_counter = 0;
 
         _no_avg = 5;
@@ -82,6 +82,28 @@ public:
 
         choose();
     }
+
+    Exp3_lad(const Exp3_lad &prototype)
+    {
+        _k = prototype._k;
+        _gamma = prototype._gamma;
+        _avg_threshold = prototype._avg_threshold;
+        _running_avg = 0;
+        _round_counter = 0;
+
+        _no_avg = 5;
+        _running_observations = std::vector<double>(_no_avg, 1);
+
+        recompute_average();
+
+        _probabilities = std::vector<double>(_k, 0);
+        _weights = std::vector<double>(_k, 1.0);
+
+        _random_gen = random_gen();
+
+        choose();
+    }
+
     int choose()
     {
         int choice = sample();

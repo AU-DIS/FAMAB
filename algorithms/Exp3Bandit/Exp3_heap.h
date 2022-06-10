@@ -11,6 +11,8 @@ class Exp3_heap
 
 public:
     Incremental_sum_heap _distribution;
+    int _k;
+    double _gamma;
 
     Exp3_heap(int k, double gamma)
     {
@@ -24,6 +26,21 @@ public:
         _power_weights = Incremental_sum_heap(power_weights);
 
         max_weight = 1.0 / k;
+    }
+
+
+    Exp3_heap(const Exp3_heap &prototype)
+    {
+        _k = prototype._k;
+        _gamma = prototype._gamma;
+        _weights = std::vector<double>(_k, 1.0 / _k);
+        _distribution = Incremental_sum_heap(_weights);
+        _additive_term = _gamma / _k;
+
+        std::vector<double> power_weights(_k, exp(_gamma / _k * ((1.0 / _k)) - (1.0 / _k)));
+        _power_weights = Incremental_sum_heap(power_weights);
+
+        max_weight = 1.0 / _k;
     }
 
     int choose()
@@ -49,8 +66,6 @@ public:
     }
 
 private:
-    int _k;
-    double _gamma;
     double max_weight;
     std::vector<double> _weights;
     double _additive_term;
