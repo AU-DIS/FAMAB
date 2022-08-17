@@ -15,7 +15,7 @@ private:
     std::vector<int> _priorities;
     std::vector<double> cumulative_rewards;
     better_priority_queue::updatable_priority_queue<int, int> _q;
-    int _counter;
+    long long _counter;
     int _logk;
     int _round;
     int rounds_leader_optimal;
@@ -23,6 +23,7 @@ private:
 
 public:
     QBL() = default;
+    int rand_cnt;
     int _k;
     double _eta;
     // Not used for anything just for theoretical runner generalization
@@ -38,6 +39,7 @@ public:
 
     QBL(int k, double eta)
     {
+        rand_cnt = 0;
         _k = k;
         _eta = eta;
         _counter = 0;
@@ -47,7 +49,8 @@ public:
 
         _logk = (int)log2(k);
         //_logk = k;
-        //_logk = 2;
+        //_logk = 4;
+        //_logk = 0;
 
         _exponential_distribution = std::exponential_distribution<double>(_eta);
         _gen = random_gen();
@@ -62,7 +65,7 @@ public:
         rounds_leader_optimal = 0;
     }
 
-    QBL(const QBL &prototype)
+    /*QBL(const QBL &prototype)
     {
         _k = prototype._k;
         _eta = prototype._eta;
@@ -84,18 +87,36 @@ public:
             _q.push(i, i);
         }
         rounds_leader_optimal = 0;
+    }*/
+
+    void enforce_unique_priority(int updates) {
+        std::vector<int> q_order(updates, 0);
+        for (int i = 0; i < updates; i++) {
+            q_order[i] = _q.top().key;
+            _priorities[q_order[i]] = _k-i;
+            _q.pop();
+        }
+        for (int i = 0; i < updates; i++) {
+            _q.push(q_order[i], _priorities[q_order[i]]);
+        }
     }
 
     std::vector<int> choose(int m)
     {
 
-        for (int i = 0; i < _logk; i++)
+        /*for (int i = 0; i < _logk; i++)
         {
+            int j = (_counter+i)%_k;
             int priority_delta = (int)_exponential_distribution(_gen);
-            _priorities[i] = min(_k, _priorities[i] + priority_delta);
-            _q.update(i, _priorities[i]);
+            if (priority_delta != 0) {
+                rand_cnt++;
+                std::cout << rand_cnt++<< std::endl;
+                _priorities[j] = min(_k, _priorities[j] + priority_delta);
+                _q.update(j, _priorities[j]);
+            }
             _counter++;
-        }
+        }*/
+        //enforce_unique_priority(_k);
         std::vector<int> choices(m, 0);
         for (int i = 0; i < m; i++)
         {
@@ -129,19 +150,21 @@ public:
     }
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
     {
-
         for (int i = 0; i < indices.size(); i++)
         {
             int choice = indices[i];
             int reward = rewards[i];
-            cumulative_rewards[choice] += reward;
-            F += reward;
+            //F += reward;
+            if (reward != 0 && cumulative_rewards[choice] < _priorities[choice]) {
+                cumulative_rewards[choice] += 1;
+            }
             if (reward == 0)
             {
-                int new_position = (int)(cumulative_rewards[choice] / F) * _k;
-                new_position = std::min(new_position, _k - 1);
+                int new_position = (int)(cumulative_rewards[choice]); // / F)  * _k;
+                new_position = std::min(new_position, _priorities[choice]-1);
                 _priorities[choice] = new_position;
                 _q.update(choice, _priorities[choice]);
+                cumulative_rewards[choice] = 0;
                 //_priorities[choice] = 0;
                 //_q.update(choice, _priorities[choice]);
             }
@@ -164,13 +187,13 @@ public:
 
     int choose()
     {
-        for (int i = 0; i < _logk; i++)
+        /*for (int i = 0; i < _logk; i++)
         {
             int priority_delta = (int)_exponential_distribution(_gen);
             _priorities[i] = min(_k, _priorities[i] + priority_delta);
             _q.update(i, _priorities[i]);
             _counter++;
-        }
+        }*/
         return _q.top().key;
     }
     void give_reward(int choice, double feedback)
