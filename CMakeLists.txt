@@ -19,7 +19,7 @@ add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/Exp3Bandit/Exp31.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
-        )
+        algorithms/Exp3Bandit/exp3r.h)
 
         
 add_executable(benchmark_bandits benchmark.cpp
@@ -32,7 +32,7 @@ add_executable(benchmark_bandits benchmark.cpp
         algorithms/Exp3Bandit/Exp31.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
-        algorithms/Exp3m/Exp3m_heap.h algorithms/Exp3m/Exp31m_2.h)
+        algorithms/Exp3m/Exp3m_heap.h algorithms/Exp3m/Exp31m_2.h algorithms/Exp3Bandit/exp3r.h)
 
 add_executable(optimal_parameter_finder optimal_parameter_finder.cpp
 algorithms/Exp3Bandit/Exp3.h

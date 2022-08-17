@@ -121,7 +121,7 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         Uniformbandit uni(k);
         Exp3m b(m, k, 0.1);
         Exp3m_heap b_heap(m, k, 0.1);
-        QBL qbl(k, 10);
+        QBL qbl(k, 5);
         FPL fpl(k, 10);
 
         /*

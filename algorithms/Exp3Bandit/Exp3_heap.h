@@ -47,6 +47,11 @@ public:
     {
         return _distribution.heap_sample();
     }
+    std::tuple<int, bool> choose(int gamma)
+    {
+        auto [index, gamma_obs] = _distribution.heap_sample_observe(gamma);
+        return {index, gamma_obs};
+    }
     std::vector<double> *get_weights()
     {
         return &_weights;

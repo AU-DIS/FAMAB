@@ -76,6 +76,26 @@ public:
         return i - _d;
     }
 
+    std::tuple<int, bool> heap_sample_observe(double _gamma)
+    {
+        double p = _uni(_random_gen) * _heap[1];
+
+        int i = 1;
+        while (i < _d)
+        {
+            i *= 2;
+            double left = _heap[i];
+            if (p > left)
+            {
+                p -= left;
+                i += 1;
+            }
+        }
+
+        bool gamma_obs = (_heap[i] < _heap[1]*_gamma/(float)_n);
+        return {i - _d, gamma_obs};
+    }
+
     std::vector<int> heap_sample(int m)
     {
         auto choices = std::vector<int>(m, 0);

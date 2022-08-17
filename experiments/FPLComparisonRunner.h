@@ -11,6 +11,7 @@
 #include "../algorithms/FPL/FPL_unnormalized.h"
 #include "../algorithms/FPL/FPL_hash.h"
 #include "../algorithms/FPL/QBL.h"
+#include "../algorithms/Exp3Bandit/exp3r.h"
 #include "../datasets/dataset.h"
 
 template <typename Dataset>
@@ -20,13 +21,15 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
 
     std::vector<double> fpl_original_regrets(rounds);
     std::vector<double> fpl_new_regrets(rounds);
-    std::vector<double> fpl_second_regrets(rounds);
+    std::vector<double> exp3_regrets(rounds);
+    std::vector<double> exp3r_regrets(rounds);
     std::vector<double> uniform_regrets(rounds);
 
     auto baseline = "FPL";
     auto uniform = "Uniform";
     auto compared = "QBL";
-    auto second_compare = "QBL";
+    auto exp3r_comp = "Exp3r";
+    auto exp3_comp = "Exp3";
 
     for (int i = 0; i < averages; i++)
     {
@@ -36,7 +39,12 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         // FPL_hash fpl_new(k, 0.9, rounds);
         // FPL_toplog fpl_new(k, eta);
 
-        QBL fpl_new(k, eta);
+        QBL fpl_new(k, 5);
+        double gamma = 0.1;
+        Exp3 exp3(k, gamma);
+        Exp3r exp3r(k,gamma,0.001, 100000);
+
+
 
         Uniformbandit uni(k);
         // FPL_hash fpl_new(k, eta, rounds);
@@ -48,24 +56,30 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         std::vector<double> fpl_new_run;
         std::thread t2(basic_runner<QBL>, std::ref(fpl_new), std::ref(data_matrix), rounds, std::ref(fpl_new_run));
 
-        std::vector<double> fpl_second_run;
-        // std::thread t3(basic_runner<QBL>, std::ref(fpl_second), std::ref(data_matrix), rounds, std::ref(fpl_second_run));
+        std::vector<double> exp3_run;
+        std::thread t3(basic_runner<Exp3>, std::ref(exp3), std::ref(data_matrix), rounds, std::ref(exp3_run));
 
         std::vector<double> uniform_run;
         std::thread t4(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
 
+        std::vector<double> exp3r_run;
+        std::thread t5(basic_runner<Exp3r>, std::ref(exp3r), std::ref(data_matrix), rounds,
+                       std::ref(exp3r_run));
+
         t1.join();
         t2.join();
-        // t3.join();
+        t3.join();
         t4.join();
+        t5.join();
 
         for (int round = 0; round < rounds; round++)
         {
             fpl_original_regrets[round] += fpl_original_run[round];
             fpl_new_regrets[round] += fpl_new_run[round];
-            // fpl_second_regrets[round] += fpl_second_run[round];
+            exp3_regrets[round] += exp3_run[round];
             uniform_regrets[round] += uniform_run[round];
+            exp3r_regrets[round] += exp3r_run[round];
         }
     }
     for (auto &v : fpl_original_regrets)
@@ -73,20 +87,21 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
 
     for (auto &v : fpl_new_regrets)
         v /= averages;
-    /*
-for (auto &v : fpl_second_regrets)
-    v /= averages;
-    */
+    for (auto &v : exp3_regrets)
+        v /= averages;
     for (auto &v : uniform_regrets)
+        v /= averages;
+    for (auto &v : exp3r_regrets)
         v /= averages;
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(fpl_original_regrets);
 
     result_matrix.push_back(fpl_new_regrets);
-    /*
-    result_matrix.push_back(fpl_second_regrets);
-    */
+
+    result_matrix.push_back(exp3_regrets);
     result_matrix.push_back(uniform_regrets);
+
+    result_matrix.push_back(exp3r_regrets);
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
     auto metadata =
@@ -94,13 +109,15 @@ for (auto &v : fpl_second_regrets)
         std::to_string(k) + "," + std::to_string(rounds) + "," + std::to_string(gap) + "," +
         baseline + "," +
         compared + "," +
-        // second_compare + "," +
-        uniform + ",";
+        exp3_comp + ","+
+        uniform + "," +
+        exp3r_comp;
     auto descriptions = std::vector<string>{
         baseline,
         compared,
-        // second_compare,
-        uniform};
+        exp3_comp,
+        uniform,
+        exp3r_comp};
     write_results(result_matrix, metadata, descriptions, out_path);
 }
 
