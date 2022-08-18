@@ -13,7 +13,7 @@ private:
     std::exponential_distribution<double> _exponential_distribution;
     std::mt19937 _gen;
     std::vector<int> _priorities;
-    std::vector<double> cumulative_rewards;
+    std::vector<double> comb_rounds_optimal;
     better_priority_queue::updatable_priority_queue<int, int> _q;
     long long _counter;
     int _logk;
@@ -45,9 +45,9 @@ public:
         _counter = 0;
         _round = 0;
         F = 0;
-        cumulative_rewards = std::vector<double>(_k, 0);
+        comb_rounds_optimal = std::vector<double>(_k, 0);
 
-        _logk = (int)log2(k);
+        _logk = (int)log2(_k);
         //_logk = k;
         //_logk = 4;
         //_logk = 0;
@@ -57,11 +57,12 @@ public:
         _priorities = std::vector<int>();
 
         _q = better_priority_queue::updatable_priority_queue<int, int>();
-        for (int i = 0; i < k; i++)
+        for (int i = 0; i < _k; i++)
         {
             _priorities.push_back(i);
             _q.push(i, i);
         }
+
         rounds_leader_optimal = 0;
     }
 
@@ -73,7 +74,7 @@ public:
         _round = 0;
 
         //_logk = (int) log2(k);
-        _logk = prototype._k;
+        //_logk = prototype._k;
         //_logk = 2;
 
         _exponential_distribution = std::exponential_distribution<double>(_eta);
@@ -150,21 +151,34 @@ public:
     }
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
     {
+        _counter++;
+        //if (_counter%1000 == 0) enforce_unique_priority(_k);
+        if (_counter%100000 == 0) {
+           for (int i = 0; i < _k; i++) {
+               std::cout << _priorities[i] << " ";
+           }
+           std::cout << std::endl;
+            //enforce_unique_priority(_k);
+        }
         for (int i = 0; i < indices.size(); i++)
         {
             int choice = indices[i];
-            int reward = rewards[i];
+            double reward = rewards[i];
             //F += reward;
-            if (reward != 0 && cumulative_rewards[choice] < _priorities[choice]) {
-                cumulative_rewards[choice] += 1;
+            if (reward != 0) { //&& comb_rounds_optimal[choice] < _priorities[choice]-1) {
+                comb_rounds_optimal[choice] += 1;
             }
+
             if (reward == 0)
             {
-                int new_position = (int)(cumulative_rewards[choice]); // / F)  * _k;
-                new_position = std::min(new_position, _priorities[choice]-1);
-                _priorities[choice] = new_position;
+                int new_position = (int)(comb_rounds_optimal[choice]); // / F)  * _k;
+                new_position = std::min(new_position, _k-2);
+                /*if (new_position < 0) {
+                    new_position = 0;
+                }*/
+                _priorities[choice] = _q.top().priority+(new_position-_k-1);
                 _q.update(choice, _priorities[choice]);
-                cumulative_rewards[choice] = 0;
+                comb_rounds_optimal[choice] = 0;// _q.top().priority-_k;;
                 //_priorities[choice] = 0;
                 //_q.update(choice, _priorities[choice]);
             }

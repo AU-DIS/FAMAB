@@ -35,8 +35,8 @@ public:
         _H = H;
         _gamma = gamma;
         _delta = delta;
-        _weights = std::vector<double>(k, 1.0 / k);
-        max_weight = 1.0 / k;
+        _weights = std::vector<double>(k, 1.0);
+        //max_weight = 1.0 / k;
         _exp3 = Exp3_heap(k, gamma);
 
         _arm_cum_gamma_obs_reward = std::vector<double>(_k, 0);
@@ -79,27 +79,35 @@ public:
             _arm_cum_gamma_obs_choices[index] += 1;
         }
 
+
         //TODO: Keep track of this to avoid scan
         double big_gamma = *std::min_element(_arm_cum_gamma_obs_reward.begin(), _arm_cum_gamma_obs_reward.end());
 
         if (big_gamma >= _gamma*_H/_k) {
+            std::cout << "detecting" << std::endl;
             if (drift_detect()) {
+                std::cout << "resetting" << std::endl;
                 _exp3 = Exp3_heap(_k, _gamma);
-                _arm_cum_gamma_obs_reward = std::vector<double>(_k, 0);
-                _arm_cum_gamma_obs_choices = std::vector<double>(_k, 0);
             }
+            _arm_cum_gamma_obs_reward = std::vector<double>(_k, 0);
+            _arm_cum_gamma_obs_choices = std::vector<double>(_k, 0);
         }
     }
 
     bool drift_detect() {
         std::vector<double> *weights = _exp3.get_weights();
+
         auto result = std::max_element((*weights).begin(), (*weights).end());
+
         int k_max = std::distance((*weights).begin(), result);
+        std::cout << k_max << std::endl;
         double epsilon = sqrt((_k*log(1/_delta))/(2.0*_gamma*_H));
         for (int i = 0; i < _k; i++) {
             double mean = _arm_cum_gamma_obs_reward[i]/_arm_cum_gamma_obs_choices[i];
             double mean_max = _arm_cum_gamma_obs_reward[k_max]/_arm_cum_gamma_obs_choices[k_max];
+            std::cout << mean << "  " << mean_max << "  " << mean-mean_max << "  " << 2*epsilon << std::endl;
             if (mean-mean_max >= 2*epsilon)
+
                 return true;
         }
         return false;

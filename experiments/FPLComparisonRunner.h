@@ -40,9 +40,9 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         // FPL_toplog fpl_new(k, eta);
 
         QBL fpl_new(k, 5);
-        double gamma = 0.1;
+        double gamma = 0.006;
         Exp3 exp3(k, gamma);
-        Exp3r exp3r(k,gamma,0.001, 100000);
+        Exp3r exp3r(k,gamma,0.0001, 100000);
 
 
 

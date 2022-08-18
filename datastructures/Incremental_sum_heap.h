@@ -92,7 +92,8 @@ public:
             }
         }
 
-        bool gamma_obs = (_heap[i] < _heap[1]*_gamma/(float)_n);
+        bool gamma_obs = (_heap[i] < _heap[1]*_gamma);
+        //std::cout << _heap[i] << "        " << _heap[1]/(float)_n << std::endl;
         return {i - _d, gamma_obs};
     }
 

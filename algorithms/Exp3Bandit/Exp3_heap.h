@@ -47,7 +47,7 @@ public:
     {
         return _distribution.heap_sample();
     }
-    std::tuple<int, bool> choose(int gamma)
+    std::tuple<int, bool> choose(double gamma)
     {
         auto [index, gamma_obs] = _distribution.heap_sample_observe(gamma);
         return {index, gamma_obs};
