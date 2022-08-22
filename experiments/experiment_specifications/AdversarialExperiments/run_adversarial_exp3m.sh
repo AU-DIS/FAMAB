@@ -15,7 +15,7 @@ name=exp3m
 
 rounds=1000000
 #rounds=10000
-averages=5
+averages=1
 gap=3.2
 delta=0.9
 run_experiment() {
@@ -31,8 +31,8 @@ run_experiment() {
   out_stochastic=$tmp_dir/$name$1m$2_stochastic.out
   plt_out_stochastic=$tmp_dir/$name$1m$2_stochastic.png
 
-  #out_tent=$tmp_dir/$name$1m$2_tent.out
-  #plt_out_tent=$tmp_dir/$name$1m$2_tent.png
+  out_tent=$tmp_dir/$name$1m$2_tent.out
+  plt_out_tent=$tmp_dir/$name$1m$2_tent.png
 
   #out_duelling=$tmp_dir/$name$1m$2_duelling.out
   #plt_out_duelling=$tmp_dir/$name$1m$2_duelling.png
@@ -42,24 +42,24 @@ run_experiment() {
   echo "runner,dataset,gap,k,m,rounds,averages,delta,output_path" >> $header
   echo "adversarial_exp3m,stochastically_constrained_adversarial,$gap,$1,$2,$rounds,$averages,$delta,$out" >>$header
   echo "adversarial_exp3m,mod2,$gap,$1,$2,$rounds,$averages,$delta,$out_mod2" >>$header
-  #echo "adversarial_exp3m,TentMapDataset,$gap,$1,$2,$rounds,$averages,$delta,$out_tent" >>$header
+  echo "adversarial_exp3m,TentMapDataset,$gap,$1,$2,$rounds,$averages,$delta,$out_tent" >>$header
   #echo "adversarial_exp3m,DuellingDataset,$gap,$1,$2,$rounds,$averages,$delta,$out_duelling" >>$header
 
   (
     ./$make_dir/efficient_multi_armed_bandits $header &&
       python3 plotting/plot_compare.py $out $plt_out
       python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
-      #python3 plotting/plot_compare.py $out_tent $plt_out_tent
+      python3 plotting/plot_compare.py $out_tent $plt_out_tent
       #python3 plotting/plot_compare.py $out_duelling $plt_out_duelling
   ) &
   disown
 
 }
 
-for k in 2000; do
+for k in 32  ; do
   #for k in 2000; do
   #for m in 1800; do
-  for m in 4; do
+  for m in 4 16 28; do
     run_experiment $k $m
   done
 done

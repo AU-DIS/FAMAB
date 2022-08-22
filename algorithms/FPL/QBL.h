@@ -153,50 +153,30 @@ public:
     {
         _counter++;
         //if (_counter%1000 == 0) enforce_unique_priority(_k);
-        if (_counter%100000 == 0) {
+        /*if (_counter%30000 == 0) {
            for (int i = 0; i < _k; i++) {
                std::cout << _priorities[i] << " ";
            }
            std::cout << std::endl;
             //enforce_unique_priority(_k);
-        }
+        }*/
         for (int i = 0; i < indices.size(); i++)
         {
             int choice = indices[i];
             double reward = rewards[i];
-            //F += reward;
-            if (reward != 0) { //&& comb_rounds_optimal[choice] < _priorities[choice]-1) {
-                comb_rounds_optimal[choice] += 1;
-            }
 
-            if (reward == 0)
-            {
-                int new_position = (int)(comb_rounds_optimal[choice]); // / F)  * _k;
-                new_position = std::min(new_position, _k-2);
-                /*if (new_position < 0) {
-                    new_position = 0;
-                }*/
-                _priorities[choice] = _q.top().priority+(new_position-_k-1);
+            if (reward == 1) {
+                comb_rounds_optimal[choice] += 1;
+            } else {
+                int new_position = (int)(comb_rounds_optimal[choice]);
+                new_position = std::min(new_position, _k-1-(_q.top().priority-_priorities[choice]));
+
+                _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
                 _q.update(choice, _priorities[choice]);
-                comb_rounds_optimal[choice] = 0;// _q.top().priority-_k;;
-                //_priorities[choice] = 0;
-                //_q.update(choice, _priorities[choice]);
+                comb_rounds_optimal[choice] = 0;
             }
         }
 
-        /*
-                for (int i = 0; i < indices.size(); i++)
-                {
-                    auto feedback = rewards[i];
-                    if (feedback == 0)
-                    {
-                        _priorities[indices[i]] = 0;
-                        rounds_leader_optimal = 0;
-                        //_q.pop();
-                        _q.update(indices[i], _priorities[indices[i]]);
-                    }
-                }
-                */
     }
 
     int choose()
@@ -212,16 +192,23 @@ public:
     }
     void give_reward(int choice, double feedback)
     {
-        if (feedback == 0)
-        {
-            _priorities[choice] = rounds_leader_optimal;
-            rounds_leader_optimal = 0;
+        _counter++;
+        //if (_counter%1000 == 0) enforce_unique_priority(_k);
+        /*if (_counter%1000 == 0) {
+           for (int i = 0; i < _k; i++) {
+               std::cout << _priorities[i] << " ";
+           }
+           std::cout << std::endl;
+        }*/
+        if (feedback == 0) {
+            int new_position = (int)(rounds_leader_optimal);
+            new_position = std::min(new_position, _k-1-(_q.top().priority-_priorities[choice]));
+            _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
             _q.pop();
             _q.push(choice, _priorities[choice]);
-        }
-        else
-        {
-            rounds_leader_optimal = min(rounds_leader_optimal + 1, _k - 2);
+            rounds_leader_optimal = 0;
+        } else {
+            rounds_leader_optimal += 1;// min(rounds_leader_optimal + 1, _k - 2);
             // std::cout << std::to_string(rounds_leader_optimal) + "\n";
         }
     }
