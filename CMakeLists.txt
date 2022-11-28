@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(csv-parser)
 add_subdirectory(benchmark)
+find_package(Boost)
+include_directories(${Boost_INCLUDE_DIRS})
+
 
 SET(DBENCHMARK_ENABLE_GTEST_TESTS OFF)
 
@@ -20,6 +23,7 @@ add_executable(efficient_multi_armed_bandits main.cpp
         algorithms/Exp3Bandit/Exp3Tor.h algorithms/Exp3Bandit/Exp3Tor.cpp
         algorithms/Exp3Bandit/Exp3IXTor.h algorithms/Exp3Bandit/Exp3IXTor.cpp
         algorithms/Exp3Bandit/exp3r.h)
+
 
         
 add_executable(benchmark_bandits benchmark.cpp
@@ -44,6 +48,5 @@ algorithms/Exp3Bandit/Exp3.h
 algorithms/Exp3Bandit/Exp3.cpp
 )
 
-
-target_link_libraries(efficient_multi_armed_bandits csv)
+target_link_libraries(efficient_multi_armed_bandits csv Boost::boost)
 target_link_libraries(benchmark_bandits benchmark::benchmark)

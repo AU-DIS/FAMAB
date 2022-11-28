@@ -32,12 +32,14 @@ for nr, algorithm in enumerate(algorithms):
 
     max_val = np.max(lines)
     lines = np.cumsum(lines)
+    print(algorithm)
+    print(lines)
     ys.append(lines)
     x = range(len(lines))
     y = lines
 
-    #plt.loglog(x, y, color=colormap[algorithm])
-    plt.plot(x, y, color=colormap[algorithm])
+    plt.loglog(x, y, color=colormap[algorithm])
+    #plt.plot(x, y, color=colormap[algorithm])
 
 gap_xs = []
 gap_ys = []

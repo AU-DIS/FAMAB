@@ -6,6 +6,7 @@
 #define EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
 
 #include "../../utilities/updateable_priority_queue.h"
+#include <math.h>
 
 class QBL
 {
@@ -14,8 +15,11 @@ private:
     std::mt19937 _gen;
     std::vector<int> _priorities;
     std::vector<double> comb_rounds_optimal;
+    std::vector<int> good_rounds_in_row;
     better_priority_queue::updatable_priority_queue<int, int> _q;
     long long _counter;
+    int multiple = 1;
+    bool even = true;
     int _logk;
     int _round;
     int rounds_leader_optimal;
@@ -46,6 +50,7 @@ public:
         _round = 0;
         F = 0;
         comb_rounds_optimal = std::vector<double>(_k, 0);
+        good_rounds_in_row = std::vector<int>(_k, 0);
 
         _logk = (int)log2(_k);
         //_logk = k;
@@ -193,6 +198,12 @@ public:
     void give_reward(int choice, double feedback)
     {
         _counter++;
+        double threshold = pow(3.2, multiple);
+        if (_counter > threshold)
+        {
+            even = !even;
+            multiple++;
+        }
         //if (_counter%1000 == 0) enforce_unique_priority(_k);
         /*if (_counter%1000 == 0) {
            for (int i = 0; i < _k; i++) {
@@ -201,17 +212,35 @@ public:
            std::cout << std::endl;
         }*/
         if (feedback == 0) {
-            int new_position = (int)(rounds_leader_optimal);
+            int new_position = (int)(comb_rounds_optimal[choice]);
             new_position = std::min(new_position, _k-1-(_q.top().priority-_priorities[choice]));
             _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
             _q.pop();
             _q.push(choice, _priorities[choice]);
-            rounds_leader_optimal = 0;
+            /*if (choice == 0 ) {
+                std::cout << even << "   " << _counter<< "  before " << comb_rounds_optimal[0];
+                std::cout << "    " << 1-(1/(double)comb_rounds_optimal[0]);
+            }*/
+
+            comb_rounds_optimal[choice] = good_rounds_in_row[choice]/comb_rounds_optimal[choice]*_k;//good_rounds_in_row[choice] <= 2 ? 0 : floor(comb_rounds_optimal[choice]*0.5);//comb_rounds_optimal[choice]*(1-(1/(double) good_rounds_in_row[choice]));//(int) (comb_rounds_optimal[choice] * 0.9);
+            good_rounds_in_row[choice] = 0;
+            /*if (choice == 0 ) {
+                std::cout << "  after " << comb_rounds_optimal[0] << std::endl;
+            }*/
+
+            //rounds_leader_optimal = 0;
         } else {
-            rounds_leader_optimal += 1;// min(rounds_leader_optimal + 1, _k - 2);
+            comb_rounds_optimal[choice] += 1;
+            good_rounds_in_row[choice] += 1;
+            /*if (choice == 0) {
+                std::cout << even << "   " << _counter<< "  good " << comb_rounds_optimal[0] << std::endl;
+            }*/
+
+            //rounds_leader_optimal += 1;// min(rounds_leader_optimal + 1, _k - 2);
             // std::cout << std::to_string(rounds_leader_optimal) + "\n";
         }
     }
+
 };
 
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_QBL_H

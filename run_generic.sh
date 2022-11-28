@@ -1,3 +1,4 @@
+#!/bin/bash
 #bash experiments/experiment_specifications/GenericBanditRunner/generic_adversarial.sh
 #bash experiments/experiment_specifications/GenericBanditRunner/generic_movielens.sh
 bash experiments/experiment_specifications/AdversarialExperiments/run_adversarial_fpl.sh

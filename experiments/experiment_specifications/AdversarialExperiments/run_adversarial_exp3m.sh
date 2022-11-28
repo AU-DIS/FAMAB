@@ -6,7 +6,7 @@ alias python3="$(which python3)"
 tmp_dir=/tmp
 make_dir=cmake-build-release-wsl
 
-if [[ $2make_dir == cmake-build-release-odin ]]; then
+if [[ $make_dir == cmake-build-release-odin ]]; then
   mkdir -p /home/$(whoami)/tmp
   tmp_dir=/home/$(whoami)/tmp
 fi
