@@ -34,13 +34,14 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
     for (int i = 0; i < averages; i++)
     {
         std::vector<std::vector<double>> data_matrix = d.generate();
+
         double eta = 10;
         FPL fpl(k, eta);
         // FPL_hash fpl_new(k, 0.9, rounds);
         // FPL_toplog fpl_new(k, eta);
 
         QBL fpl_new(k, 5);
-        double gamma = 0.006;
+        double gamma = 0.1;
         Exp3 exp3(k, gamma);
         //Exp3r exp3r(k,gamma,0.0001, 100000);
 

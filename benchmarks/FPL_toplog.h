@@ -6,7 +6,7 @@ static void benchmark_fpl_toplog(benchmark::State &state)
     FPL_toplog b(k, 10);
     for (auto _ : state)
     {
-        int rounds = 100;
+        int rounds = 1000000;
         for (int i = 0; i < rounds; i++)
         {
             int choice = b.choose();
@@ -21,7 +21,7 @@ static void benchmark_fpl_toplog_sample(benchmark::State &state)
     FPL_toplog b(k, 10);
     for (auto _ : state)
     {
-        int rounds = 100;
+        int rounds = 1000000;
         for (int i = 0; i < rounds; i++)
         {
             int choice = b.choose();
@@ -35,7 +35,7 @@ static void benchmark_fpl_toplog_update(benchmark::State &state)
     b.choose();
     for (auto _ : state)
     {
-        int rounds = 100;
+        int rounds = 1000000;
         for (int i = 0; i < rounds; i++)
         {
             b.give_reward(1, 1);

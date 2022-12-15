@@ -9,7 +9,9 @@
 #include "../experiments/DuelArena.h"
 #include "iostream"
 #include <boost/math/distributions/beta.hpp>
+#include <boost/random/beta_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 
 std::vector<std::discrete_distribution<int>> create_distributions(int k)
@@ -41,10 +43,11 @@ std::vector<std::discrete_distribution<int>> create_distributions(int k)
     return distributions;
 }
 
-std::vector<std::discrete_distribution<int>>
+std::vector<boost::random::beta_distribution<>>
 create_distributions(int k, int optimal_start, int optimal_end, double delta)
 {
-    std::vector<std::discrete_distribution<int>> distributions(k);
+    //std::vector<std::discrete_distribution<int>> distributions(k);
+    std::vector<boost::random::beta_distribution<>> distributions(k);
     auto gen = random_gen();
 
     //std::discrete_distribution<int> optimal_distribution({1 - delta, delta});
@@ -52,8 +55,8 @@ create_distributions(int k, int optimal_start, int optimal_end, double delta)
 
 
     std::uniform_real_distribution<> uni(0, 1);
-    boost::math::beta_distribution<> optimal_distribution(5,1);//(8, 1.1);
-    boost::math::beta_distribution<> suboptimal_distribution(4, 20);
+    boost::random::beta_distribution<> optimal_distribution(5,1);//(8, 1.1);
+    boost::random::beta_distribution<> suboptimal_distribution(4, 20);
 
     //std::normal_distribution<double> suboptimal_distribution(1 - delta, 1);
     std::vector<double> probabilities(k);
@@ -62,27 +65,36 @@ create_distributions(int k, int optimal_start, int optimal_end, double delta)
     {
         if (i >= optimal_start && i <= optimal_end)
         {
-            double p = quantile(optimal_distribution, uni(gen));
-            probabilities[i] = p;
+            //double p = quantile(optimal_distribution, uni(gen));
+            //probabilities[i] = p;
+
+            //Edited
+            boost::random::beta_distribution<> optimal_distribution(5,1);//(8, 1.1);
+            distributions[i] = optimal_distribution;
         }
         else
         {
-            double p = quantile(suboptimal_distribution, uni(gen));
-            //std::cout << p << std::endl;
-            //p = abs(p);
-            //if (p >= 1) p = 0.1;
-            probabilities[i] = p;
+            //double p = quantile(suboptimal_distribution, uni(gen));
+                //std::cout << p << std::endl;
+                //p = abs(p);
+                //if (p >= 1) p = 0.1;
+            //probabilities[i] = p;
+
+            //edited
+            boost::random::beta_distribution<> suboptimal_distribution(4,20);//(8, 1.1);
+            distributions[i] = suboptimal_distribution;
+
         }
     }
 
-    for (int i = 0; i < k; i++)
+    /*for (int i = 0; i < k; i++)
     {
         std::cout << probabilities[i] << " ";
         std::vector<double> weights = {1 - probabilities[i], probabilities[i]};
         std::discrete_distribution<int> dist(weights.begin(), weights.end());
         distributions[i] = dist;
     }
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
     return distributions;
 }
@@ -248,13 +260,14 @@ public:
         int rounds = _rounds;
         double gap = _gap;
         double delta = _delta;
+        boost::mt19937 randGen(15);
         auto gen = random_gen();
         std::vector<std::vector<double>> data_matrix;
         data_matrix.reserve(k);
 
         std::uniform_int_distribution<> uni(0, _k-1);
 
-        int first_end = _k/10;
+        int first_end = std::max(1,_k/10);
         auto distributions = create_distributions(k, 0, first_end, delta);
         //auto distributions = create_distributions(k, 0, 2, delta);
         int old_start = 0;
@@ -290,9 +303,11 @@ public:
             auto one_triggered = false;
             for (int arm = 0; arm < k; arm++)
             {
+                //boost::variate_generator<boost::mt19937, boost::random::uniform_real_distribution<> > generator(randGen, distributions[arm]);
                 auto r = distributions[arm](gen);
-                if (!one_triggered && r == 1) one_triggered = true;
+                //if (!one_triggered && r == 1) one_triggered = true;
                 data_matrix[arm][i] = r;
+                //std::cout << r << " ";
             }
             if (!one_triggered) {
                 /*for (int j = 0; j < k; j++) {
@@ -407,8 +422,8 @@ public:
 
         int multiple = 1;
         auto gen = random_gen();
-        auto even_distribution = std::discrete_distribution<int>({0.7, 0.3});
-        auto uneven_distribution = std::discrete_distribution<int>({0.1, 0.9});
+        auto even_distribution = std::discrete_distribution<int>({0.1, 0.9});
+        auto uneven_distribution = std::discrete_distribution<int>({0.9, 0.1});
 
         for (int i = 0; i < rounds; i++)
         {
@@ -546,8 +561,8 @@ public:
         v = tent_map(v);
         int optimal_arm = (int)(v * _k);
         v = tent_map(v);
-        auto suboptimal_distribution = std::discrete_distribution<int>({0.9, 0.01});
-        auto optimal_distribution = std::discrete_distribution<int>({0.01, 0.9});
+        auto suboptimal_distribution = std::discrete_distribution<int>({0.9, 0.1});
+        auto optimal_distribution = std::discrete_distribution<int>({0.1, 0.9});
 
         for (int i = 0; i < k; i++)
         {

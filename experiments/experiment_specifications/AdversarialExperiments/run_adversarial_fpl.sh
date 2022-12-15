@@ -16,10 +16,10 @@ fi
 
 name=QBL
 
-rounds=1000000
+rounds=100000
 #rounds=10000
-averages=5
-gap=3.2
+averages=3
+gap=6  #3.2
 delta=0.9
 
 run_experiment() {
@@ -43,22 +43,22 @@ run_experiment() {
     rm $header $out $plt_out $out_mod2 $plt_out_mod2 $out_stochastic $plt_out_stochastic $out_tent $plt_out_tent 2>/dev/null
 
     echo "runner,dataset,gap,k,rounds,averages,delta,output_path,optimal_probability,optimal_proportion" >>$header
-    echo "fpl_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out,0.8,0.3" >>$header
+    #echo "fpl_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out,0.8,0.3" >>$header
     #echo "fpl_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2,0.9,0.2" >>$header
-    #echo "fpl_adversarial,TentMapDataset,$gap,$1,$rounds,$averages,$delta,$out_tent,0.9,0.2" >>$header
+    echo "fpl_adversarial,TentMapDataset,$gap,$1,$rounds,$averages,$delta,$out_tent,0.9,0.2" >>$header
     #echo "fpl_adversarial,DuellingDataset,$gap,$1,$rounds,$averages,$delta,$out_duelling,0.9,0.2" >>$header
     (
         ./$make_dir/efficient_multi_armed_bandits $header &&
-            python3 plotting/plot_compare.py $out $plt_out
+            #python3 plotting/plot_compare.py $out $plt_out
             #python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
-            #python3 plotting/plot_compare.py $out_tent $plt_out_tent
+            python3 plotting/plot_compare.py $out_tent $plt_out_tent
             #python3 plotting/plot_compare.py $out_duelling $plt_out_duelling
     ) &
     disown
 
 }
 
-for k in 200 ; do
+for k in 1000; do
     run_experiment $k
 done
 #zip $tmp_dir/$name.zip $tmp_dir/*$name*.out
