@@ -42,8 +42,8 @@ public:
         _weights = std::vector<double>(k, 1.0/k);
         _distribution = Incremental_sum_heap(_weights);
         _last_probabilities.reserve(_k);
-        std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0 / k)) - (1.0 / k)));
-        _power_weights = Incremental_sum_heap(power_weights);
+        //std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0 / k)) - (1.0 / k)));
+        //_power_weights = Incremental_sum_heap(power_weights);
 
         max_weight = 1.0/k;
         weight_sum = k;    };
@@ -63,7 +63,7 @@ public:
 
         for (int i : choices) {
         //for (int i = 0; i < _k; i++) {
-            double p = _m * ( (1 - _gamma) * exp(_weights[i] - max_weight - log(weight_sum) ) + _gamma/ _k);
+            double p = ( (1 - _gamma) * exp(_weights[i] - max_weight - log(weight_sum) ) + _gamma/ _k);
             _last_probabilities[i] = p;
         }
 
@@ -72,11 +72,23 @@ public:
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
     {
-        for (int i : indices) {
+
+        //std::cout << _distribution.max_element() << std::endl;
+        for (int idx = 0; idx < indices.size(); idx++) {
+            int i = indices[idx];
             double old = _weights[i];
-            _weights[i] += _m*_gamma*(rewards[i]/_last_probabilities[i])/_k; //implicit log
+            _weights[i] += _gamma*(rewards[idx]/_last_probabilities[i])/_k; //implicit log
             //weight_sum += _m*_gamma*(rewards[i]/_last_probabilities[i])/_k;
-            _distribution.update(i, _last_probabilities[i]);
+
+            double corr_val = (_last_probabilities[i]-_last_probabilities[i]*(_distribution.max_element()-_distribution.probability_of_choice(i)+_last_probabilities[i]))/(_last_probabilities[i]-1);
+            if (corr_val < 0.0 && _last_probabilities[i] > _distribution.max_element()*0.9999) {
+                //std::cout << i << "  " << _last_probabilities[i] << "  " << corr_val << "   " << _distribution.max_element() <<"   "<< _distribution.probability_of_choice(i) << std::endl;
+            //    _distribution.update(i, _gamma/_k);
+                _distribution.update(i, _last_probabilities[i]);
+            } else {
+                _distribution.update(i, _last_probabilities[i]+corr_val);
+            }
+
             //_power_weights.update(i, exp(_weights[i] ));
             if (_weights[i] > max_weight) {
                 //Remove old

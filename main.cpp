@@ -160,7 +160,13 @@ int main(int argc, char *argv[])
         }
 
         // Handle datasets
-        Dataset *d;
+        //THis is cursed but is legacy from learning c++
+        Dataset* d;
+        DuellingDatasetTopk<Exp3m> ddsExp3m;
+        DuellingDataset<Exp3> ddsExp3;
+        DuellingDataset<FPL> ddsFPL;
+        DuellingDataset<QBL> ddsQBL;
+        DuellingDataset<Tsallis_IW> ddsTsallis_IW;
         Mod2Dataset mod2dataset;
         StochasticallyConstrainedDataset sCD;
         StochasticDataset stochasticDataset;
@@ -173,27 +179,27 @@ int main(int argc, char *argv[])
             if (runner.find("exp3m") != std::string::npos)
             {
                 auto b = Exp3m(m, k, 0.1);
-                auto Dds = DuellingDatasetTopk<Exp3m>(b, k, rounds, m);
-                d = &Dds;
+                ddsExp3m = DuellingDatasetTopk<Exp3m>(b, k, rounds, m);
+                d = &ddsExp3m;
             }
             else if (runner.find("exp3") != std::string::npos)
             {
                 auto b = Exp3(k, 0.1);
-                auto Dds = DuellingDataset<Exp3>(b, k, rounds);
-                d = &Dds;
+                ddsExp3 = DuellingDataset<Exp3>(b, k, rounds);
+                d = &ddsExp3;
             }
-            if (runner.find("fpl") != std::string::npos)
+            else if (runner.find("fpl") != std::string::npos)
             {
-                auto b = FPL(k, 10);
-                // auto b = QBL(k, 10);
-                auto Dds = DuellingDataset<FPL>(b, k, rounds);
-                d = &Dds;
+                //auto b = FPL(k, 10);
+                auto b = Exp3(k, 0.01);
+                ddsExp3 = DuellingDataset<Exp3>(b, k, rounds);
+                d = &ddsExp3;
             }
-            if (runner.find("tsallis") != std::string::npos)
+            else if (runner.find("tsallis") != std::string::npos)
             {
                 auto b = Tsallis_IW(k);
-                auto Dds = DuellingDataset<Tsallis_IW>(b, k, rounds);
-                d = &Dds;
+                ddsTsallis_IW = DuellingDataset<Tsallis_IW>(b, k, rounds);
+                d = &ddsTsallis_IW;
             }
         }
 

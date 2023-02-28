@@ -67,12 +67,14 @@ public:
         {
             i *= 2;
             double left = _heap[i];
+
             if (p > left)
             {
                 p -= left;
                 i += 1;
             }
         }
+
         return i - _d;
     }
 

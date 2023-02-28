@@ -34,7 +34,10 @@ std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<d
     std::vector<int> samples;
     std::transform(valIndices.begin(), valIndices.end(), std::back_inserter(samples), [](auto v)
                    { return v.second; });
-    return_indices = samples;
+    for (int i=0; i < m; i++) {
+        return_indices.push_back(samples[i]);
+    }
+    //return_indices = samples;
 
     /*for (auto iter : samples) {
         std::cout << iter << " ";

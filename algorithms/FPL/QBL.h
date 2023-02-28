@@ -74,6 +74,7 @@ public:
         dist = std::discrete_distribution<int>({0.001, 0.999});
 
 
+
         _logk = (int)log2(_k);
         //_logk = k;
         //_logk = 4;
@@ -215,7 +216,8 @@ public:
             double global = total_last_term_sum_of_rewards/total_last_term_sum_of_counts;
             double local = last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
 
-            bool is_rewarding = global < local*0.85*dist(_gen);
+            //dist.param({global*0.001, local});
+            bool is_rewarding = global < local*dist(_gen);//dist(_gen);//global < local*0.85*dist(_gen);
 
 
             if (!is_rewarding) {
@@ -279,12 +281,12 @@ public:
         double local = last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
 
 
-        bool is_rewarding = global < local*0.85*dist(_gen);
+        bool is_rewarding = global < local*dist(_gen);
 
         //std::cout << is_rewarding << "  " << global << " " << local << "\n";
 
         if (!is_rewarding) {
-            int new_position = round(_k*log(last_term_sum_of_counts[choice])/log(_k));
+            int new_position = last_term_sum_of_counts[choice]-1;//round(_k*log(last_term_sum_of_counts[choice])/log(_k));
             new_position = std::min(new_position, _k-1-(_q.top().priority-_priorities[choice]));
             _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
             _q.pop();

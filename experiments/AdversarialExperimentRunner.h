@@ -132,7 +132,7 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         std::thread t1(single_top_k_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds, k, m, std::ref(uniform_run));
 
         std::vector<double> exp3m_run;
-        std::thread t2(exp3m_runner<Exp3m>, std::ref(b), std::ref(data_matrix), rounds, k, m,
+        std::thread t2(top_k_runner<Exp3m>, std::ref(b), std::ref(data_matrix), rounds, k, m,
                        std::ref(exp3m_run));
 
         std::vector<double> qbl_run;
@@ -142,7 +142,7 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         std::thread t4(top_k_runner<FPL>, std::ref(fpl), std::ref(data_matrix), rounds, k, m, std::ref(fpl_run));
 
         std::vector<double> exp3m_heap_run;
-        std::thread t5(exp3m_runner<Exp3m_heap>, std::ref(b_heap), std::ref(data_matrix), rounds, k, m,
+        std::thread t5(top_k_runner<Exp3m_heap>, std::ref(b_heap), std::ref(data_matrix), rounds, k, m,
                        std::ref(exp3m_heap_run));
 
         t1.join();

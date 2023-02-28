@@ -74,24 +74,24 @@ public:
         std::vector<double> probabilities;
         probabilities.reserve(_k);
 
-        double sum_reduced_power_weights = 0;
+        double sum_exp = 0;
         double mw = *max_element(_weights.begin(), _weights.end());
         for (int i = 0; i < _k; i++)
         {
-            sum_reduced_power_weights += exp((_weights[i] - mw));
+            sum_exp += exp(_weights[i] - mw);
         }
 
 
         for (int i = 0; i < _k; i++) {
-            double p = _m * ( (1-_gamma)*exp(_weights[i] - mw - log(sum_reduced_power_weights)) + _gamma/_k);
+            double p = _m * ( (1-_gamma)*exp(_weights[i] - mw - log(sum_exp)) + _gamma/_k);
             probabilities.push_back(p);
         }
         _last_probabilities = probabilities;
         return _sampling.dependent_weighted_choices(probabilities, _m);
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards) {
-        for (int i : indices) {
-            _weights[i] +=  log(exp(_m*_gamma*(rewards[i]/_last_probabilities[i])/_k));
+        for (int i = 0; i < indices.size(); i++) {
+            _weights[indices[i]] +=  _m*_gamma*(rewards[i]/_last_probabilities[indices[i]])/_k;
         }
         /*double sum_weights = 0;
         for (double v: _weights) sum_weights += v;

@@ -47,6 +47,6 @@ add_executable(duelling_bandits duelling_bandits.cpp
 algorithms/Exp3Bandit/Exp3.h
 algorithms/Exp3Bandit/Exp3.cpp
 )
-
-target_link_libraries(efficient_multi_armed_bandits csv Boost::boost)
+target_link_libraries(efficient_multi_armed_bandits csv "--coverage" Boost::boost)
+#target_link_libraries(efficient_multi_armed_bandits PRIVATE csv "--coverage")
 target_link_libraries(benchmark_bandits benchmark::benchmark)
