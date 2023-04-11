@@ -4,10 +4,9 @@ make_dir=cmake-build-release-wsl
 
 
 tmp_dir=/tmp
-#make_dir=cmake-build-release-wsl
 
-if [[ $make_dir == cmake-build-release-odin ]]; then
-  alias python3="/home/$(whoami)/miniconda3/bin/python"
+if [[ $make_dir == cmake-build-release-djlama ]]; then
+  #alias python3="/home/$(whoami)/miniconda3/bin/python"
   mkdir -p /home/$(whoami)/tmp
   tmp_dir=/home/$(whoami)/tmp
 fi
@@ -44,21 +43,21 @@ run_experiment() {
 
     echo "runner,dataset,gap,k,rounds,averages,delta,output_path,optimal_probability,optimal_proportion" >>$header
     echo "fpl_adversarial,stochastically_constrained_adversarial,$gap,$1,$rounds,$averages,$delta,$out,0.8,0.3" >>$header
-    #echo "fpl_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2,0.9,0.2" >>$header
-    #echo "fpl_adversarial,TentMapDataset,$gap,$1,$rounds,$averages,$delta,$out_tent,0.9,0.2" >>$header
-    echo "fpl_adversarial,DuellingDataset,$gap,$1,$rounds,$averages,$delta,$out_duelling,0.9,0.2" >>$header
+    echo "fpl_adversarial,mod2,$gap,$1,$rounds,$averages,$delta,$out_mod2,0.9,0.2" >>$header
+    echo "fpl_adversarial,TentMapDataset,$gap,$1,$rounds,$averages,$delta,$out_tent,0.9,0.2" >>$header
+    #echo "fpl_adversarial,DuellingDataset,$gap,$1,$rounds,$averages,$delta,$out_duelling,0.9,0.2" >>$header
     (
         ./$make_dir/efficient_multi_armed_bandits $header &&
             python3 plotting/plot_compare.py $out $plt_out
-            #python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
-            #python3 plotting/plot_compare.py $out_tent $plt_out_tent
-            python3 plotting/plot_compare.py $out_duelling $plt_out_duelling
+            python3 plotting/plot_compare.py $out_mod2 $plt_out_mod2
+            python3 plotting/plot_compare.py $out_tent $plt_out_tent
+            #python3 plotting/plot_compare.py $out_duelling $plt_out_duelling
     ) &
     disown
 
 }
 
-for k in 16; do
+for k in 100; do
     run_experiment $k
 done
 #zip $tmp_dir/$name.zip $tmp_dir/*$name*.out

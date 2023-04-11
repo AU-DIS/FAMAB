@@ -4,7 +4,7 @@
 #include "experiments/FPLComparisonRunner.h"
 #include "experiments/TsallisComparisonRunner.h"
 #include "experiments/ExploreNoMoreRunner.h"
-#include "datastructures/Incremental_sum_heap.h"
+#include "datastructures/Incremental_LSE_sum_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
 #include "datasets/Dataset_movielens.h"
 #include <map>
@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
         //THis is cursed but is legacy from learning c++
         Dataset* d;
         DuellingDatasetTopk<Exp3m> ddsExp3m;
+        DuellingDatasetTopk<QBL> ddsQBLm;
         DuellingDataset<Exp3> ddsExp3;
         DuellingDataset<FPL> ddsFPL;
         DuellingDataset<QBL> ddsQBL;
@@ -178,9 +179,9 @@ int main(int argc, char *argv[])
         {
             if (runner.find("exp3m") != std::string::npos)
             {
-                auto b = Exp3m(m, k, 0.1);
-                ddsExp3m = DuellingDatasetTopk<Exp3m>(b, k, rounds, m);
-                d = &ddsExp3m;
+                auto b = QBL(k, 10);//Exp3m(m, k, 0.1);
+                ddsQBLm = DuellingDatasetTopk<QBL>(b, k, rounds, m);
+                d = &ddsQBLm;
             }
             else if (runner.find("exp3") != std::string::npos)
             {

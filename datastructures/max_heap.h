@@ -7,19 +7,19 @@
  * We will use it as a heap to enable sampling
  */
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_MAX_HEAP_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_MAX_HEAP_H
 #include "cmath"
 #include "random"
 #include <stdio.h>
 #include <set>
 #include "../utilities/random_gen.h"
 
-class Incremental_sum_heap
+class Max_heap
 {
 
 public:
-    explicit Incremental_sum_heap(std::vector<double> &input_list)
+    explicit Max_heap(std::vector<double> &input_list)
     {
         _n = input_list.size();
         _d = (int) pow(2, ceil(log2(_n)));
@@ -104,7 +104,7 @@ public:
                 } else {
                     p = p+log(1-exp_val);
                 }
-                //-= left;   log(a)+log(1-exp(log(b)-log(a)))
+                //-= left;
 
                 i += 1;
                 //std::cout << "go right" << std::endl;
@@ -140,39 +140,6 @@ public:
         return {i - _d, gamma_obs};
     }
 
-    std::vector<int> heap_sample(int m)
-    {
-        auto choices = std::vector<int>(m, 0);
-        auto priors = std::vector<double>(m, 0.);
-        auto z = std::vector<int>(m, 0);
-        std::set<int> arm_set;
-        for (int i = 0; i < _n; i++) {
-            arm_set.insert(i);
-        }
-
-        for (int i = 0; i < m; i++)
-        {
-            int v;
-            if (_uni(_random_gen)<0.1) {
-                v = rand()%arm_set.size();
-                auto iter = std::begin(arm_set);
-                std::advance(iter,v);
-                int choice = *iter;
-                arm_set.erase(choice);
-            } else {
-                v = heap_sample();
-            }
-            choices[i] = v;
-            priors[i] = probability_of_choice(v);
-            z[i] = v;
-            update(v, std::numeric_limits<double>::infinity());
-        }
-        for (int i = 0; i < m; i++)
-        {
-            update(choices[i], priors[i]);
-        }
-        return z;
-    }
 
     void print_weights()
     {
@@ -187,8 +154,6 @@ private:
     std::vector<double> _heap;
     int _n;
     int _d;
-    std::uniform_real_distribution<double> _uni;
-    std::mt19937 _random_gen = random_gen();
 };
 
-#endif // EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_MAX_HEAP_H

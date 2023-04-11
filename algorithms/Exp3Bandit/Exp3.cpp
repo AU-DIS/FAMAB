@@ -12,8 +12,9 @@
 Exp3::Exp3(int k, double gamma)
     : _k(k), _gamma(gamma)
 {
+    _cnt = 0;
     _probabilities = std::vector<double>(k, 0.0);
-    _weights = std::vector<double>(k, 1.0);
+    _weights = std::vector<double>(k, log(1.0));
 };
 
 void Exp3::set_parameter(double gamma) {
@@ -22,10 +23,11 @@ void Exp3::set_parameter(double gamma) {
 
 Exp3::Exp3(const Exp3 &prototype)
 {
+    _cnt = 0;
     _k = prototype._k;
     _gamma = prototype._gamma;
     _probabilities = std::vector<double>(prototype._k, 0.0);
-    _weights = std::vector<double>(prototype._k, 1.0);
+    _weights = std::vector<double>(prototype._k, log(1.0));
 
     
     _random_gen = random_gen();
@@ -40,16 +42,21 @@ int Exp3::sample()
 
 int Exp3::choose()
 {
+    double _eta = 1;
     double sum_reduced_power_weights = 0;
     double m = *max_element(_weights.begin(), _weights.end());
     for (int i = 0; i < _k; i++)
     {
-        sum_reduced_power_weights += exp(_gamma / _k * (_weights[i] - m));
+        sum_reduced_power_weights += exp( _eta*_weights[i] - _eta*m);
+    }
+    if (_cnt%10000 == 0) {
+        //std::cout << sum_reduced_power_weights << " " << m << std::endl;
+        //std::cout << _weights[0] << " " << _weights[1] << " " << _weights[2] << " " << _weights[3] << " " << _weights[4]<< " " << _weights[5] << " " << _weights[6] << " " << _weights[7] << std::endl;
     }
 
     for (int i = 0; i < _k; i++)
     {
-        _probabilities[i] = (1 - _gamma) * exp(_gamma / _k * (_weights[i] - m) - log(sum_reduced_power_weights)) + _gamma / _k;
+        _probabilities[i] = (1 - _gamma) * exp(_eta*_weights[i] - _eta*m - log(sum_reduced_power_weights)) + _gamma / _k;
     }
 
     int choice = sample();
@@ -61,9 +68,14 @@ int Exp3::choose()
 
 void Exp3::give_reward(int index, double feedback)
 {
-    double est_reward = feedback / _last_drawn_probability;
+    _cnt++;
+    double est_reward = _gamma*feedback / _last_drawn_probability /_k;
     double new_weight = _last_drawn_weight + est_reward;
     _weights[index] = new_weight;
+    if (_cnt%10000 == 0) {
+        //std::cout << _weights[0] << " " << _weights[1] << " " << _weights[2] << " " << _weights[3] << " " << _weights[4]<< " " << _weights[5] << " " << _weights[6] << " " << _weights[7] << std::endl;
+    }
+
 }
 
     std::vector<double> *Exp3::get_weights()

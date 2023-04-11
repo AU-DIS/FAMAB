@@ -11,7 +11,8 @@
 #include "../algorithms/FPL/FPL_unnormalized.h"
 #include "../algorithms/FPL/FPL_hash.h"
 #include "../algorithms/FPL/QBL.h"
-#include "../algorithms/Exp3Bandit/exp3r.h"
+#include "../algorithms/Exp3Bandit/Exp3Tor.h"
+#include "../algorithms/Exp3Bandit/Exp3IXTor.h"
 #include "../datasets/dataset.h"
 
 template <typename Dataset>
@@ -22,13 +23,15 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
     std::vector<double> fpl_original_regrets(rounds);
     std::vector<double> fpl_new_regrets(rounds);
     std::vector<double> exp3_regrets(rounds);
-    //std::vector<double> exp3r_regrets(rounds);
+    std::vector<double> exp3tor_regrets(rounds);
+    std::vector<double> exp3IXtor_regrets(rounds);
     std::vector<double> uniform_regrets(rounds);
 
     auto baseline = "FPL";
     auto uniform = "Uniform";
     auto compared = "QBL";
-    //auto exp3r_comp = "Exp3r";
+    auto exp3_tor = "Exp3tor";
+    auto exp3_IXtor = "Exp3IXtor";
     auto exp3_comp = "Exp3";
 
     for (int i = 0; i < averages; i++)
@@ -43,7 +46,8 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         QBL fpl_new(k, 5);
         double gamma = 0.1;
         Exp3 exp3(k, gamma);
-        //Exp3r exp3r(k,gamma,0.0001, 100000);
+        Exp3Tor exp3tor(k,0.1);
+        Exp3IXTor exp3IXtor(k, 0.1, 0.1/2.0);
 
 
 
@@ -64,15 +68,19 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         std::thread t4(basic_runner<Uniformbandit>, std::ref(uni), std::ref(data_matrix), rounds,
                        std::ref(uniform_run));
 
-        //std::vector<double> exp3r_run;
-        //std::thread t5(basic_runner<Exp3r>, std::ref(exp3r), std::ref(data_matrix), rounds,
-        //               std::ref(exp3r_run));
+        std::vector<double> exp3tor_run;
+        std::thread t5(basic_runner<Exp3Tor>, std::ref(exp3tor), std::ref(data_matrix), rounds,
+                      std::ref(exp3tor_run));
+        std::vector<double> exp3IXtor_run;
+        std::thread t6(basic_runner<Exp3IXTor>, std::ref(exp3IXtor), std::ref(data_matrix), rounds,
+                       std::ref(exp3IXtor_run));
 
         t1.join();
         t2.join();
         t3.join();
         t4.join();
-        //t5.join();
+        t5.join();
+        t6.join();
 
         for (int round = 0; round < rounds; round++)
         {
@@ -80,7 +88,8 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
             fpl_new_regrets[round] += fpl_new_run[round];
             exp3_regrets[round] += exp3_run[round];
             uniform_regrets[round] += uniform_run[round];
-            //exp3r_regrets[round] += exp3r_run[round];
+            exp3tor_regrets[round] += exp3tor_run[round];
+            exp3IXtor_regrets[round] += exp3IXtor_run[round];
         }
     }
     for (auto &v : fpl_original_regrets)
@@ -92,8 +101,10 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         v /= averages;
     for (auto &v : uniform_regrets)
         v /= averages;
-    //for (auto &v : exp3r_regrets)
-    //    v /= averages;
+    for (auto &v : exp3tor_regrets)
+        v /= averages;
+    for (auto &v : exp3IXtor_regrets)
+        v /= averages;
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(fpl_original_regrets);
 
@@ -102,7 +113,8 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
     result_matrix.push_back(exp3_regrets);
     result_matrix.push_back(uniform_regrets);
 
-   // result_matrix.push_back(exp3r_regrets);
+    result_matrix.push_back(exp3tor_regrets);
+    result_matrix.push_back(exp3IXtor_regrets);
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
     auto metadata =
@@ -111,14 +123,16 @@ void run_fpl_adversarial_experiment(Dataset &d, int k, int rounds, int averages,
         baseline + "," +
         compared + "," +
         exp3_comp + ","+
-        uniform; // + "," +
-        //exp3r_comp;
+        uniform + "," +
+        exp3_tor + "," +
+        exp3_IXtor;
     auto descriptions = std::vector<string>{
         baseline,
         compared,
         exp3_comp,
-        uniform};
-        //exp3r_comp};
+        uniform,
+        exp3_tor,
+        exp3_IXtor};
     write_results(result_matrix, metadata, descriptions, out_path);
 }
 

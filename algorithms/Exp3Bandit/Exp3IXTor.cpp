@@ -16,9 +16,9 @@ Exp3IXTor::Exp3IXTor(int k, double eta, double gamma)
         _probabilities.push_back(0);
     }
     _weights = std::vector<double>();
-    // Init all to 1
+    // Init all to 0
     for (int i = 0; i < k; i++) {
-        _weights.push_back(1.0);
+        _weights.push_back(0);
     }
 };
 
@@ -40,8 +40,8 @@ int Exp3IXTor::choose() {
     }
 
     int choice = sample();
-    _last_drawn_probability = _probabilities[choice];
-    _last_drawn_weight = _weights[choice];
+    //_last_drawn_probability = _probabilities[choice];
+    //_last_drawn_weight = _weights[choice];
 
     return choice;
 }
