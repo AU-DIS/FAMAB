@@ -34,6 +34,15 @@ public:
         current_round = 0;
         _eta = eta;
     }
+    FPL(int m, int k, int benchmode)
+    {
+        _weights = std::vector<double>(k, 1);
+        _gen = random_gen();
+        _eta = 10;
+        _exponential_distribution = std::exponential_distribution<double>(_eta);
+        _k = k;
+        current_round = 0;
+    }
     FPL(FPL &prototype)
     {
         _k = prototype._k;

@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "DepRoundALIASStrategy.h"
 #include "random"
 #include "../../utilities/random_gen.h"
@@ -16,7 +17,7 @@ std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<d
     std::vector<double> w = probabilities;
     std::uniform_real_distribution<double> dist(0, 1);
 
-    // Yoinked from stackoverflow: https://stackoverflow.com/questions/53632441/c-sampling-from-discrete-distribution-without-replacement
+    // Added from stackoverflow: https://stackoverflow.com/questions/53632441/c-sampling-from-discrete-distribution-without-replacement
 
     std::vector<int> return_indices;
     return_indices.reserve(m);
@@ -34,14 +35,18 @@ std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<d
     std::vector<int> samples;
     std::transform(valIndices.begin(), valIndices.end(), std::back_inserter(samples), [](auto v)
                    { return v.second; });
-    return_indices = samples;
+    for (int i=0; i < m; i++) {
+        return_indices.push_back(samples[i]);
+    }
+
+    //return_indices = samples;
 
     /*for (auto iter : samples) {
         std::cout << iter << " ";
     }
     std::cout << std::endl;*/
-
-    /*int K = probabilities.size();
+ /*
+    int K = probabilities.size();
 
 
     std::vector<int> candidates;
@@ -83,9 +88,10 @@ std::vector<int> DepRoundALIASStrategy::dependent_weighted_choices(std::vector<d
 
     }
     while (return_indices.size() < m) {
-        //std::cout << "still wrong" << std::endl;
+        //std::cout << "still wrong " << return_indices.size() << std::endl;
+        //if reserve.back() =! 0
         return_indices.push_back(reserve.back());
         reserve.pop_back();
-    } */
+    }*/
     return return_indices;
 };

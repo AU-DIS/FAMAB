@@ -29,6 +29,7 @@ public:
     std::vector<double> _weights;
     int _k;
     double _gamma;
+    int _cnt;
 };
 
 #endif // EFFICIENT_MULTI_ARMED_BANDITS_EXP3_H

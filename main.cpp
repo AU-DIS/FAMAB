@@ -4,12 +4,13 @@
 #include "experiments/FPLComparisonRunner.h"
 #include "experiments/TsallisComparisonRunner.h"
 #include "experiments/ExploreNoMoreRunner.h"
-#include "datastructures/Incremental_sum_heap.h"
+#include "datastructures/Incremental_LSE_sum_heap.h"
 #include "algorithms/Exp3Bandit/Exp3_heap.h"
 #include "datasets/Dataset_movielens.h"
 #include <map>
 #include "experiments/TheoreticalBoundRunner.h"
 #include "datasets/dataset.h"
+#include <time.h>
 
 using namespace csv;
 
@@ -111,6 +112,7 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm, st
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     Initialize();
     std::string path(argv[1]);
     CSVReader reader(path);
@@ -160,7 +162,14 @@ int main(int argc, char *argv[])
         }
 
         // Handle datasets
-        Dataset *d;
+        //THis is cursed but is legacy from learning c++
+        Dataset* d;
+        DuellingDatasetTopk<Exp3m> ddsExp3m;
+        DuellingDatasetTopk<QBL> ddsQBLm;
+        DuellingDataset<Exp3> ddsExp3;
+        DuellingDataset<FPL> ddsFPL;
+        DuellingDataset<QBL> ddsQBL;
+        DuellingDataset<Tsallis_IW> ddsTsallis_IW;
         Mod2Dataset mod2dataset;
         StochasticallyConstrainedDataset sCD;
         StochasticDataset stochasticDataset;
@@ -172,28 +181,28 @@ int main(int argc, char *argv[])
         {
             if (runner.find("exp3m") != std::string::npos)
             {
-                auto b = Exp3m(m, k, 0.1);
-                auto Dds = DuellingDatasetTopk<Exp3m>(b, k, rounds, m);
-                d = &Dds;
+                auto b = QBL(k, 10);//Exp3m(m, k, 0.1);
+                ddsQBLm = DuellingDatasetTopk<QBL>(b, k, rounds, m);
+                d = &ddsQBLm;
             }
             else if (runner.find("exp3") != std::string::npos)
             {
                 auto b = Exp3(k, 0.1);
-                auto Dds = DuellingDataset<Exp3>(b, k, rounds);
-                d = &Dds;
+                ddsExp3 = DuellingDataset<Exp3>(b, k, rounds);
+                d = &ddsExp3;
             }
-            if (runner.find("fpl") != std::string::npos)
+            else if (runner.find("fpl") != std::string::npos)
             {
-                auto b = FPL(k, 10);
-                // auto b = QBL(k, 10);
-                auto Dds = DuellingDataset<FPL>(b, k, rounds);
-                d = &Dds;
+                //auto b = FPL(k, 10);
+                auto b = Exp3(k, 0.01);
+                ddsExp3 = DuellingDataset<Exp3>(b, k, rounds);
+                d = &ddsExp3;
             }
-            if (runner.find("tsallis") != std::string::npos)
+            else if (runner.find("tsallis") != std::string::npos)
             {
                 auto b = Tsallis_IW(k);
-                auto Dds = DuellingDataset<Tsallis_IW>(b, k, rounds);
-                d = &Dds;
+                ddsTsallis_IW = DuellingDataset<Tsallis_IW>(b, k, rounds);
+                d = &ddsTsallis_IW;
             }
         }
 

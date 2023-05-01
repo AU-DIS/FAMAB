@@ -5,7 +5,7 @@
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_Heap_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS_Heap_H
 
-#include "../../datastructures/Incremental_sum_heap.h"
+#include "../../datastructures/Incremental_LSE_sum_heap.h"
 #include "../../utilities/argsort.h"
 
 class Tsallis_Heap

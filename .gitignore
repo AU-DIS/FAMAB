@@ -7,3 +7,4 @@ benchmark_results/
 csv-parser/
 *.csv
 *.vscode
+plotting/__pycache__/

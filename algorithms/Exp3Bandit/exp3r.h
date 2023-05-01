@@ -84,9 +84,7 @@ public:
         double big_gamma = *std::min_element(_arm_cum_gamma_obs_reward.begin(), _arm_cum_gamma_obs_reward.end());
 
         if (big_gamma >= _gamma*_H/_k) {
-            std::cout << "detecting" << std::endl;
             if (drift_detect()) {
-                std::cout << "resetting" << std::endl;
                 _exp3 = Exp3_heap(_k, _gamma);
             }
             _arm_cum_gamma_obs_reward = std::vector<double>(_k, 0);
@@ -100,12 +98,10 @@ public:
         auto result = std::max_element((*weights).begin(), (*weights).end());
 
         int k_max = std::distance((*weights).begin(), result);
-        std::cout << k_max << std::endl;
         double epsilon = sqrt((_k*log(1/_delta))/(2.0*_gamma*_H));
         for (int i = 0; i < _k; i++) {
             double mean = _arm_cum_gamma_obs_reward[i]/_arm_cum_gamma_obs_choices[i];
             double mean_max = _arm_cum_gamma_obs_reward[k_max]/_arm_cum_gamma_obs_choices[k_max];
-            std::cout << mean << "  " << mean_max << "  " << mean-mean_max << "  " << 2*epsilon << std::endl;
             if (mean-mean_max >= 2*epsilon)
 
                 return true;

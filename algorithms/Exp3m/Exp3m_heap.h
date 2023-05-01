@@ -9,7 +9,10 @@
 #include "algorithm"
 #include "iostream"
 #include "../../utilities/argsort.h"
+#include "../../datastructures/Incremental_LSE_sum_heap.h"
 #include "../../datastructures/Incremental_sum_heap.h"
+#include "../../datastructures/Incremental_product_heap.h"
+//#include "../utilities/random_gen.h"
 
 #include "cmath"
 class Exp3m_heap
@@ -17,10 +20,9 @@ class Exp3m_heap
 private:
     int _k;
     int _m;
-    double max_weight;
-
-    double _additive_term;
-    Incremental_sum_heap _power_weights;
+    int cnt = 0;
+    std::uniform_real_distribution<double> _uni;
+    std::mt19937 _random_gen = random_gen();
 
 public:
     std::vector<double> _weights;
@@ -37,51 +39,65 @@ public:
 
     Exp3m_heap(int m, int k, double gamma) : _m(m), _k(k), _gamma(gamma)
     {
-        _weights = std::vector<double>(k, 1.0/k);
+        _weights = std::vector<double>(k, 1.0/_k);
         _distribution = Incremental_sum_heap(_weights);
         _last_probabilities.reserve(_k);
-        //std::vector<double> power_weights(k, exp(_gamma / _k * ((1.0 / k)) - (1.0 / k)));
-        //_power_weights = Incremental_sum_heap(power_weights);
-
-        max_weight = 1.0/k;
+        //std::cout << _gamma << std::endl;
+    };
+    Exp3m_heap(int m, int k, int benchmode) : _m(m), _k(k)
+    {
+        _gamma = 0.1;
+        _weights = std::vector<double>(k, 1.0/_k);
+        _distribution = Incremental_sum_heap(_weights);
+        _last_probabilities.reserve(_k);
+        //std::cout << _gamma << std::endl;
     };
     std::vector<int> choose(int m)
     {
+        auto choices = std::vector<int>(m, 0);
+        auto priors = std::vector<double>(m, 0.);
 
-        //std::vector<double> probabilities;
-        //probabilities.reserve(_k);
-
-        double sum_reduced_power_weights = 0;
-        double mw = *max_element(_weights.begin(), _weights.end());
-        for (int i = 0; i < _k; i++)
+        for (int i = 0; i < m; i++)
         {
-            sum_reduced_power_weights += exp((_weights[i] - mw));
+            int a;
+            if (_uni(_random_gen)<_gamma) {
+                a = _distribution.heap_random_sample();
+            } else {
+                a = _distribution.heap_sample();
+            }
+            choices[i] = a;
+            priors[i] = _distribution.probability_of_choice(a);
+            //for (int i = 0; i < m; i++) {
+            _last_probabilities[choices[i]] = (( (1 - _gamma) * exp(_weights[choices[i]] - _distribution.max_element()) + _gamma/(_k)));
+            //}
+
+            _distribution.update(a, std::numeric_limits<double>::infinity());
+        }
+        for (int i = 0; i < m; i++)
+        {
+            _distribution.update(choices[i], priors[i]);
         }
 
-        std::vector<int> choices = _distribution.heap_sample(m);
+        //std::vector<int> choices = _distribution.heap_sample(m);
 
-        for (int i : choices) {
-            double p = _m * ( (1-_gamma)*exp(_weights[i] - mw - log(sum_reduced_power_weights)) + _gamma/_k);
-            _last_probabilities[i] = p;
-        }
 
-        //_last_probabilities = probabilities;
-        return choices; //Incremental_sum_heap(probabilities).heap_sample(m); //_distribution.heap_sample(m);
+
+
+        return choices;
     };
     void give_reward(std::vector<int> &indices, std::vector<double> &rewards)
     {
-        for (int i : indices) {
-            _weights[i] +=  log(exp(_m*_gamma*(rewards[i]/_last_probabilities[i])/_k));
-            _distribution.update(i, _last_probabilities[i]);
+        cnt++;
+        //std::cout << indices.size() << std::endl;
+        for (int idx = 0; idx < indices.size(); idx++) {
+            int i = indices[idx];
+            _weights[i] += _gamma * rewards[idx] / _last_probabilities[i]/_k; //implicit log
+            if (cnt%10000 == 0) {
+                //std::cout << _weights[0] << " " << _weights[1] << " "  << _weights[2] << " "  << _weights[3] << std::endl;
+            }
+            _distribution.update(i, _weights[i]);
         }
-        /*double sum_weights = 0;
-        for (double v : _weights)
-            sum_weights += v;*/
-        /*for (int j = 0; j < _weights.size(); j++)
-        {
-            _weights[j] = _weights[j] / _distribution.max_element();
-            _distribution.update(j, _weights[j]);
-        }*/
+
     };
 };
 
