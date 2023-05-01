@@ -10,6 +10,7 @@
 #include "../algorithms/Exp3m/Exp31m.h"
 #include "../algorithms/Exp3m/Exp31m_2.h"
 #include "../algorithms/Exp3m/Exp3m_heap.h"
+#include "../algorithms/Exp3m/Exp3light_m_heap.h"
 #include "../algorithms/Uniformbandit.h"
 #include "../utilities/result_writer.h"
 #include "../runner.h"
@@ -114,15 +115,18 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
     std::vector<double> fpl_regrets(rounds);
     std::vector<double> exp3m_regrets(rounds);
     std::vector<double> exp3m_heap_regrets(rounds);
+    std::vector<double> exp3light_m_heap_regrets(rounds);
+
     for (int i = 0; i < averages; i++)
     {
-
         std::vector<std::vector<double>> data_matrix = d.generate();
+
         Uniformbandit uni(k);
         Exp3m b(m, k, 0.1);
         Exp3m_heap b_heap(m, k, 0.1);
         QBL qbl(k, 5);
         FPL fpl(k, 10);
+        Exp3light_m_heap b_lightheap(m,k,0.1);
 
         /*
                 Exp3m_heap b_heap(m, k, 0.1);
@@ -145,11 +149,17 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         std::thread t5(top_k_runner<Exp3m_heap>, std::ref(b_heap), std::ref(data_matrix), rounds, k, m,
                        std::ref(exp3m_heap_run));
 
+        std::vector<double> exp3light_m_heap_run;
+        std::thread t6(top_k_runner<Exp3light_m_heap>, std::ref(b_lightheap), std::ref(data_matrix), rounds, k, m,
+                       std::ref(exp3light_m_heap_run));
+
+
         t1.join();
         t2.join();
         t3.join();
         t4.join();
         t5.join();
+        t6.join();
 
         for (int round = 0; round < rounds; round++)
         {
@@ -158,6 +168,7 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
             exp3m_heap_regrets[round] += exp3m_heap_run[round];
             qbl_regrets[round] += qbl_run[round];
             fpl_regrets[round] += fpl_run[round];
+            exp3light_m_heap_regrets[round] += exp3light_m_heap_run[round];
         }
     }
     for (auto &v : uniform_regrets)
@@ -170,6 +181,8 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         v /= averages;
     for (auto &v : fpl_regrets)
         v /= averages;
+    for (auto &v : exp3light_m_heap_regrets)
+        v /= averages;
 
     std::vector<std::vector<double>> result_matrix;
     result_matrix.push_back(uniform_regrets);
@@ -177,6 +190,7 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
     result_matrix.push_back(exp3m_heap_regrets);
     result_matrix.push_back(fpl_regrets);
     result_matrix.push_back(qbl_regrets);
+    result_matrix.push_back(exp3light_m_heap_regrets);
 
     // MUST CONTAIN ENDING COMMA
     auto description = ",";
@@ -185,10 +199,10 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
         std::to_string(k) + "," +
         std::to_string(rounds) + "," +
         std::to_string(gap) + "," +
-        "Uniform,Exp3m,Exp3m Heap,FPL,QBL";
+        "Uniform,Exp3m,Exp3m Heap,FPL,QBL,Exp3Light.M Heap";
     //"Uniform,Exp3m";
     auto descriptions = std::vector<string>{
-        "Uniform,Exp3m,Exp3m Heap,FPL,QBL"};
+        "Uniform,Exp3m,Exp3m Heap,FPL,QBL,Exp3Light.M Heap"};
     //"Uniform,Exp3m"};
     write_results(result_matrix, metadata, descriptions, out_path);
 }

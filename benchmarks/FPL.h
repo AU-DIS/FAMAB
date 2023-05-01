@@ -7,7 +7,7 @@ static void benchmark_fpl(benchmark::State &state)
     FPL b(k, 10);
     for (auto _ : state)
     {
-        int rounds = 1000000;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
             b.choose();
@@ -22,10 +22,10 @@ static void benchmark_fpl_sample(benchmark::State &state)
     FPL b(k, 10);
     for (auto _ : state)
     {
-        int rounds = 1000000;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
-            b.choose();
+            benchmark::DoNotOptimize(b.choose());
         }
     }
 }
@@ -35,7 +35,7 @@ static void benchmark_fpl_update(benchmark::State &state)
     FPL b(k, 10);
     for (auto _ : state)
     {
-        int rounds = 1000000;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
             b.give_reward(0, 0);

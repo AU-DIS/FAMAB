@@ -7,30 +7,33 @@
  * We will use it as a heap to enable sampling
  */
 
-#ifndef EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
-#define EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
+#ifndef EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_CNT_SUM_HEAP_H
+#define EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_CNT_SUM_HEAP_H
 #include "cmath"
 #include "random"
 #include <stdio.h>
 #include <set>
 #include "../utilities/random_gen.h"
 
-class Incremental_sum_heap
+class Incremental_cnt_sum_heap
 {
 
 public:
-    explicit Incremental_sum_heap(std::vector<double> &input_list)
+    explicit Incremental_cnt_sum_heap(std::vector<double> &input_list)
     {
         _n = input_list.size();
         _d =  _n;//(int) pow(2, ceil(log2(_n)));
         //std::cout << "d: " << _d << std::endl;
         _heap = std::vector<double>(2 * _d, 0);
+        _heap[0] = 0;
         _leafs = std::vector<double>(2 * _d, 0);
+        _max = std::vector<double>(2 * _d, 0);
         int j = 0;
         for (int i = _d; i < _d + _n; i++)
         {
             _heap[i] = input_list[j];
             _leafs[i] = 1;
+            _max[i] = input_list[j];
             j++;
         }
         //for (int i = _d + _n; i < 2*_d; i++) {
@@ -41,12 +44,14 @@ public:
             if (std::isinf(_heap[2*i+1])) {
                 _heap[i] = _heap[2*i];
                 _leafs[i] = _leafs[2*i];
-            } else if (_heap[2 * i] > _heap[2 * i + 1]) {
-                _heap[i] = _heap[2 * i] + log(exp(_heap[2 * i + 1]-_heap[2 * i])+1);
-                _leafs[i] = _leafs[2*i]+_leafs[2*i+1];
+                _max[i] = _max[2*i];
             } else {
-                _heap[i] = _heap[2 * i + 1] + log(exp(_heap[2 * i]-_heap[2 * i + 1])+1);
                 _leafs[i] = _leafs[2*i]+_leafs[2*i+1];
+                _max[i] = (_max[2*i] > _max[2*i+1]) ? _max[2*i] : _max[2*i+1];
+                _heap[i] = _heap[2 * i + 1] + _heap[2*i];
+
+
+
             }
             //if (fabs(_heap[i]) < 1e-15) {
             //    _heap[i] = 0;
@@ -55,7 +60,7 @@ public:
         //std::cout <<"leafcount: " << _leafs[1] << std::endl;
         //std::cout << _heap[1] << " " << _heap[2] << " " << _heap[3] << " " << _heap[4] << " " << _heap[5] << " " << _heap[6] << " " << _heap[7] << std::endl;
     }
-    Incremental_sum_heap() = default;
+    Incremental_cnt_sum_heap() = default;
     ;
 
     void update(int k, double v)
@@ -70,15 +75,15 @@ public:
             if (std::isinf(_heap[2*i+1])) {
                 _heap[i] = _heap[2*i];
                 _leafs[i] = _leafs[2*i];
+                _max[i] = _max[2*i];
             } else if (std::isinf(_heap[2*i])) {
                 _heap[i] = _heap[2*i+1];
                 _leafs[i] = _leafs[2*i+1];
-            } else if (_heap[2 * i] > _heap[2 * i + 1]) {
-                _heap[i] = _heap[2 * i] + log(exp(_heap[2 * i + 1]-_heap[2 * i])+1);
-                _leafs[i] = _leafs[2*i]+_leafs[2*i+1];
+                _max[i] = _max[2*i+1];
             } else {
-                _heap[i] = _heap[2 * i + 1] + log(exp(_heap[2 * i]-_heap[2 * i + 1])+1);
+                _heap[i] = _heap[2 * i] + _heap[2*i+1];
                 _leafs[i] = _leafs[2*i]+_leafs[2*i+1];
+                _max[i] = (_max[2*i] > _max[2*i+1]) ? _max[2*i] : _max[2*i+1];
             }
             //if (fabs(_heap[i]) < 1e-15) {
             //    _heap[i] = 0;
@@ -95,10 +100,16 @@ public:
     {
         return _heap[1];
     }
+    void increment_count() {
+        _heap[0] += 1;
+    }
+    int get_count() {
+        return _heap[0];
+    }
 
     int heap_sample()
     {
-        double p = log(_uni(_random_gen)) + _heap[1];
+        double p = _uni(_random_gen)*_heap[1];  // eta*(-(a+b)+k*cnt)
         int i = 1;
         while (i < _d)
         {
@@ -110,17 +121,22 @@ public:
             if (std::isinf(_heap[i+1])) {
                 continue;
             }
-
             double left = _heap[i];
-            double right = _heap[i+1];
+            /*if (log(_heap[0]) > _heap[i]) {
+                left = log(0.1)+(log(_heap[0]) + log(exp(_heap[i]-_heap[0])+1));
+            } else {
+                left =log(0.1)+(log(_heap[i]) + log(exp(_heap[0]-_heap[i])+1));
+            }*/
+
+            //double left = log(0.1)+log(_heap[0])+_heap[i];
+            //double right = _heap[i+1];
 
             if (p > left)
             {
-                double exp_val = exp(left-p);
                 //if (exp_val >= 1-1e-15) {
                 //    p = p+log(1e-15);
                 //} else {
-                    p = p+log(1-exp_val);
+                    p -= left; // log(exp(p)-exp(left));
                 //}
                 //-= left;   log(a)+log(1-exp(log(b)-log(a)))
 
@@ -234,8 +250,9 @@ private:
     int _n;
     int _d;
     std::vector<double> _leafs;
+    std::vector<double> _max;
     std::uniform_real_distribution<double> _uni;
     std::mt19937 _random_gen = random_gen();
 };
 
-#endif // EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_SUM_HEAP_H
+#endif // EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_CNT_SUM_HEAP_H

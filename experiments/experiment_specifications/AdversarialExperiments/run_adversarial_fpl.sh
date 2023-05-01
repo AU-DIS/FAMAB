@@ -17,7 +17,7 @@ name=QBL
 
 rounds=1000000
 #rounds=10000
-averages=10
+averages=5
 gap=3.2
 delta=0.9
 
@@ -57,7 +57,7 @@ run_experiment() {
 
 }
 
-for k in 100; do
+for k in 10000; do
     run_experiment $k
 done
 #zip $tmp_dir/$name.zip $tmp_dir/*$name*.out

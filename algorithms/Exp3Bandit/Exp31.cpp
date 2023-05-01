@@ -8,6 +8,7 @@
 #include <cmath>
 #include "vector"
 #include <random>
+#include <algorithm>
 #include "Exp31.h"
 #include <iostream>
 

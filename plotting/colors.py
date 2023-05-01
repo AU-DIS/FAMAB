@@ -33,5 +33,8 @@ colormap = {
     "Exp3m_heap": "aqua",
     "Exp3m Heap": "aqua",
     "Exp3tor": "slateblue",
-    "Exp3IXtor": "saddlebrown"
+    "Exp3IXtor": "saddlebrown",
+    "Exp3Light": "springgreen",
+    "Exp3Light Heap": "yellowgreen",
+    "Exp3Light.M Heap": "springgreen",
 }

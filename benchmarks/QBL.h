@@ -6,10 +6,10 @@ static void benchmark_qbl(benchmark::State &state)
     QBL b(k, 0.1);
     for (auto _ : state)
     {
-        int rounds = 100000000;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
-            b.give_reward(b.choose(), (i % 3)/3);
+            b.give_reward(b.choose(), (i % 3)/3.0);
         }
     }
 }
@@ -20,7 +20,7 @@ static void benchmark_qbl_sample(benchmark::State &state)
     QBL b(k, 0.1);
     for (auto _ : state)
     {
-        int rounds = 100;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
             benchmark::DoNotOptimize(b.choose());
@@ -33,10 +33,10 @@ static void benchmark_qbl_update(benchmark::State &state)
     QBL b(k, 0.1);
     for (auto _ : state)
     {
-        int rounds = 1000000;
+        int rounds = 10000;
         for (int i = 0; i < rounds; i++)
         {
-            b.give_reward(i%k, (i % 3)/3);
+            b.give_reward(i%k, (i % 3)/3.0);
         }
     }
 }

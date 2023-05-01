@@ -111,6 +111,8 @@ void top_k_runner(Bandit &bandit, std::vector<std::vector<double>> &data_matrix,
     }
 }
 
+
+
 template <typename Bandit>
 void top_k_runner_returning_reward(Bandit &bandit, std::vector<std::vector<double>> &data_matrix, int rounds, int k, int m, std::vector<double> &regrets){
 

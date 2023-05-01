@@ -7,6 +7,7 @@
 
 #include "../../utilities/updateable_priority_queue.h"
 #include <math.h>
+#include <algorithm>
 
 class QBL
 {
@@ -50,6 +51,52 @@ public:
             ret->push_back(v);
         return ret;
     }
+    QBL(int m, int k, int benchmode)
+    {
+        rand_cnt = 0;
+        _k = k;
+        _eta = 0.1;
+        _counter = 0;
+        _round = 0;
+        F = 0;
+        comb_rounds_optimal = std::vector<double>(_k, 0);
+        good_rounds_in_row = std::vector<int>(_k, 0);
+
+        //Init weightings for isRewarding calsulation
+        last_term_sum_of_rewards = std::vector<double>(_k,1);
+        last_term_sum_of_counts = std::vector<int>(_k,1);
+        total_last_term_sum_of_rewards = _k;
+        total_last_term_sum_of_counts = _k;
+
+        //Init last choice for m version
+        was_last_choice = std::vector<bool>(_k, false);
+
+        dist = std::discrete_distribution<int>({0.001, 0.999});
+
+
+
+        _logk = (int)log2(_k);
+        //_logk = k;
+        //_logk = 4;
+        //_logk = 0;
+
+        _exponential_distribution = std::exponential_distribution<double>(_eta);
+        _gen = random_gen();
+
+        _priorities = std::vector<int>();
+
+        _q = better_priority_queue::updatable_priority_queue<int, int>();
+        for (int i = 0; i < _k; i++)
+        {
+            _priorities.push_back(i);
+            //std::shuffle(_priorities.begin(),_priorities.end(),_gen);
+        }
+        for (int i=0; i < _k; i++) {
+            _q.push(i, _priorities[i]);
+        }
+
+        rounds_leader_optimal = 0;
+    }
 
     QBL(int k, double eta)
     {
@@ -89,7 +136,10 @@ public:
         for (int i = 0; i < _k; i++)
         {
             _priorities.push_back(i);
-            _q.push(i, i);
+            //std::shuffle(_priorities.begin(),_priorities.end(),_gen);
+        }
+        for (int i=0; i < _k; i++) {
+            _q.push(i, _priorities[i]);
         }
 
         rounds_leader_optimal = 0;
@@ -223,7 +273,7 @@ public:
             if (!is_rewarding) {
                 int new_position = last_term_sum_of_counts[choice]-1;
                 new_position = std::min(new_position, _k-1-(_q.top().priority-_priorities[choice]));
-                _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
+                _priorities[choice] = _q.top().priority+(new_position-_k);
                 _q.update(choice, _priorities[choice]);
                 was_last_choice[choice] = false;
             }

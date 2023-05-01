@@ -7,6 +7,7 @@
 
 #include "Exp3Tor.h"
 #include <random>
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 

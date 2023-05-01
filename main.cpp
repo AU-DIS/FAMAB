@@ -10,6 +10,7 @@
 #include <map>
 #include "experiments/TheoreticalBoundRunner.h"
 #include "datasets/dataset.h"
+#include <time.h>
 
 using namespace csv;
 
@@ -111,6 +112,7 @@ static void run_theoretical_bound_experiment_threaded(std::string& algorithm, st
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     Initialize();
     std::string path(argv[1]);
     CSVReader reader(path);

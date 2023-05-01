@@ -23,6 +23,7 @@ private:
     int sample();
 public:
     Exp3IXTor(int k, double eta, double gamma);
+    Exp3IXTor(int k, double eta);
     int choose();
     void give_reward(int index, double feedback);
 };

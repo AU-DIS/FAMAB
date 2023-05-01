@@ -7,10 +7,24 @@
 
 #include "Exp3IXTor.h"
 #include <random>
+#include <algorithm>
 #include <iostream>
 
 Exp3IXTor::Exp3IXTor(int k, double eta, double gamma)
         : _k(k), _eta(eta), _gamma(gamma) {
+    _probabilities = std::vector<double>();
+    for (int i = 0; i < k; i++) {
+        _probabilities.push_back(0);
+    }
+    _weights = std::vector<double>();
+    // Init all to 0
+    for (int i = 0; i < k; i++) {
+        _weights.push_back(0);
+    }
+};
+Exp3IXTor::Exp3IXTor(int k, double eta)
+        : _k(k), _eta(eta) {
+    _gamma = 2*_eta;
     _probabilities = std::vector<double>();
     for (int i = 0; i < k; i++) {
         _probabilities.push_back(0);

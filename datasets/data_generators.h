@@ -422,8 +422,8 @@ public:
 
         int multiple = 1;
         auto gen = random_gen();
-        auto even_distribution = std::discrete_distribution<int>({0.1, 0.9});
-        auto uneven_distribution = std::discrete_distribution<int>({0.9, 0.1});
+        auto even_distribution = std::discrete_distribution<int>({0, 1});
+        auto uneven_distribution = std::discrete_distribution<int>({1, 0});
 
         for (int i = 0; i < rounds; i++)
         {

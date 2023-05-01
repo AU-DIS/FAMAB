@@ -1,6 +1,6 @@
 //
-// Created by Mathias Ravn Tversted on 14/02/2022.
-// Shamelessly stolen from https://gist.github.com/HViktorTsoi/58eabb4f7c5a303ced400bcfa816f6f5
+//
+// From https://gist.github.com/HViktorTsoi/58eabb4f7c5a303ced400bcfa816f6f5
 //
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_ARGSORT_H
