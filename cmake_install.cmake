@@ -1,4 +1,4 @@
-# Install script for directory: /Users/mrt/Documents/scripts/efficient-multi-armed-bandits
+
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

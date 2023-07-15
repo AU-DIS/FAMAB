@@ -1,6 +1,3 @@
-//
-// Created by Kristoffer Strube on 17-02-2022.
-//
 
 #include <iostream>
 #include <algorithm>

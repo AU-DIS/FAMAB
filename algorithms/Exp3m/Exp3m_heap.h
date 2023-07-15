@@ -1,6 +1,5 @@
-//
-// Created by kasper on 04-05-2022.
-//
+
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3M_HEAP_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3M_HEAP_H

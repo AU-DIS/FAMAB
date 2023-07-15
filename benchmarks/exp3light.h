@@ -1,6 +1,3 @@
-//
-// Created by kaspe on 26-04-2023.
-//
 
 static void benchmark_exp3_light(benchmark::State &state)
 {

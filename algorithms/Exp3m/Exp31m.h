@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 19/02/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP31M_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP31M_H

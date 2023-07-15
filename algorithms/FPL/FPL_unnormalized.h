@@ -1,6 +1,4 @@
-//
-// Created by Mathias Tversted on 05/02/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_FPL_unnormalized_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_FPL_unnormalized_H

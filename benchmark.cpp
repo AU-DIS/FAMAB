@@ -1,5 +1,4 @@
 
-// Created by Mathias Ravn Tversted on 1/03/2022.
 #include "iostream"
 #include <benchmark/benchmark.h>
 #include "random"

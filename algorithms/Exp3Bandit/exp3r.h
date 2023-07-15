@@ -1,6 +1,3 @@
-//
-// Created by kaspe on 17-08-2022.
-//
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3R_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3R_H

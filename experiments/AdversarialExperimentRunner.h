@@ -1,6 +1,3 @@
-//
-// Created by Mathias Ravn Tversted on 15/03/2022.
-//
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_ADVERSARIALEXPERIMENTRUNNER_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_ADVERSARIALEXPERIMENTRUNNER_H
@@ -116,6 +113,8 @@ void run_adversarial_exp3m_experiment(Dataset &d, int m, int k, int rounds, int 
     std::vector<double> exp3m_regrets(rounds);
     std::vector<double> exp3m_heap_regrets(rounds);
     std::vector<double> exp3light_m_heap_regrets(rounds);
+
+
 
     for (int i = 0; i < averages; i++)
     {

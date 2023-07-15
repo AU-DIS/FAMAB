@@ -1,10 +1,4 @@
-//
-// Created by kaspe on 21-04-2023.
-//
 
-//
-// Created by kaspe on 18-04-2023.
-//
 #include <vector>
 #include "cmath"
 #include "algorithm"
