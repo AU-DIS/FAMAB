@@ -1,5 +1,4 @@
-#alias python3="/home/tversted/miniconda3/bin/python"
-#alias python3="/opt/homebrew/bin/python3"
+
 alias python3="$(which python3)"
 #"/usr/bin/python3"
 
@@ -59,7 +58,7 @@ run_experiment() {
 for k in 20; do
   #for k in 2000; do
   #for m in 1800; do
-  for m in 5; do
+  for m in 2 15; do
     run_experiment $k $m
   done
 done

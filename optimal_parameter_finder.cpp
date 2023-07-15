@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 03/05/2022.
-//
+
 
 #include "algorithms/FPL/FPL.h"
 #include "algorithms/Exp3Bandit/Exp3.h"

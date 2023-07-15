@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 11/05/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_DUELARENA_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_DUELARENA_H

@@ -1,6 +1,6 @@
-#alias python3="/home/tversted/miniconda3/bin/python"
+
 alias python3="/usr/bin/python3"
-#make_dir=cmake-build-odin
+#make_dir=cmake-build-servername
 
 tmp_dir=/mnt/ssd/bandits
 #tmp_dir=../tmp

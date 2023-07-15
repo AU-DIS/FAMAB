@@ -1,6 +1,4 @@
-//
-// Created by Kristoffer Strube on 22-03-2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_EXP3_CPP
 #define EFFICIENT_MULTI_ARMED_BANDITS_EXP3_CPP

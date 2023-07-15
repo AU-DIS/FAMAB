@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 11/02/2022.
-//
+
 
 #include "DExp3.h"
 #include <tuple>

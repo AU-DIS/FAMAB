@@ -1,6 +1,3 @@
-//
-// Created by Mathias Ravn Tversted on 18/04/2022.
-//
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS__H
 #define EFFICIENT_MULTI_ARMED_BANDITS_TSALLIS__H

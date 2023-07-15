@@ -53,7 +53,6 @@ create_distributions(int k, int optimal_start, int optimal_end, double delta)
     //std::discrete_distribution<int> optimal_distribution({1 - delta, delta});
     // std::uniform_real_distribution<double> suboptimal_distribution;
 
-
     std::uniform_real_distribution<> uni(0, 1);
     boost::random::beta_distribution<> optimal_distribution(5,1);//(8, 1.1);
     boost::random::beta_distribution<> suboptimal_distribution(4, 20);

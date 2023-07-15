@@ -1,7 +1,4 @@
-/*
- * Taken from Tim Viera at https://timvieira.github.io/blog/post/2016/11/21/heaps-for-incremental-computation/
- * We will use it as a heap to enable sampling
- */
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_PRODUCT_HEAP_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_INCREMENTAL_PRODUCT_HEAP_H

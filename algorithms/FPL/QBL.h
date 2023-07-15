@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 07/04/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_QBL_H
@@ -8,6 +6,7 @@
 #include "../../utilities/updateable_priority_queue.h"
 #include <math.h>
 #include <algorithm>
+#include <boost/random/beta_distribution.hpp>
 
 class QBL
 {
@@ -18,6 +17,8 @@ private:
     std::vector<double> comb_rounds_optimal;
     std::vector<int> good_rounds_in_row;
     std::discrete_distribution<int> dist;
+
+    boost::random::beta_distribution<float> dist2;
 
     std::vector<double> last_term_sum_of_rewards;
     std::vector<int> last_term_sum_of_counts;
@@ -63,15 +64,16 @@ public:
         good_rounds_in_row = std::vector<int>(_k, 0);
 
         //Init weightings for isRewarding calsulation
-        last_term_sum_of_rewards = std::vector<double>(_k,1);
+        last_term_sum_of_rewards = std::vector<double>(_k,0);
         last_term_sum_of_counts = std::vector<int>(_k,1);
-        total_last_term_sum_of_rewards = _k;
+        total_last_term_sum_of_rewards = 0;_k;
         total_last_term_sum_of_counts = _k;
 
         //Init last choice for m version
         was_last_choice = std::vector<bool>(_k, false);
 
         dist = std::discrete_distribution<int>({0.001, 0.999});
+        dist2 = boost::random::beta_distribution<float>(1.0,1.0);
 
 
 
@@ -109,7 +111,7 @@ public:
         comb_rounds_optimal = std::vector<double>(_k, 0);
         good_rounds_in_row = std::vector<int>(_k, 0);
 
-        //Init weightings for isRewarding calsulation
+        //Init weightings for isRewarding calculation
         last_term_sum_of_rewards = std::vector<double>(_k,1);
         last_term_sum_of_counts = std::vector<int>(_k,1);
         total_last_term_sum_of_rewards = _k;
@@ -119,6 +121,7 @@ public:
         was_last_choice = std::vector<bool>(_k, false);
 
         dist = std::discrete_distribution<int>({0.001, 0.999});
+        dist2 = boost::random::beta_distribution<float>(1.0,1.0);
 
 
 
@@ -245,10 +248,10 @@ public:
             double reward = rewards[i];
 
             if (!was_last_choice[choice]) {
-                total_last_term_sum_of_rewards -= last_term_sum_of_rewards[choice];
-                last_term_sum_of_rewards[choice] = 0;
-                total_last_term_sum_of_counts -= last_term_sum_of_counts[choice];
-                last_term_sum_of_counts[choice] = 0;
+                total_last_term_sum_of_rewards -= last_term_sum_of_rewards[choice]-last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
+                last_term_sum_of_rewards[choice] /= last_term_sum_of_counts[choice];
+                total_last_term_sum_of_counts -= last_term_sum_of_counts[choice]-1;
+                last_term_sum_of_counts[choice] = 1;
                 was_last_choice[choice] = true;
             }
             //Add to reward and count
@@ -267,7 +270,7 @@ public:
             double local = last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
 
             //dist.param({global*0.001, local});
-            bool is_rewarding = global < local*dist(_gen);//dist(_gen);//global < local*0.85*dist(_gen);
+            bool is_rewarding = global < local*(dist2(_gen)*(1.1-0.9)+0.9);//dist(_gen);//global < local*0.85*dist(_gen);
 
 
             if (!is_rewarding) {
@@ -313,13 +316,15 @@ public:
 
         //Update counters if leader has changed
         if (choice != last_choice) {
-            total_last_term_sum_of_rewards -= last_term_sum_of_rewards[choice];
-            last_term_sum_of_rewards[choice] = 0;
-            total_last_term_sum_of_counts -= last_term_sum_of_counts[choice];
-            last_term_sum_of_counts[choice] = 0;
+            total_last_term_sum_of_rewards -= last_term_sum_of_rewards[choice]-last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice]; //-last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
+            last_term_sum_of_rewards[choice] /= last_term_sum_of_counts[choice];// last_term_sum_of_counts[choice];
+            total_last_term_sum_of_counts -= last_term_sum_of_counts[choice]-1;//-last_term_sum_of_counts[choice]/2;
+            last_term_sum_of_counts[choice] = 1;
             last_choice = choice;
         }
         //Add to reward and count
+        double global1 = total_last_term_sum_of_rewards/total_last_term_sum_of_counts;
+        double local1 = last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
         total_last_term_sum_of_rewards += feedback;
         last_term_sum_of_rewards[choice] += feedback;
         total_last_term_sum_of_counts += 1;
@@ -331,7 +336,7 @@ public:
         double local = last_term_sum_of_rewards[choice]/last_term_sum_of_counts[choice];
 
 
-        bool is_rewarding = global < local*dist(_gen);
+        bool is_rewarding = global < local*(dist2(_gen)*(1.1-0.9)+0.9);
 
         //std::cout << is_rewarding << "  " << global << " " << local << "\n";
 
@@ -341,6 +346,7 @@ public:
             _priorities[choice] = new_position-_k-1 == 0 ? _q.top().priority-1 : _q.top().priority+(new_position-_k-1);
             _q.pop();
             _q.push(choice, _priorities[choice]);
+            last_choice = -1;
             /*if (choice == 0 ) {
                 std::cout << even << "   " << _counter<< "  before " << comb_rounds_optimal[0];
                 std::cout << "    " << 1-(1/(double)comb_rounds_optimal[0]);

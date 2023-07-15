@@ -1,4 +1,3 @@
-#alias python3="/home/tversted/miniconda3/bin/python"
 alias python3="$(which python3)"
 make_dir=cmake-build-release-wsl
 
@@ -6,7 +5,6 @@ make_dir=cmake-build-release-wsl
 tmp_dir=/tmp
 
 if [[ $make_dir == cmake-build-release-djlama ]]; then
-  #alias python3="/home/$(whoami)/miniconda3/bin/python"
   mkdir -p /home/$(whoami)/tmp
   tmp_dir=/home/$(whoami)/tmp
 fi
@@ -15,9 +13,9 @@ fi
 
 name=QBL
 
-rounds=1000000
+rounds=100000
 #rounds=10000
-averages=5
+averages=50
 gap=3.2
 delta=0.9
 
@@ -57,7 +55,7 @@ run_experiment() {
 
 }
 
-for k in 10000; do
+for k in 20 100; do
     run_experiment $k
 done
 #zip $tmp_dir/$name.zip $tmp_dir/*$name*.out
