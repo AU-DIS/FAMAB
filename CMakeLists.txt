@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(efficient_multi_armed_bandits)
-
+SET(BENCHMARK_DOWNLOAD_DEPENDENCIES ON)
 set(CMAKE_CXX_STANDARD 20)
 
 #add_compile_options(-O3)
@@ -12,9 +12,15 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(BOOST_REQUESTED_VERSION 1.71.0)
 
 find_package(Boost COMPONENTS system)
-#include_directories(${BOOST_INCLUDE_DIRS})
+include_directories(${BOOST_INCLUDE_DIRS})
 message(STATUS "${BOOST_INCLUDE_DIRS}" )
 
+find_package(Boost 1.45.0 COMPONENTS random) 
+
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+    
+endif()
 
 SET(DBENCHMARK_ENABLE_GTEST_TESTS OFF)
 
@@ -59,6 +65,7 @@ add_executable(duelling_bandits duelling_bandits.cpp
 algorithms/Exp3Bandit/Exp3.h
 algorithms/Exp3Bandit/Exp3.cpp
 )
+target_link_libraries(efficient_multi_armed_bandits ${Boost_LIBRARIES})
 target_link_libraries(efficient_multi_armed_bandits csv "--coverage")
 #target_link_libraries(efficient_multi_armed_bandits PRIVATE csv "--coverage")
 target_link_libraries(benchmark_bandits benchmark::benchmark)
