@@ -3,4 +3,11 @@ This time it's super quick.
 
 ## Dependencies
 - https://github.com/vincentlaucsb/csv-parser?ref=bestofcpp.com#integration
-- Google benchmark 
+- Google benchmark
+- boost
+
+## Notes to myself
+- make install steps
+- req file for python (matplotlib, pandas)
+
+- A docker image could be fun
