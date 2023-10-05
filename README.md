@@ -7,7 +7,7 @@ This time it's super quick.
 - boost
 
 ## Notes to myself
-- make install steps
+- make install steps (install deps, cmake ., make, sh files adjustments)
 - req file for python (matplotlib, pandas)
 
-- A docker image could be fun
+- A docker image could be fun.
