@@ -1,5 +1,5 @@
 # Robust Automatic Choice Tuning for Nonstationary Workloads
-- Onle Graph summarisation experiment: https://github.com/AU-DIS/A-GLIMPSE-Reloaded
+- Online Graph summarisation experiment: https://github.com/AU-DIS/A-GLIMPSE-Reloaded
 - Index tuning experiment: https://github.com/AU-DIS/DBABandits-modded
 
 
