@@ -1,13 +1,9 @@
-# efficient-multi-armed-bandits
-This time it's super quick.
+# Robust Automatic Choice Tuning for Nonstationary Workloads
+- Onle Graph summarisation experiment: https://github.com/AU-DIS/A-GLIMPSE-Reloaded
+- Index tuning experiment: https://github.com/AU-DIS/DBABandits-modded
+
 
 ## Dependencies
 - https://github.com/vincentlaucsb/csv-parser?ref=bestofcpp.com#integration
 - Google benchmark
 - boost
-
-## Notes to myself
-- make install steps (install deps, cmake ., make, sh files adjustments)
-- req file for python (matplotlib, pandas)
-
-- A docker image could be fun.
