@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-
 $tmp_dir=$1
 
 grep 'Exp3,' out.csv >> combined.csv
