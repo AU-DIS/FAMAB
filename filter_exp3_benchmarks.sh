@@ -2,7 +2,6 @@ rm /tmp/*.csv
 name=Exp3
 tmp_dir=$1
 destination_dir=$2
-
 echo "name,k,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message" >>$tmp_dir/Exp3_header.csv
 
 # FID
