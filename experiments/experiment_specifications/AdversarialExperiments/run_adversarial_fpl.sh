@@ -1,5 +1,5 @@
 alias python3="$(which python3)"
-make_dir=cmake-build-release-wsl
+make_dir=.
 
 
 tmp_dir=/tmp

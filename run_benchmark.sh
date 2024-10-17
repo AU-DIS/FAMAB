@@ -4,7 +4,8 @@
 rm *.csv
 rm /tmp/bandits/*.csv 2>/dev/null
 # Run benchmarks and process them
-./cmake-build-release-wsl/benchmark_bandits --benchmark_out=raw_out.csv --benchmark_out_format=csv #--benchmark_repetitions=10
+./benchmark_bandits --benchmark_out=raw_out.csv --benchmark_out_format=csv #--benchmark_repetitions=10
+#valgrind --tool=callgrind --trace-children=yes ./benchmark_bandits --benchmark_out=raw_out.csv --benchmark_out_format=csv #--benchmark_repetitions=10
 ./process_benchmarks.sh raw_out.csv out.csv
 # Prepare output file swith headers
 echo "name,k,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message" >> header

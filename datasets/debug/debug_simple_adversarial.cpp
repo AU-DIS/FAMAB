@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 11/02/2022.
-//
+
 
 #include "debug_simple_adversarial.h"
 #include "random"

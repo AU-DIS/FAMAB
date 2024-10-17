@@ -1,7 +1,6 @@
-alias python3="/home/tversted/miniconda3/bin/python"
 #alias python3="/opt/homebrew/bin/python3"
 
-tmp_dir=/home/tversted/tmp
+tmp_dir=//tmp
 make_dir=cmake-build-release-odin
 
 run_experiment() {

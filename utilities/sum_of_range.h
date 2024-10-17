@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 01/03/2022.
-//
+
 #include "../csv-parser/include/csv.hpp"
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_SUM_OF_RANGE_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_SUM_OF_RANGE_H

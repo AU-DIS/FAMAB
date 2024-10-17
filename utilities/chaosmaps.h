@@ -1,6 +1,4 @@
-//
-// Created by Mathias Ravn Tversted on 07/04/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_CHAOSMAPS_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_CHAOSMAPS_H

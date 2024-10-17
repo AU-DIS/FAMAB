@@ -1,11 +1,13 @@
-//
-// Created by Mathias Ravn Tversted on 07/04/2022.
-//
+
 
 #ifndef EFFICIENT_MULTI_ARMED_BANDITS_UPDATEABLE_PRIORITY_QUEUE_H
 #define EFFICIENT_MULTI_ARMED_BANDITS_UPDATEABLE_PRIORITY_QUEUE_H
 #include <utility>
 #include <vector>
+#include <queue>
+#include <iostream>
+#include <algorithm>
+#include <ranges>
 
 namespace better_priority_queue
 {

@@ -1,4 +1,4 @@
-#alias python3="/home/tversted/miniconda3/bin/python"
+
 #alias python3="/opt/homebrew/bin/python3"
 alias python3="$(which python3)"
 #"/usr/bin/python3"
