@@ -1,7 +1,7 @@
 # Robust Automatic Choice Tuning for Nonstationary Workloads
 - Online Graph summarisation experiment: https://github.com/AU-DIS/A-GLIMPSE-Reloaded
-- Index tuning experiment: https://github.com/AU-DIS/DBABandits-modded
--                          and https://github.com/Koenkalle/HMAB-modded/tree/main
+- Index tuning experiment: https://github.com/AU-DIS/DBABandits-modded  
+                           and https://github.com/Koenkalle/HMAB-modded/tree/main
 
 
 # Index tuning experiment: DBABandits-modded & HMAB-modded
